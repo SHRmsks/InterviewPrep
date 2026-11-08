@@ -1,0 +1,983 @@
+[
+{
+"id": 128,
+"tier": 1,
+"group": "Arrays & hashing",
+"title": "Longest Consecutive Sequence",
+"diff": "Medium",
+"g6": 66.7,
+"prem": false,
+"in150": true
+},
+{
+"id": 49,
+"tier": 1,
+"group": "Arrays & hashing",
+"title": "Group Anagrams",
+"diff": "Medium",
+"g6": 60.0,
+"prem": false,
+"in150": true
+},
+{
+"id": 238,
+"tier": 1,
+"group": "Arrays & hashing",
+"title": "Product of Array Except Self",
+"diff": "Medium",
+"g6": 43.7,
+"prem": false,
+"in150": true
+},
+{
+"id": 15,
+"tier": 1,
+"group": "Two pointers",
+"title": "3Sum",
+"diff": "Medium",
+"g6": 70.4,
+"prem": false,
+"in150": true
+},
+{
+"id": 11,
+"tier": 1,
+"group": "Two pointers",
+"title": "Container With Most Water",
+"diff": "Medium",
+"g6": 63.9,
+"prem": false,
+"in150": true
+},
+{
+"id": 42,
+"tier": 1,
+"group": "Two pointers",
+"title": "Trapping Rain Water",
+"diff": "Hard",
+"g6": 67.6,
+"prem": false,
+"in150": true
+},
+{
+"id": 3,
+"tier": 1,
+"group": "Sliding window",
+"title": "Longest Substring Without Repeating Characters",
+"diff": "Medium",
+"g6": 69.2,
+"prem": false,
+"in150": true
+},
+{
+"id": 76,
+"tier": 1,
+"group": "Sliding window",
+"title": "Minimum Window Substring",
+"diff": "Hard",
+"g6": 28.4,
+"prem": false,
+"in150": true
+},
+{
+"id": 54,
+"tier": 1,
+"group": "Matrix simulation",
+"title": "Spiral Matrix",
+"diff": "Medium",
+"g6": 53.1,
+"prem": false,
+"in150": true
+},
+{
+"id": 56,
+"tier": 1,
+"group": "Intervals",
+"title": "Merge Intervals",
+"diff": "Medium",
+"g6": 50.2,
+"prem": false,
+"in150": true
+},
+{
+"id": 57,
+"tier": 1,
+"group": "Intervals",
+"title": "Insert Interval",
+"diff": "Medium",
+"g6": 28.4,
+"prem": false,
+"in150": true
+},
+{
+"id": 2,
+"tier": 1,
+"group": "Linked list",
+"title": "Add Two Numbers",
+"diff": "Medium",
+"g6": 75.0,
+"prem": false,
+"in150": true
+},
+{
+"id": 146,
+"tier": 1,
+"group": "Linked list",
+"title": "LRU Cache",
+"diff": "Medium",
+"g6": 50.2,
+"prem": false,
+"in150": true
+},
+{
+"id": 25,
+"tier": 1,
+"group": "Linked list",
+"title": "Reverse Nodes in k-Group",
+"diff": "Hard",
+"g6": 41.3,
+"prem": false,
+"in150": true
+},
+{
+"id": 236,
+"tier": 1,
+"group": "Trees",
+"title": "Lowest Common Ancestor of a Binary Tree",
+"diff": "Medium",
+"g6": 21.9,
+"prem": false,
+"in150": true
+},
+{
+"id": 124,
+"tier": 1,
+"group": "Trees",
+"title": "Binary Tree Maximum Path Sum",
+"diff": "Hard",
+"g6": 28.4,
+"prem": false,
+"in150": true
+},
+{
+"id": 105,
+"tier": 1,
+"group": "Trees",
+"title": "Construct Binary Tree from Preorder and Inorder Traversal",
+"diff": "Medium",
+"g6": 33.2,
+"prem": false,
+"in150": true
+},
+{
+"id": 98,
+"tier": 1,
+"group": "Trees",
+"title": "Validate Binary Search Tree",
+"diff": "Medium",
+"g6": 35.1,
+"prem": false,
+"in150": true
+},
+{
+"id": 199,
+"tier": 1,
+"group": "Trees",
+"title": "Binary Tree Right Side View",
+"diff": "Medium",
+"g6": 28.4,
+"prem": false,
+"in150": true
+},
+{
+"id": 200,
+"tier": 1,
+"group": "Graphs",
+"title": "Number of Islands",
+"diff": "Medium",
+"g6": 53.7,
+"prem": false,
+"in150": true
+},
+{
+"id": 207,
+"tier": 1,
+"group": "Graphs",
+"title": "Course Schedule",
+"diff": "Medium",
+"g6": 41.3,
+"prem": false,
+"in150": true
+},
+{
+"id": 210,
+"tier": 1,
+"group": "Graphs",
+"title": "Course Schedule II",
+"diff": "Medium",
+"g6": 30.9,
+"prem": false,
+"in150": true
+},
+{
+"id": 133,
+"tier": 1,
+"group": "Graphs",
+"title": "Clone Graph",
+"diff": "Medium",
+"g6": 25.4,
+"prem": false,
+"in150": true
+},
+{
+"id": 399,
+"tier": 1,
+"group": "Graphs",
+"title": "Evaluate Division",
+"diff": "Medium",
+"g6": 11.8,
+"prem": false,
+"in150": true
+},
+{
+"id": 208,
+"tier": 1,
+"group": "Trie",
+"title": "Implement Trie (Prefix Tree)",
+"diff": "Medium",
+"g6": 28.4,
+"prem": false,
+"in150": true
+},
+{
+"id": 212,
+"tier": 1,
+"group": "Trie",
+"title": "Word Search II",
+"diff": "Hard",
+"g6": 11.8,
+"prem": false,
+"in150": true
+},
+{
+"id": 17,
+"tier": 1,
+"group": "Backtracking",
+"title": "Letter Combinations of a Phone Number",
+"diff": "Medium",
+"g6": 51.7,
+"prem": false,
+"in150": true
+},
+{
+"id": 46,
+"tier": 1,
+"group": "Backtracking",
+"title": "Permutations",
+"diff": "Medium",
+"g6": 35.1,
+"prem": false,
+"in150": true
+},
+{
+"id": 39,
+"tier": 1,
+"group": "Backtracking",
+"title": "Combination Sum",
+"diff": "Medium",
+"g6": 44.8,
+"prem": false,
+"in150": true
+},
+{
+"id": 79,
+"tier": 1,
+"group": "Backtracking",
+"title": "Word Search",
+"diff": "Medium",
+"g6": 25.4,
+"prem": false,
+"in150": true
+},
+{
+"id": 34,
+"tier": 1,
+"group": "Binary search",
+"title": "Find First and Last Position of Element in Sorted Array",
+"diff": "Medium",
+"g6": 43.7,
+"prem": false,
+"in150": true
+},
+{
+"id": 33,
+"tier": 1,
+"group": "Binary search",
+"title": "Search in Rotated Sorted Array",
+"diff": "Medium",
+"g6": 53.7,
+"prem": false,
+"in150": true
+},
+{
+"id": 153,
+"tier": 1,
+"group": "Binary search",
+"title": "Find Minimum in Rotated Sorted Array",
+"diff": "Medium",
+"g6": 38.5,
+"prem": false,
+"in150": true
+},
+{
+"id": 162,
+"tier": 1,
+"group": "Binary search",
+"title": "Find Peak Element",
+"diff": "Medium",
+"g6": 43.7,
+"prem": false,
+"in150": true
+},
+{
+"id": 4,
+"tier": 1,
+"group": "Binary search",
+"title": "Median of Two Sorted Arrays",
+"diff": "Hard",
+"g6": 70.4,
+"prem": false,
+"in150": true
+},
+{
+"id": 215,
+"tier": 1,
+"group": "Heap",
+"title": "Kth Largest Element in an Array",
+"diff": "Medium",
+"g6": 43.7,
+"prem": false,
+"in150": true
+},
+{
+"id": 295,
+"tier": 1,
+"group": "Heap",
+"title": "Find Median from Data Stream",
+"diff": "Hard",
+"g6": 40.0,
+"prem": false,
+"in150": true
+},
+{
+"id": 198,
+"tier": 1,
+"group": "DP",
+"title": "House Robber",
+"diff": "Medium",
+"g6": 49.5,
+"prem": false,
+"in150": true
+},
+{
+"id": 322,
+"tier": 1,
+"group": "DP",
+"title": "Coin Change",
+"diff": "Medium",
+"g6": 42.6,
+"prem": false,
+"in150": true
+},
+{
+"id": 300,
+"tier": 1,
+"group": "DP",
+"title": "Longest Increasing Subsequence",
+"diff": "Medium",
+"g6": 35.1,
+"prem": false,
+"in150": true
+},
+{
+"id": 139,
+"tier": 1,
+"group": "DP",
+"title": "Word Break",
+"diff": "Medium",
+"g6": 30.9,
+"prem": false,
+"in150": true
+},
+{
+"id": 72,
+"tier": 1,
+"group": "DP",
+"title": "Edit Distance",
+"diff": "Medium",
+"g6": 28.4,
+"prem": false,
+"in150": true
+},
+{
+"id": 380,
+"tier": 1,
+"group": "Design",
+"title": "Insert Delete GetRandom O(1)",
+"diff": "Medium",
+"g6": 35.1,
+"prem": false,
+"in150": true
+},
+{
+"id": 739,
+"tier": 2,
+"group": "Monotonic stack / deque",
+"title": "Daily Temperatures",
+"diff": "Medium",
+"g6": 47.8,
+"prem": false,
+"in150": false
+},
+{
+"id": 84,
+"tier": 2,
+"group": "Monotonic stack / deque",
+"title": "Largest Rectangle in Histogram",
+"diff": "Hard",
+"g6": 49.5,
+"prem": false,
+"in150": false
+},
+{
+"id": 402,
+"tier": 2,
+"group": "Monotonic stack / deque",
+"title": "Remove K Digits",
+"diff": "Medium",
+"g6": 28.4,
+"prem": false,
+"in150": false
+},
+{
+"id": 239,
+"tier": 2,
+"group": "Monotonic stack / deque",
+"title": "Sliding Window Maximum",
+"diff": "Hard",
+"g6": 50.2,
+"prem": false,
+"in150": false
+},
+{
+"id": 424,
+"tier": 2,
+"group": "Sliding window (counting)",
+"title": "Longest Repeating Character Replacement",
+"diff": "Medium",
+"g6": 44.8,
+"prem": false,
+"in150": false
+},
+{
+"id": 560,
+"tier": 2,
+"group": "Prefix sum + hashmap / diff array",
+"title": "Subarray Sum Equals K",
+"diff": "Medium",
+"g6": 57.1,
+"prem": false,
+"in150": false
+},
+{
+"id": 525,
+"tier": 2,
+"group": "Prefix sum + hashmap / diff array",
+"title": "Contiguous Array",
+"diff": "Medium",
+"g6": 35.1,
+"prem": false,
+"in150": false
+},
+{
+"id": 1094,
+"tier": 2,
+"group": "Prefix sum + hashmap / diff array",
+"title": "Car Pooling",
+"diff": "Medium",
+"g6": 28.4,
+"prem": false,
+"in150": false
+},
+{
+"id": 875,
+"tier": 2,
+"group": "Binary search on the answer",
+"title": "Koko Eating Bananas",
+"diff": "Medium",
+"g6": 56.1,
+"prem": false,
+"in150": false
+},
+{
+"id": 1011,
+"tier": 2,
+"group": "Binary search on the answer",
+"title": "Capacity To Ship Packages Within D Days",
+"diff": "Medium",
+"g6": 30.9,
+"prem": false,
+"in150": false
+},
+{
+"id": 410,
+"tier": 2,
+"group": "Binary search on the answer",
+"title": "Split Array Largest Sum",
+"diff": "Hard",
+"g6": 54.3,
+"prem": false,
+"in150": false
+},
+{
+"id": 981,
+"tier": 2,
+"group": "Binary search on the answer",
+"title": "Time Based Key-Value Store",
+"diff": "Medium",
+"g6": 21.9,
+"prem": false,
+"in150": false
+},
+{
+"id": 253,
+"tier": 2,
+"group": "Intervals / sweep line",
+"title": "Meeting Rooms II",
+"diff": "Medium",
+"g6": 47.8,
+"prem": true,
+"in150": false,
+"twin": 2406
+},
+{
+"id": 435,
+"tier": 2,
+"group": "Intervals / sweep line",
+"title": "Non-overlapping Intervals",
+"diff": "Medium",
+"g6": 21.9,
+"prem": false,
+"in150": false
+},
+{
+"id": 347,
+"tier": 2,
+"group": "Heap / scheduling",
+"title": "Top K Frequent Elements",
+"diff": "Medium",
+"g6": 50.2,
+"prem": false,
+"in150": false
+},
+{
+"id": 621,
+"tier": 2,
+"group": "Heap / scheduling",
+"title": "Task Scheduler",
+"diff": "Medium",
+"g6": 35.1,
+"prem": false,
+"in150": false
+},
+{
+"id": 994,
+"tier": 2,
+"group": "Grid BFS (multi-source)",
+"title": "Rotting Oranges",
+"diff": "Medium",
+"g6": 42.6,
+"prem": false,
+"in150": false
+},
+{
+"id": 542,
+"tier": 2,
+"group": "Grid BFS (multi-source)",
+"title": "01 Matrix",
+"diff": "Medium",
+"g6": 21.9,
+"prem": false,
+"in150": false
+},
+{
+"id": 743,
+"tier": 2,
+"group": "Shortest path (Dijkstra / BFS-k)",
+"title": "Network Delay Time",
+"diff": "Medium",
+"g6": 36.9,
+"prem": false,
+"in150": false
+},
+{
+"id": 1631,
+"tier": 2,
+"group": "Shortest path (Dijkstra / BFS-k)",
+"title": "Path With Minimum Effort",
+"diff": "Medium",
+"g6": 30.9,
+"prem": false,
+"in150": false
+},
+{
+"id": 787,
+"tier": 2,
+"group": "Shortest path (Dijkstra / BFS-k)",
+"title": "Cheapest Flights Within K Stops",
+"diff": "Medium",
+"g6": 25.4,
+"prem": false,
+"in150": false
+},
+{
+"id": 547,
+"tier": 2,
+"group": "Union-find",
+"title": "Number of Provinces",
+"diff": "Medium",
+"g6": 30.9,
+"prem": false,
+"in150": false
+},
+{
+"id": 684,
+"tier": 2,
+"group": "Union-find",
+"title": "Redundant Connection",
+"diff": "Medium",
+"g6": 17.5,
+"prem": false,
+"in150": false
+},
+{
+"id": 721,
+"tier": 2,
+"group": "Union-find",
+"title": "Accounts Merge",
+"diff": "Medium",
+"g6": 30.9,
+"prem": false,
+"in150": false
+},
+{
+"id": 2115,
+"tier": 2,
+"group": "Topological sort",
+"title": "Find All Possible Recipes from Given Supplies",
+"diff": "Medium",
+"g6": 0.0,
+"prem": false,
+"in150": false
+},
+{
+"id": 543,
+"tier": 2,
+"group": "Trees (beyond the 150)",
+"title": "Diameter of Binary Tree",
+"diff": "Easy",
+"g6": 40.0,
+"prem": false,
+"in150": false
+},
+{
+"id": 863,
+"tier": 2,
+"group": "Trees (beyond the 150)",
+"title": "All Nodes Distance K in Binary Tree",
+"diff": "Medium",
+"g6": 21.9,
+"prem": false,
+"in150": false
+},
+{
+"id": 437,
+"tier": 2,
+"group": "Trees (beyond the 150)",
+"title": "Path Sum III",
+"diff": "Medium",
+"g6": 28.4,
+"prem": false,
+"in150": false
+},
+{
+"id": 2096,
+"tier": 2,
+"group": "Trees (beyond the 150)",
+"title": "Step-By-Step Directions From a Binary Tree Node to Another",
+"diff": "Medium",
+"g6": 17.5,
+"prem": false,
+"in150": false
+},
+{
+"id": 78,
+"tier": 2,
+"group": "Backtracking (dups / subsets)",
+"title": "Subsets",
+"diff": "Medium",
+"g6": 33.2,
+"prem": false,
+"in150": false
+},
+{
+"id": 40,
+"tier": 2,
+"group": "Backtracking (dups / subsets)",
+"title": "Combination Sum II",
+"diff": "Medium",
+"g6": 25.4,
+"prem": false,
+"in150": false
+},
+{
+"id": 91,
+"tier": 2,
+"group": "DP (knapsack, strings, chains)",
+"title": "Decode Ways",
+"diff": "Medium",
+"g6": 21.9,
+"prem": false,
+"in150": false
+},
+{
+"id": 416,
+"tier": 2,
+"group": "DP (knapsack, strings, chains)",
+"title": "Partition Equal Subset Sum",
+"diff": "Medium",
+"g6": 41.3,
+"prem": false,
+"in150": false
+},
+{
+"id": 518,
+"tier": 2,
+"group": "DP (knapsack, strings, chains)",
+"title": "Coin Change II",
+"diff": "Medium",
+"g6": 28.4,
+"prem": false,
+"in150": false
+},
+{
+"id": 1143,
+"tier": 2,
+"group": "DP (knapsack, strings, chains)",
+"title": "Longest Common Subsequence",
+"diff": "Medium",
+"g6": 21.9,
+"prem": false,
+"in150": false
+},
+{
+"id": 1048,
+"tier": 2,
+"group": "DP (knapsack, strings, chains)",
+"title": "Longest String Chain",
+"diff": "Medium",
+"g6": 17.5,
+"prem": false,
+"in150": false
+},
+{
+"id": 1146,
+"tier": 2,
+"group": "Design a class",
+"title": "Snapshot Array",
+"diff": "Medium",
+"g6": 11.8,
+"prem": false,
+"in150": false
+},
+{
+"id": 2034,
+"tier": 2,
+"group": "Design a class",
+"title": "Stock Price Fluctuation",
+"diff": "Medium",
+"g6": 11.8,
+"prem": false,
+"in150": false
+},
+{
+"id": 41,
+"tier": 2,
+"group": "Implementation precision",
+"title": "First Missing Positive",
+"diff": "Hard",
+"g6": 41.3,
+"prem": false,
+"in150": false
+},
+{
+"id": 912,
+"tier": 2,
+"group": "Implementation precision",
+"title": "Sort an Array",
+"diff": "Medium",
+"g6": 44.8,
+"prem": false,
+"in150": false
+},
+{
+"id": 1944,
+"tier": 3,
+"group": "Stretch",
+"title": "Number of Visible People in a Queue",
+"diff": "Hard",
+"g6": 42.6,
+"prem": false,
+"in150": false
+},
+{
+"id": 778,
+"tier": 3,
+"group": "Stretch",
+"title": "Swim in Rising Water",
+"diff": "Hard",
+"g6": 33.2,
+"prem": false,
+"in150": false
+},
+{
+"id": 2402,
+"tier": 3,
+"group": "Stretch",
+"title": "Meeting Rooms III",
+"diff": "Hard",
+"g6": 28.4,
+"prem": false,
+"in150": false
+},
+{
+"id": 297,
+"tier": 3,
+"group": "Stretch",
+"title": "Serialize and Deserialize Binary Tree",
+"diff": "Hard",
+"g6": 21.9,
+"prem": false,
+"in150": false
+},
+{
+"id": 329,
+"tier": 3,
+"group": "Stretch",
+"title": "Longest Increasing Path in a Matrix",
+"diff": "Hard",
+"g6": 17.5,
+"prem": false,
+"in150": false
+},
+{
+"id": 1293,
+"tier": 3,
+"group": "Stretch",
+"title": "Shortest Path in a Grid with Obstacles Elimination",
+"diff": "Hard",
+"g6": 11.8,
+"prem": false,
+"in150": false
+},
+{
+"id": 269,
+"tier": 3,
+"group": "Stretch",
+"title": "Alien Dictionary",
+"diff": "Hard",
+"g6": 17.5,
+"prem": true,
+"in150": false
+},
+{
+"id": 315,
+"tier": 3,
+"group": "Stretch",
+"title": "Count of Smaller Numbers After Self",
+"diff": "Hard",
+"g6": 17.5,
+"prem": false,
+"in150": false
+},
+{
+"id": 1235,
+"tier": 3,
+"group": "Stretch",
+"title": "Maximum Profit in Job Scheduling",
+"diff": "Hard",
+"g6": 25.4,
+"prem": false,
+"in150": false
+},
+{
+"id": 224,
+"tier": 3,
+"group": "Stretch",
+"title": "Basic Calculator",
+"diff": "Hard",
+"g6": 25.4,
+"prem": false,
+"in150": true
+},
+{
+"id": 68,
+"tier": 3,
+"group": "Stretch",
+"title": "Text Justification",
+"diff": "Hard",
+"g6": 17.5,
+"prem": false,
+"in150": true
+},
+{
+"id": 127,
+"tier": 3,
+"group": "Stretch",
+"title": "Word Ladder",
+"diff": "Hard",
+"g6": 30.9,
+"prem": false,
+"in150": true
+},
+{
+"id": 528,
+"tier": 3,
+"group": "Stretch",
+"title": "Random Pick with Weight",
+"diff": "Medium",
+"g6": 28.4,
+"prem": false,
+"in150": false
+},
+{
+"id": 1110,
+"tier": 3,
+"group": "Stretch",
+"title": "Delete Nodes And Return Forest",
+"diff": "Medium",
+"g6": 21.9,
+"prem": false,
+"in150": false
+},
+{
+"id": 310,
+"tier": 3,
+"group": "Stretch",
+"title": "Minimum Height Trees",
+"diff": "Medium",
+"g6": 28.4,
+"prem": false,
+"in150": false
+}
+]

@@ -1,0 +1,756 @@
+{
+  "deck": "templates",
+  "title": "Code templates",
+  "cards": [
+    {
+      "id": "templates-001",
+      "type": "drill",
+      "q": "Write `int firstTrue(int n, function<bool(int)> pred)`, where `pred` is false then true over `[0, n)`. Return the first index where `pred` is true, or `n` if none.",
+      "a": "Invariant: every index below `lo` is false and every index at or above `hi` is true. A true `mid` sets `hi = mid`, a false one sets `lo = mid + 1`, and `lo == hi` at the end is the answer.",
+      "code": "int firstTrue(int n, function<bool(int)> pred) {\n    int lo = 0, hi = n;              // search space [lo, hi)\n    while (lo < hi) {\n        int mid = lo + (hi - lo) / 2;\n        if (pred(mid)) hi = mid;\n        else lo = mid + 1;\n    }\n    // lo = first index where pred is true, or n if none\n    return lo;\n}",
+      "patterns": ["binary-search"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-002",
+      "type": "drill",
+      "q": "Write `int lowerBound(const vector<int>& a, int target)` for sorted `a`. Return the first index with `a[i] >= target`, or `a.size()` if none.",
+      "a": "The predicate is `a[mid] >= target`, never `==`. The result can be `n`, so check `lo < n` before reading `a[lo]`.",
+      "code": "int lowerBound(const vector<int>& a, int target) {\n    int n = a.size();\n    int lo = 0, hi = n;              // search space [lo, hi)\n    while (lo < hi) {\n        int mid = lo + (hi - lo) / 2;\n        if (a[mid] >= target) hi = mid;\n        else lo = mid + 1;\n    }\n    // lo = first index with a[i] >= target, or n if none\n    return lo;\n}",
+      "patterns": ["binary-search"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-003",
+      "type": "drill",
+      "q": "Write `int upperBound(const vector<int>& a, int target)` for sorted `a`. Return the first index with `a[i] > target`, or `a.size()` if none.",
+      "a": "Only the predicate changes from lower bound: `>` instead of `>=`. `upperBound - lowerBound` is the number of copies of `target`.",
+      "code": "int upperBound(const vector<int>& a, int target) {\n    int n = a.size();\n    int lo = 0, hi = n;              // search space [lo, hi)\n    while (lo < hi) {\n        int mid = lo + (hi - lo) / 2;\n        if (a[mid] > target) hi = mid;\n        else lo = mid + 1;\n    }\n    // lo = first index with a[i] > target, or n if none\n    return lo;\n}",
+      "patterns": ["binary-search"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-004",
+      "type": "flash",
+      "q": "This binary search hangs on some inputs. Which condition is wrong, and why?",
+      "qcode": "int lo = 0, hi = n;\nwhile (lo <= hi) {\n    int mid = lo + (hi - lo) / 2;\n    if (pred(mid)) hi = mid;\n    else lo = mid + 1;\n}",
+      "a": "`while (lo <= hi)`. When `lo == hi` and `pred(mid)` is true, `hi = mid` changes nothing and the loop never ends. The half-open form stops at `lo == hi`, so it needs `lo < hi`.",
+      "patterns": ["binary-search"],
+      "skill": "edge",
+      "level": 1
+    },
+    {
+      "id": "templates-005",
+      "type": "drill",
+      "q": "Write `bool fits(const vector<int>& w, int k, int cap)` and `int minCapacity(const vector<int>& w, int k)` for non-empty `w`, `k >= 1`, and a total below `INT_MAX`. Return the smallest `cap` that splits `w`, in order, into at most `k` contiguous groups with each sum `<= cap`.",
+      "a": "`lo` starts at the largest item, because a smaller `cap` cannot hold it. `hi` is one past the largest candidate, the total, because the range is half-open.",
+      "code": "bool fits(const vector<int>& w, int k, int cap) {\n    int groups = 1, sum = 0;\n    for (int x : w) {\n        if (sum + x > cap) {\n            groups++;\n            sum = 0;\n        }\n        sum += x;\n    }\n    return groups <= k;\n}\n\nint minCapacity(const vector<int>& w, int k) {\n    int lo = *max_element(w.begin(), w.end());\n    int hi = accumulate(w.begin(), w.end(), 0) + 1;  // search space [lo, hi)\n    while (lo < hi) {\n        int mid = lo + (hi - lo) / 2;\n        if (fits(w, k, mid)) hi = mid;\n        else lo = mid + 1;\n    }\n    // lo = smallest cap that fits\n    return lo;\n}",
+      "patterns": ["binary-search-answer"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-006",
+      "type": "drill",
+      "q": "Write `int intSqrt(int x)` for `x >= 0`. Return the largest `r` with `r * r <= x`.",
+      "a": "To find the last true, search for the first false and return `lo - 1`. Use `long long`, because `mid * mid` overflows `int`.",
+      "code": "int intSqrt(int x) {\n    long long lo = 0, hi = x + 1LL;  // search space [lo, hi)\n    while (lo < hi) {\n        long long mid = lo + (hi - lo) / 2;\n        if (mid * mid > x) hi = mid;\n        else lo = mid + 1;\n    }\n    // lo = first value whose square exceeds x\n    return lo - 1;\n}",
+      "patterns": ["binary-search-answer", "math"],
+      "skill": "impl",
+      "level": 2
+    },
+    {
+      "id": "templates-007",
+      "type": "drill",
+      "q": "Write `int findMinIndex(const vector<int>& a)` for a non-empty sorted array of distinct values, rotated by any amount. Return the index of the minimum.",
+      "a": "Compare with the last element, not the first: `a[i] <= a[n - 1]` is false on the left part and true from the minimum onward. It also holds with no rotation at all.",
+      "code": "int findMinIndex(const vector<int>& a) {\n    int n = a.size();\n    int lo = 0, hi = n;              // search space [lo, hi)\n    while (lo < hi) {\n        int mid = lo + (hi - lo) / 2;\n        if (a[mid] <= a[n - 1]) hi = mid;\n        else lo = mid + 1;\n    }\n    // lo = first index with a[i] <= a[n - 1]\n    return lo;\n}",
+      "patterns": ["binary-search"],
+      "skill": "impl",
+      "level": 2
+    },
+    {
+      "id": "templates-008",
+      "type": "drill",
+      "q": "Write `int searchRotated(const vector<int>& a, int target)` for a sorted array of distinct values, rotated by any amount. Return the index of `target`, or -1 if absent.",
+      "a": "`pred(i)` means position `i` is at or after `target`, which makes the rotated array monotonic again. Values on the same side of the rotation compare directly; otherwise the side alone decides.",
+      "code": "int searchRotated(const vector<int>& a, int target) {\n    int n = a.size();\n    auto pred = [&](int i) {\n        bool left = a[i] > a[n - 1], targetLeft = target > a[n - 1];\n        return left == targetLeft ? a[i] >= target : targetLeft;\n    };\n    int lo = 0, hi = n;              // search space [lo, hi)\n    while (lo < hi) {\n        int mid = lo + (hi - lo) / 2;\n        if (pred(mid)) hi = mid;\n        else lo = mid + 1;\n    }\n    // lo = first index where pred is true, or n if none\n    return lo < n && a[lo] == target ? lo : -1;\n}",
+      "patterns": ["binary-search"],
+      "skill": "impl",
+      "level": 2
+    },
+    {
+      "id": "templates-009",
+      "type": "drill",
+      "q": "Write `pair<int, int> twoSumSorted(const vector<int>& a, int target)` for sorted `a`. Return indices `{l, r}` with `l < r` and `a[l] + a[r] == target`, or `{-1, -1}` if none.",
+      "a": "A sum that is too small can only grow by moving `l` up, and one that is too large can only shrink by moving `r` down. Each step discards a value that cannot be part of any answer.",
+      "code": "pair<int, int> twoSumSorted(const vector<int>& a, int target) {\n    int n = a.size();\n    int l = 0, r = n - 1;\n    while (l < r) {\n        int sum = a[l] + a[r];\n        if (sum == target) return {l, r};\n        if (sum < target) l++;\n        else r--;\n    }\n    return {-1, -1};\n}",
+      "patterns": ["two-pointers"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-010",
+      "type": "drill",
+      "q": "Write `int removeDuplicates(vector<int>& a)` for sorted `a`. Compact the distinct values to the front in place and return how many there are.",
+      "a": "Invariant: `a[0..k)` holds the distinct values seen so far. The next value is kept only if it differs from `a[k - 1]`.",
+      "code": "int removeDuplicates(vector<int>& a) {\n    int k = 0;\n    for (int x : a) {\n        if (k == 0 || x != a[k - 1]) a[k++] = x;\n    }\n    return k;\n}",
+      "patterns": ["two-pointers"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-011",
+      "type": "drill",
+      "q": "Write `vector<vector<int>> threeSum(vector<int> a)`. Return every distinct triple of values that sums to 0, each listed once.",
+      "a": "Skip repeats in two places: `i` against `a[i - 1]`, and `l` after a hit. `r` needs no skip, because the larger `a[l]` makes the old `a[r]` overshoot and `r` then moves on its own.",
+      "code": "vector<vector<int>> threeSum(vector<int> a) {\n    sort(a.begin(), a.end());\n    int n = a.size();\n    vector<vector<int>> ans;\n    for (int i = 0; i < n; i++) {\n        if (i > 0 && a[i] == a[i - 1]) continue;\n        int l = i + 1, r = n - 1;\n        while (l < r) {\n            int sum = a[i] + a[l] + a[r];\n            if (sum < 0) l++;\n            else if (sum > 0) r--;\n            else {\n                ans.push_back({a[i], a[l], a[r]});\n                l++;\n                while (l < r && a[l] == a[l - 1]) l++;\n            }\n        }\n    }\n    return ans;\n}",
+      "patterns": ["two-pointers", "sorting"],
+      "skill": "impl",
+      "level": 2
+    },
+    {
+      "id": "templates-012",
+      "type": "drill",
+      "q": "Write `int maxWindowSum(const vector<int>& a, int k)` for `1 <= k <= a.size()`. Return the maximum sum over all contiguous windows of exactly `k` elements.",
+      "a": "Add `a[r]`, drop `a[r - k]` once `r >= k`, and record once `r >= k - 1`. That order keeps the recorded window at exactly `k` elements.",
+      "code": "int maxWindowSum(const vector<int>& a, int k) {\n    int n = a.size(), sum = 0, ans = INT_MIN;\n    for (int r = 0; r < n; r++) {\n        sum += a[r];\n        if (r >= k) sum -= a[r - k];\n        if (r >= k - 1) ans = max(ans, sum);\n    }\n    return ans;\n}",
+      "patterns": ["sliding-window"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-013",
+      "type": "drill",
+      "q": "Write `int longestUnique(const string& s)`. Return the length of the longest substring with no repeated character.",
+      "a": "Grow `r` every step, then shrink `l` until the window is valid again. Record after the shrink, when `[l, r]` is valid.",
+      "code": "int longestUnique(const string& s) {\n    unordered_map<char, int> cnt;\n    int n = s.size(), l = 0, ans = 0;\n    for (int r = 0; r < n; r++) {\n        cnt[s[r]]++;\n        while (cnt[s[r]] > 1) {\n            cnt[s[l]]--;\n            l++;\n        }\n        ans = max(ans, r - l + 1);\n    }\n    return ans;\n}",
+      "patterns": ["sliding-window", "arrays-hashing"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-014",
+      "type": "drill",
+      "q": "Write `int minLenAtLeast(const vector<int>& a, int target)` for positive values and positive `target`. Return the length of the shortest contiguous subarray with sum `>= target`, or 0 if none.",
+      "a": "For a shortest window, record inside the `while`, shrinking for as long as the window stays valid. Positive values are what make the sum grow and shrink with the window.",
+      "code": "int minLenAtLeast(const vector<int>& a, int target) {\n    int n = a.size(), l = 0, sum = 0, ans = INT_MAX;\n    for (int r = 0; r < n; r++) {\n        sum += a[r];\n        while (sum >= target) {\n            ans = min(ans, r - l + 1);\n            sum -= a[l];\n            l++;\n        }\n    }\n    return ans == INT_MAX ? 0 : ans;\n}",
+      "patterns": ["sliding-window"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-015",
+      "type": "drill",
+      "q": "Write `long long countAtMost(const vector<int>& a, int k)` for `k >= 0`. Return how many contiguous subarrays have at most `k` distinct values.",
+      "a": "A valid window `[l, r]` gives `r - l + 1` subarrays ending at `r`, so add that every step. For exactly `k` distinct, use `countAtMost(a, k) - countAtMost(a, k - 1)`.",
+      "code": "long long countAtMost(const vector<int>& a, int k) {\n    unordered_map<int, int> cnt;\n    int n = a.size(), l = 0;\n    long long ans = 0;\n    for (int r = 0; r < n; r++) {\n        cnt[a[r]]++;\n        while ((int)cnt.size() > k) {\n            if (--cnt[a[l]] == 0) cnt.erase(a[l]);\n            l++;\n        }\n        ans += r - l + 1;\n    }\n    return ans;\n}",
+      "patterns": ["sliding-window", "arrays-hashing"],
+      "skill": "impl",
+      "level": 2
+    },
+    {
+      "id": "templates-016",
+      "type": "drill",
+      "q": "Write `int countSumK(const vector<int>& a, int k)`, where `a` may hold negatives. Return how many contiguous subarrays sum to `k`.",
+      "a": "Seed `cnt[0] = 1` for subarrays that start at index 0. Query `sum - k` before adding `sum`, or `k == 0` counts an empty subarray.",
+      "code": "int countSumK(const vector<int>& a, int k) {\n    unordered_map<int, int> cnt;\n    cnt[0] = 1;\n    int sum = 0, ans = 0;\n    for (int x : a) {\n        sum += x;\n        if (cnt.count(sum - k)) ans += cnt[sum - k];\n        cnt[sum]++;\n    }\n    return ans;\n}",
+      "patterns": ["prefix-sum", "arrays-hashing"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-017",
+      "type": "drill",
+      "q": "Write `vector<int> rangeAdd(int n, const vector<array<int, 3>>& ops)`, where each op `{l, r, x}` adds `x` to indices `l` through `r` of an all-zero array of size `n`. Return the final array.",
+      "a": "`diff` needs size `n + 1` so that `r + 1` stays in bounds. Each op is O(1), and one running sum at the end rebuilds the array.",
+      "code": "vector<int> rangeAdd(int n, const vector<array<int, 3>>& ops) {\n    vector<int> diff(n + 1, 0);\n    for (auto [l, r, x] : ops) {\n        diff[l] += x;\n        diff[r + 1] -= x;\n    }\n    vector<int> ans(n);\n    int sum = 0;\n    for (int i = 0; i < n; i++) {\n        sum += diff[i];\n        ans[i] = sum;\n    }\n    return ans;\n}",
+      "patterns": ["prefix-sum", "sweep-line"],
+      "skill": "impl",
+      "level": 2
+    },
+    {
+      "id": "templates-018",
+      "type": "drill",
+      "q": "Write `vector<int> nextGreater(const vector<int>& a)`. For each index, return the index of the next strictly greater element to its right, or -1 if none.",
+      "a": "The stack holds indices still waiting for an answer, with non-increasing values. Store indices, not values, because you must write `ans[st.top()]`.",
+      "code": "vector<int> nextGreater(const vector<int>& a) {\n    int n = a.size();\n    vector<int> ans(n, -1);\n    stack<int> st;\n    for (int i = 0; i < n; i++) {\n        while (!st.empty() && a[st.top()] < a[i]) {\n            ans[st.top()] = i;\n            st.pop();\n        }\n        st.push(i);\n    }\n    return ans;\n}",
+      "patterns": ["monotonic-stack"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-019",
+      "type": "drill",
+      "q": "Write `int largestRectangle(vector<int> h)` for non-negative bar heights. Return the largest rectangle area inside the histogram.",
+      "a": "The sentinel 0 at the end flushes the stack. After a pop, the new top is the nearest smaller bar on the left, so the width is `i - l - 1`.",
+      "code": "int largestRectangle(vector<int> h) {\n    h.push_back(0);\n    int n = h.size(), ans = 0;\n    stack<int> st;\n    for (int i = 0; i < n; i++) {\n        while (!st.empty() && h[st.top()] >= h[i]) {\n            int height = h[st.top()];\n            st.pop();\n            int l = st.empty() ? -1 : st.top();\n            ans = max(ans, height * (i - l - 1));\n        }\n        st.push(i);\n    }\n    return ans;\n}",
+      "patterns": ["monotonic-stack"],
+      "skill": "impl",
+      "level": 2
+    },
+    {
+      "id": "templates-020",
+      "type": "drill",
+      "q": "Write `vector<int> windowMax(const vector<int>& a, int k)` for `1 <= k <= a.size()`. Return the maximum of each contiguous window of size `k`, left to right.",
+      "a": "The deque holds indices with strictly decreasing values, so the front is the window maximum. Evict smaller values from the back, and evict the front once `dq.front() <= i - k`.",
+      "code": "vector<int> windowMax(const vector<int>& a, int k) {\n    int n = a.size();\n    deque<int> dq;\n    vector<int> ans;\n    for (int i = 0; i < n; i++) {\n        while (!dq.empty() && a[dq.back()] <= a[i]) dq.pop_back();\n        dq.push_back(i);\n        if (dq.front() <= i - k) dq.pop_front();\n        if (i >= k - 1) ans.push_back(a[dq.front()]);\n    }\n    return ans;\n}",
+      "patterns": ["monotonic-queue", "sliding-window"],
+      "skill": "impl",
+      "level": 2
+    },
+    {
+      "id": "templates-021",
+      "type": "drill",
+      "q": "With `ListNode` (`val`, `next`), write `ListNode* reverseList(ListNode* head)`. Reverse the list iteratively and return the new head.",
+      "a": "Save `cur->next` before overwriting it. When the loop ends `cur` is null, so the new head is `prev`.",
+      "code": "ListNode* reverseList(ListNode* head) {\n    ListNode* prev = nullptr;\n    ListNode* cur = head;\n    while (cur) {\n        ListNode* nxt = cur->next;\n        cur->next = prev;\n        prev = cur;\n        cur = nxt;\n    }\n    return prev;\n}",
+      "patterns": ["linked-list"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-022",
+      "type": "drill",
+      "q": "With `ListNode` (`val`, `next`), write `ListNode* middleNode(ListNode* head)`. Return the middle node, or the second of the two middles when the length is even.",
+      "a": "Loop on `fast && fast->next`, testing `fast` first. `fast` moves twice as far, so `slow` is at the middle when `fast` runs out.",
+      "code": "ListNode* middleNode(ListNode* head) {\n    ListNode* slow = head;\n    ListNode* fast = head;\n    while (fast && fast->next) {\n        slow = slow->next;\n        fast = fast->next->next;\n    }\n    return slow;\n}",
+      "patterns": ["linked-list", "two-pointers"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-023",
+      "type": "drill",
+      "q": "With `ListNode` (`val`, `next`, constructor `ListNode(int x)`), write `ListNode* mergeLists(ListNode* a, ListNode* b)`. Merge two sorted lists by relinking nodes and return the merged head.",
+      "a": "The dummy node removes the special case for the first append, so return `dummy.next`. When one list ends, one link attaches the rest of the other.",
+      "code": "ListNode* mergeLists(ListNode* a, ListNode* b) {\n    ListNode dummy(0);\n    ListNode* tail = &dummy;\n    while (a && b) {\n        if (a->val <= b->val) {\n            tail->next = a;\n            a = a->next;\n        } else {\n            tail->next = b;\n            b = b->next;\n        }\n        tail = tail->next;\n    }\n    tail->next = a ? a : b;\n    return dummy.next;\n}",
+      "patterns": ["linked-list"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-024",
+      "type": "drill",
+      "q": "With `ListNode` (`val`, `next`), write `bool hasCycle(ListNode* head)`. Return whether the list contains a cycle, using O(1) extra space.",
+      "a": "Compare after moving, because both pointers start equal at `head`. Inside a cycle `fast` gains one step per round, so the two must meet.",
+      "code": "bool hasCycle(ListNode* head) {\n    ListNode* slow = head;\n    ListNode* fast = head;\n    while (fast && fast->next) {\n        slow = slow->next;\n        fast = fast->next->next;\n        if (slow == fast) return true;\n    }\n    return false;\n}",
+      "patterns": ["linked-list", "two-pointers"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-025",
+      "type": "drill",
+      "q": "With `ListNode` (`val`, `next`, constructor `ListNode(int x)`), write `ListNode* removeNthFromEnd(ListNode* head, int k)`. Unlink the `k`-th node from the end, for valid `k`, and return the head.",
+      "a": "The dummy covers the case where the head itself is removed. Start both pointers at the dummy, `k` apart, so `slow` stops just before the target.",
+      "code": "ListNode* removeNthFromEnd(ListNode* head, int k) {\n    ListNode dummy(0);\n    dummy.next = head;\n    ListNode* fast = &dummy;\n    ListNode* slow = &dummy;\n    for (int i = 0; i < k; i++) fast = fast->next;\n    while (fast->next) {\n        fast = fast->next;\n        slow = slow->next;\n    }\n    slow->next = slow->next->next;\n    return dummy.next;\n}",
+      "patterns": ["linked-list", "two-pointers"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-026",
+      "type": "drill",
+      "q": "With `TreeNode` (`val`, `left`, `right`), write `void preorder(TreeNode* node, vector<int>& out)`. Append the values in node, left, right order.",
+      "a": "`out` must be a reference, or every call appends to its own copy.",
+      "code": "void preorder(TreeNode* node, vector<int>& out) {\n    if (!node) return;\n    out.push_back(node->val);\n    preorder(node->left, out);\n    preorder(node->right, out);\n}",
+      "patterns": ["tree-dfs"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-027",
+      "type": "drill",
+      "q": "With `TreeNode` (`val`, `left`, `right`), write `void inorder(TreeNode* node, vector<int>& out)`. Append the values in left, node, right order.",
+      "a": "On a BST this order gives the values sorted, which is the fact most problems use.",
+      "code": "void inorder(TreeNode* node, vector<int>& out) {\n    if (!node) return;\n    inorder(node->left, out);\n    out.push_back(node->val);\n    inorder(node->right, out);\n}",
+      "patterns": ["tree-dfs", "bst"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-028",
+      "type": "drill",
+      "q": "With `TreeNode` (`val`, `left`, `right`), write `void postorder(TreeNode* node, vector<int>& out)`. Append the values in left, right, node order.",
+      "a": "Children finish before the parent, which is why subtree answers such as height are computed in this order.",
+      "code": "void postorder(TreeNode* node, vector<int>& out) {\n    if (!node) return;\n    postorder(node->left, out);\n    postorder(node->right, out);\n    out.push_back(node->val);\n}",
+      "patterns": ["tree-dfs"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-029",
+      "type": "drill",
+      "q": "With `TreeNode` (`val`, `left`, `right`), write `vector<int> inorderIter(TreeNode* root)`. Return the in-order values using an explicit stack.",
+      "a": "Loop while `cur || !st.empty()`. Push the whole left spine, pop and visit one node, then move to its right child.",
+      "code": "vector<int> inorderIter(TreeNode* root) {\n    vector<int> ans;\n    stack<TreeNode*> st;\n    TreeNode* cur = root;\n    while (cur || !st.empty()) {\n        while (cur) {\n            st.push(cur);\n            cur = cur->left;\n        }\n        cur = st.top();\n        st.pop();\n        ans.push_back(cur->val);\n        cur = cur->right;\n    }\n    return ans;\n}",
+      "patterns": ["tree-dfs", "stack"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-030",
+      "type": "drill",
+      "q": "With `TreeNode` (`val`, `left`, `right`), write `int height(TreeNode* node, int& best)` and `int diameter(TreeNode* root)`. Return the largest number of edges on any path between two nodes.",
+      "a": "The recursion returns one thing and records another: it returns the height, a single branch, while `best` tracks the path through both branches.",
+      "code": "int height(TreeNode* node, int& best) {\n    if (!node) return 0;\n    int l = height(node->left, best);\n    int r = height(node->right, best);\n    best = max(best, l + r);\n    return 1 + max(l, r);\n}\n\nint diameter(TreeNode* root) {\n    int best = 0;\n    height(root, best);\n    return best;\n}",
+      "patterns": ["tree-dfs", "dp-tree"],
+      "skill": "impl",
+      "level": 2
+    },
+    {
+      "id": "templates-031",
+      "type": "drill",
+      "q": "With `TreeNode` (`val`, `left`, `right`), write `vector<vector<int>> levelOrder(TreeNode* root)`. Return the values grouped by depth, top to bottom and left to right.",
+      "a": "Save `q.size()` in `sz` before the inner loop, because the children pushed during the loop change the size.",
+      "code": "vector<vector<int>> levelOrder(TreeNode* root) {\n    vector<vector<int>> ans;\n    if (!root) return ans;\n    queue<TreeNode*> q;\n    q.push(root);\n    while (!q.empty()) {\n        int sz = q.size();\n        vector<int> level;\n        for (int i = 0; i < sz; i++) {\n            TreeNode* node = q.front();\n            q.pop();\n            level.push_back(node->val);\n            if (node->left) q.push(node->left);\n            if (node->right) q.push(node->right);\n        }\n        ans.push_back(level);\n    }\n    return ans;\n}",
+      "patterns": ["tree-bfs"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-032",
+      "type": "drill",
+      "q": "With `TreeNode` (`val`, `left`, `right`), write `bool validate(TreeNode* node, long long lo, long long hi)` and `bool isValidBST(TreeNode* root)`. Return whether the tree is a strict BST, with every value inside the open range `(lo, hi)`.",
+      "a": "Comparing a node only with its children is the classic bug, because a whole subtree must respect every ancestor. The bounds are `long long` so that node values of `INT_MIN` and `INT_MAX` still pass.",
+      "code": "bool validate(TreeNode* node, long long lo, long long hi) {\n    if (!node) return true;\n    if (node->val <= lo || node->val >= hi) return false;\n    return validate(node->left, lo, node->val) && validate(node->right, node->val, hi);\n}\n\nbool isValidBST(TreeNode* root) {\n    return validate(root, LLONG_MIN, LLONG_MAX);\n}",
+      "patterns": ["bst", "tree-dfs"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-033",
+      "type": "drill",
+      "q": "With `TreeNode` (`val`, `left`, `right`, constructor `TreeNode(int x)`), write `TreeNode* insertBST(TreeNode* root, int x)`. Insert `x`, which is not yet in the tree, and return the root.",
+      "a": "Assign the recursive result back to `root->left` or `root->right`, because that is what links the new leaf. Return `root` at every level.",
+      "code": "TreeNode* insertBST(TreeNode* root, int x) {\n    if (!root) return new TreeNode(x);\n    if (x < root->val) root->left = insertBST(root->left, x);\n    else root->right = insertBST(root->right, x);\n    return root;\n}",
+      "patterns": ["bst"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-034",
+      "type": "drill",
+      "q": "Define `struct TrieNode` with `TrieNode* next[26]` and `bool isEnd`, both default-initialised, then write `void insert(TrieNode* root, const string& word)` for lowercase words.",
+      "a": "`= {}` zeroes the child pointers, and without it they hold garbage. Set `isEnd` on the last node after the loop, not on the root.",
+      "code": "struct TrieNode {\n    TrieNode* next[26] = {};\n    bool isEnd = false;\n};\n\nvoid insert(TrieNode* root, const string& word) {\n    TrieNode* cur = root;\n    for (char c : word) {\n        int i = c - 'a';\n        if (!cur->next[i]) cur->next[i] = new TrieNode();\n        cur = cur->next[i];\n    }\n    cur->isEnd = true;\n}",
+      "patterns": ["trie"],
+      "skill": "impl",
+      "level": 2
+    },
+    {
+      "id": "templates-035",
+      "type": "drill",
+      "q": "With `TrieNode` (`next[26]`, `isEnd`), write `bool search(TrieNode* root, const string& word)` for lowercase words. Return whether `word` was inserted as a whole word.",
+      "a": "Return `cur->isEnd`, not `true`, or any stored prefix counts as a word. A prefix check is the same loop ending in `return true`.",
+      "code": "bool search(TrieNode* root, const string& word) {\n    TrieNode* cur = root;\n    for (char c : word) {\n        int i = c - 'a';\n        if (!cur->next[i]) return false;\n        cur = cur->next[i];\n    }\n    return cur->isEnd;\n}",
+      "patterns": ["trie"],
+      "skill": "impl",
+      "level": 2
+    },
+    {
+      "id": "templates-036",
+      "type": "drill",
+      "q": "Write `vector<int> topK(const vector<int>& a, int k)` for `k >= 1`. Return the `k` largest values in ascending order, in O(n log k) with a heap.",
+      "a": "Use a min-heap capped at size `k`. Its root is the smallest of the best `k`, so it is the one to evict.",
+      "code": "vector<int> topK(const vector<int>& a, int k) {\n    priority_queue<int, vector<int>, greater<int>> pq;\n    for (int x : a) {\n        pq.push(x);\n        if ((int)pq.size() > k) pq.pop();\n    }\n    vector<int> ans;\n    while (!pq.empty()) {\n        ans.push_back(pq.top());\n        pq.pop();\n    }\n    return ans;\n}",
+      "patterns": ["heap"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-037",
+      "type": "drill",
+      "q": "Write `struct MedianFinder` with `priority_queue<int> lo`, a min-heap `hi`, `void add(int x)` and `double median()`. `lo` holds the smaller half plus any odd element, and `median` is only called after an `add`.",
+      "a": "Every `x` passes through `lo` and then `hi`, which keeps all of `lo` at or below all of `hi`. Then rebalance so `lo` is never the smaller heap.",
+      "code": "struct MedianFinder {\n    priority_queue<int> lo;\n    priority_queue<int, vector<int>, greater<int>> hi;\n    void add(int x) {\n        lo.push(x);\n        hi.push(lo.top());\n        lo.pop();\n        if (hi.size() > lo.size()) {\n            lo.push(hi.top());\n            hi.pop();\n        }\n    }\n    double median() {\n        if (lo.size() > hi.size()) return lo.top();\n        return (1LL * lo.top() + hi.top()) / 2.0;\n    }\n};",
+      "patterns": ["heap", "design"],
+      "skill": "impl",
+      "level": 2
+    },
+    {
+      "id": "templates-038",
+      "type": "drill",
+      "q": "Write `vector<int> mergeK(const vector<vector<int>>& lists)` for sorted lists, using a min-heap of `{value, list index, element index}` tuples. Return all values in sorted order.",
+      "a": "The heap holds at most one entry per list, so each step costs O(log k). Skip empty lists when seeding.",
+      "code": "vector<int> mergeK(const vector<vector<int>>& lists) {\n    using T = tuple<int, int, int>;\n    priority_queue<T, vector<T>, greater<T>> pq;\n    int k = lists.size();\n    for (int i = 0; i < k; i++) {\n        if (!lists[i].empty()) pq.push({lists[i][0], i, 0});\n    }\n    vector<int> ans;\n    while (!pq.empty()) {\n        auto [x, i, j] = pq.top();\n        pq.pop();\n        ans.push_back(x);\n        if (j + 1 < (int)lists[i].size()) pq.push({lists[i][j + 1], i, j + 1});\n    }\n    return ans;\n}",
+      "patterns": ["heap"],
+      "skill": "impl",
+      "level": 2
+    },
+    {
+      "id": "templates-039",
+      "type": "drill",
+      "q": "Write `void dfs(vector<string>& grid, int r, int c)` and `int countIslands(vector<string>& grid)` for a non-empty grid of `'1'` land and `'0'` water. Return the number of 4-connected land regions.",
+      "a": "Test bounds before reading the cell, at the top of `dfs`. Overwrite `'1'` with `'0'` before recursing, or the recursion never ends.",
+      "code": "void dfs(vector<string>& grid, int r, int c) {\n    int m = grid.size(), n = grid[0].size();\n    if (r < 0 || r >= m || c < 0 || c >= n || grid[r][c] != '1') return;\n    grid[r][c] = '0';\n    dfs(grid, r + 1, c);\n    dfs(grid, r - 1, c);\n    dfs(grid, r, c + 1);\n    dfs(grid, r, c - 1);\n}\n\nint countIslands(vector<string>& grid) {\n    int m = grid.size(), n = grid[0].size(), ans = 0;\n    for (int r = 0; r < m; r++) {\n        for (int c = 0; c < n; c++) {\n            if (grid[r][c] == '1') {\n                dfs(grid, r, c);\n                ans++;\n            }\n        }\n    }\n    return ans;\n}",
+      "patterns": ["grid", "graph-traversal"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-040",
+      "type": "drill",
+      "q": "Write `int shortestPath(const vector<string>& grid, int sr, int sc, int tr, int tc)` with `'#'` as walls and a non-wall start. Return the fewest 4-directional steps from `(sr, sc)` to `(tr, tc)`, or -1 if unreachable.",
+      "a": "Set `dist` when a cell is pushed, not when it is popped, or the same cell enters the queue many times. A `dist` of -1 doubles as the unvisited mark.",
+      "code": "int shortestPath(const vector<string>& grid, int sr, int sc, int tr, int tc) {\n    const int dirs[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};\n    int m = grid.size(), n = grid[0].size();\n    vector<vector<int>> dist(m, vector<int>(n, -1));\n    queue<pair<int, int>> q;\n    dist[sr][sc] = 0;\n    q.push({sr, sc});\n    while (!q.empty()) {\n        auto [r, c] = q.front();\n        q.pop();\n        if (r == tr && c == tc) return dist[r][c];\n        for (auto& d : dirs) {\n            int nr = r + d[0], nc = c + d[1];\n            if (nr < 0 || nr >= m || nc < 0 || nc >= n) continue;\n            if (grid[nr][nc] == '#' || dist[nr][nc] != -1) continue;\n            dist[nr][nc] = dist[r][c] + 1;\n            q.push({nr, nc});\n        }\n    }\n    return -1;\n}",
+      "patterns": ["grid", "graph-traversal"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-041",
+      "type": "drill",
+      "q": "Write `vector<vector<int>> nearestSource(const vector<vector<int>>& grid)`, where cells equal to 1 are sources. Return each cell's 4-directional step distance to its nearest source, or all -1 if the grid has none.",
+      "a": "Push every source at distance 0 before the loop. The queue then expands all sources in lockstep, so the first visit to a cell is the shortest.",
+      "code": "vector<vector<int>> nearestSource(const vector<vector<int>>& grid) {\n    const int dirs[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};\n    int m = grid.size(), n = grid[0].size();\n    vector<vector<int>> dist(m, vector<int>(n, -1));\n    queue<pair<int, int>> q;\n    for (int r = 0; r < m; r++) {\n        for (int c = 0; c < n; c++) {\n            if (grid[r][c] == 1) {\n                dist[r][c] = 0;\n                q.push({r, c});\n            }\n        }\n    }\n    while (!q.empty()) {\n        auto [r, c] = q.front();\n        q.pop();\n        for (auto& d : dirs) {\n            int nr = r + d[0], nc = c + d[1];\n            if (nr < 0 || nr >= m || nc < 0 || nc >= n || dist[nr][nc] != -1) continue;\n            dist[nr][nc] = dist[r][c] + 1;\n            q.push({nr, nc});\n        }\n    }\n    return dist;\n}",
+      "patterns": ["grid", "graph-traversal"],
+      "skill": "impl",
+      "level": 2
+    },
+    {
+      "id": "templates-042",
+      "type": "drill",
+      "q": "Write `vector<vector<int>> buildGraph(int n, const vector<pair<int, int>>& edges)` for an undirected graph on nodes `0` to `n - 1`. Return the adjacency list.",
+      "a": "Undirected means two pushes per edge; a directed graph has only `adj[u].push_back(v)`. Size `adj` with `n` so isolated nodes still get an empty list.",
+      "code": "vector<vector<int>> buildGraph(int n, const vector<pair<int, int>>& edges) {\n    vector<vector<int>> adj(n);\n    for (auto [u, v] : edges) {\n        adj[u].push_back(v);\n        adj[v].push_back(u);\n    }\n    return adj;\n}",
+      "patterns": ["graph-traversal"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-043",
+      "type": "drill",
+      "q": "Write `vector<int> topoSort(int n, const vector<vector<int>>& adj)` for a directed graph, using Kahn's algorithm. Return a topological order, or an empty vector if the graph has a cycle.",
+      "a": "A node enters the queue exactly when its in-degree reaches 0. Nodes on a cycle never reach 0, so `order` ends up shorter than `n`.",
+      "code": "vector<int> topoSort(int n, const vector<vector<int>>& adj) {\n    vector<int> indeg(n, 0);\n    for (int u = 0; u < n; u++) {\n        for (int v : adj[u]) indeg[v]++;\n    }\n    queue<int> q;\n    for (int u = 0; u < n; u++) {\n        if (indeg[u] == 0) q.push(u);\n    }\n    vector<int> order;\n    while (!q.empty()) {\n        int u = q.front();\n        q.pop();\n        order.push_back(u);\n        for (int v : adj[u]) {\n            if (--indeg[v] == 0) q.push(v);\n        }\n    }\n    if ((int)order.size() < n) return {};\n    return order;\n}",
+      "patterns": ["topo-sort"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-044",
+      "type": "drill",
+      "q": "Write `bool dfs(int u, const vector<vector<int>>& adj, vector<int>& color)` and `bool hasCycle(int n, const vector<vector<int>>& adj)` with colours 0 unvisited, 1 on the current path, 2 finished. Return whether the directed graph has a cycle.",
+      "a": "Reaching a colour 1 node is a back edge, which means a cycle. Colour 2 nodes are finished and safe to skip, a distinction a plain `visited` flag cannot make.",
+      "code": "bool dfs(int u, const vector<vector<int>>& adj, vector<int>& color) {\n    color[u] = 1;\n    for (int v : adj[u]) {\n        if (color[v] == 1) return true;\n        if (color[v] == 0 && dfs(v, adj, color)) return true;\n    }\n    color[u] = 2;\n    return false;\n}\n\nbool hasCycle(int n, const vector<vector<int>>& adj) {\n    vector<int> color(n, 0);\n    for (int u = 0; u < n; u++) {\n        if (color[u] == 0 && dfs(u, adj, color)) return true;\n    }\n    return false;\n}",
+      "patterns": ["graph-traversal", "topo-sort"],
+      "skill": "impl",
+      "level": 2
+    },
+    {
+      "id": "templates-045",
+      "type": "drill",
+      "q": "Write `struct DSU` with `vector<int> parent, sz`, a constructor `DSU(int n)`, `int find(int x)` and `bool unite(int a, int b)`. `find` compresses paths, and `unite` joins by size and returns false if `a` and `b` were already together.",
+      "a": "Link roots, never the original `a` and `b`, so reassign both with `find` first. Hang the smaller root under the larger and add its size.",
+      "code": "struct DSU {\n    vector<int> parent, sz;\n    DSU(int n) : parent(n), sz(n, 1) {\n        iota(parent.begin(), parent.end(), 0);\n    }\n    int find(int x) {\n        if (parent[x] != x) parent[x] = find(parent[x]);\n        return parent[x];\n    }\n    bool unite(int a, int b) {\n        a = find(a);\n        b = find(b);\n        if (a == b) return false;\n        if (sz[a] < sz[b]) swap(a, b);\n        parent[b] = a;\n        sz[a] += sz[b];\n        return true;\n    }\n};",
+      "patterns": ["union-find"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-046",
+      "type": "drill",
+      "q": "Write `vector<int> dijkstra(int n, const vector<vector<pair<int, int>>>& adj, int src)`, where `adj[u]` holds `{v, w}` with `w >= 0`. Return the shortest distance from `src` to every node, with `INT_MAX` for unreachable nodes.",
+      "a": "Skip stale entries with `if (d > dist[u]) continue;`, because a node can sit in the heap several times. Heap entries are `{dist, node}`, so that pairs order by distance.",
+      "code": "vector<int> dijkstra(int n, const vector<vector<pair<int, int>>>& adj, int src) {\n    using P = pair<int, int>;\n    vector<int> dist(n, INT_MAX);\n    priority_queue<P, vector<P>, greater<P>> pq;\n    dist[src] = 0;\n    pq.push({0, src});\n    while (!pq.empty()) {\n        auto [d, u] = pq.top();\n        pq.pop();\n        if (d > dist[u]) continue;\n        for (auto [v, w] : adj[u]) {\n            if (d + w < dist[v]) {\n                dist[v] = d + w;\n                pq.push({dist[v], v});\n            }\n        }\n    }\n    return dist;\n}",
+      "patterns": ["shortest-path", "heap"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-047",
+      "type": "drill",
+      "q": "Write `int bellmanFord(int n, const vector<array<int, 3>>& edges, int src, int dst, int k)`, where each edge is `{u, v, w}`. Return the cheapest cost from `src` to `dst` using at most `k` edges, or `INT_MAX` if there is no such path.",
+      "a": "Relax from a copy of the previous round, so that each round adds at most one edge. Skip `prev[u] == INT_MAX`, or `prev[u] + w` overflows.",
+      "code": "int bellmanFord(int n, const vector<array<int, 3>>& edges, int src, int dst, int k) {\n    vector<int> dist(n, INT_MAX);\n    dist[src] = 0;\n    for (int i = 0; i < k; i++) {\n        vector<int> prev = dist;\n        for (auto [u, v, w] : edges) {\n            if (prev[u] != INT_MAX) dist[v] = min(dist[v], prev[u] + w);\n        }\n    }\n    return dist[dst];\n}",
+      "patterns": ["shortest-path"],
+      "skill": "impl",
+      "level": 2
+    },
+    {
+      "id": "templates-048",
+      "type": "drill",
+      "q": "Using `DSU` with `unite`, write `int kruskal(int n, vector<array<int, 3>> edges)`, where each edge is `{w, u, v}`. Return the weight of a minimum spanning tree, or -1 if the graph is disconnected.",
+      "a": "Putting `w` first lets a plain `sort` order the edges by weight. `unite` returning false means the edge would close a cycle, so it is skipped.",
+      "code": "int kruskal(int n, vector<array<int, 3>> edges) {\n    sort(edges.begin(), edges.end());\n    DSU dsu(n);\n    int total = 0, used = 0;\n    for (auto [w, u, v] : edges) {\n        if (dsu.unite(u, v)) {\n            total += w;\n            used++;\n        }\n    }\n    return used == n - 1 ? total : -1;\n}",
+      "patterns": ["mst", "union-find"],
+      "skill": "impl",
+      "level": 2
+    },
+    {
+      "id": "templates-049",
+      "type": "drill",
+      "q": "Write `void dfs(const vector<int>& a, int start, vector<int>& cur, vector<vector<int>>& ans)` and `vector<vector<int>> subsets(const vector<int>& a)` for distinct values. Return all subsets.",
+      "a": "Record `cur` on entry, because every node of the recursion tree is a subset. Looping from `start` stops an element being reused or reordered.",
+      "code": "void dfs(const vector<int>& a, int start, vector<int>& cur, vector<vector<int>>& ans) {\n    ans.push_back(cur);\n    for (int i = start; i < (int)a.size(); i++) {\n        cur.push_back(a[i]);\n        dfs(a, i + 1, cur, ans);\n        cur.pop_back();\n    }\n}\n\nvector<vector<int>> subsets(const vector<int>& a) {\n    vector<vector<int>> ans;\n    vector<int> cur;\n    dfs(a, 0, cur, ans);\n    return ans;\n}",
+      "patterns": ["backtracking"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-050",
+      "type": "drill",
+      "q": "Write `void dfs(const vector<int>& a, vector<bool>& used, vector<int>& cur, vector<vector<int>>& ans)` and `vector<vector<int>> permutations(const vector<int>& a)` for distinct values. Return all permutations.",
+      "a": "The loop restarts at 0 on every call, so `used` is what prevents repeats. Undo both `cur.push_back` and `used[i] = true` after the recursive call.",
+      "code": "void dfs(const vector<int>& a, vector<bool>& used, vector<int>& cur, vector<vector<int>>& ans) {\n    if (cur.size() == a.size()) {\n        ans.push_back(cur);\n        return;\n    }\n    for (int i = 0; i < (int)a.size(); i++) {\n        if (used[i]) continue;\n        used[i] = true;\n        cur.push_back(a[i]);\n        dfs(a, used, cur, ans);\n        cur.pop_back();\n        used[i] = false;\n    }\n}\n\nvector<vector<int>> permutations(const vector<int>& a) {\n    vector<vector<int>> ans;\n    vector<int> cur;\n    vector<bool> used(a.size(), false);\n    dfs(a, used, cur, ans);\n    return ans;\n}",
+      "patterns": ["backtracking"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-051",
+      "type": "drill",
+      "q": "Write `void dfs(int n, int k, int start, vector<int>& cur, vector<vector<int>>& ans)` and `vector<vector<int>> combinations(int n, int k)`. Return all `k`-element subsets of `1` to `n`.",
+      "a": "Recurse with `x + 1`, so each choice only looks forward. That produces every combination exactly once, in increasing order.",
+      "code": "void dfs(int n, int k, int start, vector<int>& cur, vector<vector<int>>& ans) {\n    if ((int)cur.size() == k) {\n        ans.push_back(cur);\n        return;\n    }\n    for (int x = start; x <= n; x++) {\n        cur.push_back(x);\n        dfs(n, k, x + 1, cur, ans);\n        cur.pop_back();\n    }\n}\n\nvector<vector<int>> combinations(int n, int k) {\n    vector<vector<int>> ans;\n    vector<int> cur;\n    dfs(n, k, 1, cur, ans);\n    return ans;\n}",
+      "patterns": ["backtracking"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-052",
+      "type": "drill",
+      "q": "Write `void dfs(const vector<int>& a, int start, int remain, vector<int>& cur, vector<vector<int>>& ans)` and `vector<vector<int>> combinationSum(vector<int> a, int target)` for positive values with possible duplicates. Return each distinct combination that sums to `target`, using each element at most once.",
+      "a": "Sort first, then skip with `i > start && a[i] == a[i - 1]`: equal values may not open two branches at the same depth. Writing `i > 0` is the bug, because it also forbids equal values along one path.",
+      "code": "void dfs(const vector<int>& a, int start, int remain, vector<int>& cur, vector<vector<int>>& ans) {\n    if (remain == 0) {\n        ans.push_back(cur);\n        return;\n    }\n    for (int i = start; i < (int)a.size() && a[i] <= remain; i++) {\n        if (i > start && a[i] == a[i - 1]) continue;\n        cur.push_back(a[i]);\n        dfs(a, i + 1, remain - a[i], cur, ans);\n        cur.pop_back();\n    }\n}\n\nvector<vector<int>> combinationSum(vector<int> a, int target) {\n    sort(a.begin(), a.end());\n    vector<vector<int>> ans;\n    vector<int> cur;\n    dfs(a, 0, target, cur, ans);\n    return ans;\n}",
+      "patterns": ["backtracking"],
+      "skill": "impl",
+      "level": 2
+    },
+    {
+      "id": "templates-053",
+      "type": "drill",
+      "q": "Write `int maxNonAdjacent(const vector<int>& a)` for non-negative values. Return the largest sum of elements with no two adjacent, in O(1) extra space.",
+      "a": "`prev1` is the best answer up to the previous element and `prev2` up to the one before it. Each element is either skipped (`prev1`) or taken (`prev2 + x`).",
+      "code": "int maxNonAdjacent(const vector<int>& a) {\n    int prev2 = 0, prev1 = 0;\n    for (int x : a) {\n        int cur = max(prev1, prev2 + x);\n        prev2 = prev1;\n        prev1 = cur;\n    }\n    return prev1;\n}",
+      "patterns": ["dp-linear"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-054",
+      "type": "drill",
+      "q": "Write `int minPathSum(const vector<vector<int>>& grid)` for a non-empty grid of non-negative values, moving only right or down. Return the smallest path sum from top-left to bottom-right, using a table with one extra row and column.",
+      "a": "Border cells stay `INT_MAX` so `min` ignores them, and `dp[0][1] = 0` seeds the start. The padding shifts indices, so `dp[i][j]` reads `grid[i - 1][j - 1]`.",
+      "code": "int minPathSum(const vector<vector<int>>& grid) {\n    int m = grid.size(), n = grid[0].size();\n    vector<vector<int>> dp(m + 1, vector<int>(n + 1, INT_MAX));\n    dp[0][1] = 0;\n    for (int i = 1; i <= m; i++) {\n        for (int j = 1; j <= n; j++) {\n            dp[i][j] = grid[i - 1][j - 1] + min(dp[i - 1][j], dp[i][j - 1]);\n        }\n    }\n    return dp[m][n];\n}",
+      "patterns": ["dp-grid"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-055",
+      "type": "drill",
+      "q": "Write `int lengthOfLIS(const vector<int>& a)` in O(n log n) with patience sorting. Return the length of the longest strictly increasing subsequence.",
+      "a": "`tails[i]` is the smallest possible last value of an increasing subsequence of length `i + 1`. Only its size is meaningful, because `tails` itself need not be a real subsequence. `lower_bound` gives strictly increasing.",
+      "code": "int lengthOfLIS(const vector<int>& a) {\n    vector<int> tails;\n    for (int x : a) {\n        auto it = lower_bound(tails.begin(), tails.end(), x);\n        if (it == tails.end()) tails.push_back(x);\n        else *it = x;\n    }\n    return tails.size();\n}",
+      "patterns": ["dp-linear", "binary-search"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-056",
+      "type": "drill",
+      "q": "Write `int lcs(const string& s, const string& t)`. Return the length of the longest common subsequence.",
+      "a": "`dp[i][j]` covers the first `i` chars of `s` and the first `j` of `t`, so the chars compared are `s[i - 1]` and `t[j - 1]`. Row 0 and column 0 stay zero for empty prefixes.",
+      "code": "int lcs(const string& s, const string& t) {\n    int m = s.size(), n = t.size();\n    vector<vector<int>> dp(m + 1, vector<int>(n + 1));\n    for (int i = 1; i <= m; i++) {\n        for (int j = 1; j <= n; j++) {\n            if (s[i - 1] == t[j - 1]) dp[i][j] = dp[i - 1][j - 1] + 1;\n            else dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);\n        }\n    }\n    return dp[m][n];\n}",
+      "patterns": ["dp-string"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-057",
+      "type": "drill",
+      "q": "Write `int editDistance(const string& s, const string& t)`. Return the fewest single-character inserts, deletes and replacements that turn `s` into `t`.",
+      "a": "Unlike LCS the borders are not zero: a prefix of length `i` needs `i` edits to match an empty string. Matching chars copy the diagonal at no cost.",
+      "code": "int editDistance(const string& s, const string& t) {\n    int m = s.size(), n = t.size();\n    vector<vector<int>> dp(m + 1, vector<int>(n + 1));\n    for (int i = 0; i <= m; i++) dp[i][0] = i;\n    for (int j = 0; j <= n; j++) dp[0][j] = j;\n    for (int i = 1; i <= m; i++) {\n        for (int j = 1; j <= n; j++) {\n            if (s[i - 1] == t[j - 1]) dp[i][j] = dp[i - 1][j - 1];\n            else dp[i][j] = 1 + min({dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]});\n        }\n    }\n    return dp[m][n];\n}",
+      "patterns": ["dp-string"],
+      "skill": "impl",
+      "level": 2
+    },
+    {
+      "id": "templates-058",
+      "type": "drill",
+      "q": "Write `int knapsack(const vector<int>& w, const vector<int>& v, int cap)` with a 1D `dp`, for items of weight `w[i]` and value `v[i]`. Return the best total value within capacity `cap`, using each item at most once.",
+      "a": "Loop the capacity downward, so `dp[c - w[i]]` still excludes item `i`. An upward loop lets the same item be taken twice.",
+      "code": "int knapsack(const vector<int>& w, const vector<int>& v, int cap) {\n    int n = w.size();\n    vector<int> dp(cap + 1, 0);\n    for (int i = 0; i < n; i++) {\n        for (int c = cap; c >= w[i]; c--) {\n            dp[c] = max(dp[c], dp[c - w[i]] + v[i]);\n        }\n    }\n    return dp[cap];\n}",
+      "patterns": ["dp-knapsack"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-059",
+      "type": "drill",
+      "q": "Write `int unboundedKnapsack(const vector<int>& w, const vector<int>& v, int cap)` with a 1D `dp`, for positive weights. Return the best total value within capacity `cap`, where each item may be used any number of times.",
+      "a": "Identical to the 0/1 form except that the capacity loop runs upward. `dp[c - w[i]]` may already include item `i`, which is exactly what allows repeats.",
+      "code": "int unboundedKnapsack(const vector<int>& w, const vector<int>& v, int cap) {\n    int n = w.size();\n    vector<int> dp(cap + 1, 0);\n    for (int i = 0; i < n; i++) {\n        for (int c = w[i]; c <= cap; c++) {\n            dp[c] = max(dp[c], dp[c - w[i]] + v[i]);\n        }\n    }\n    return dp[cap];\n}",
+      "patterns": ["dp-knapsack"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-060",
+      "type": "drill",
+      "q": "Write `vector<vector<int>> mergeIntervals(vector<vector<int>> intervals)`, where each interval is `{start, end}`. Return the union as disjoint intervals sorted by start, joining intervals that touch.",
+      "a": "After sorting, only the last merged interval can overlap the next one. Take `max` for the new end, because the next interval may sit entirely inside the last.",
+      "code": "vector<vector<int>> mergeIntervals(vector<vector<int>> intervals) {\n    sort(intervals.begin(), intervals.end());\n    vector<vector<int>> ans;\n    for (const auto& iv : intervals) {\n        if (ans.empty() || ans.back()[1] < iv[0]) ans.push_back(iv);\n        else ans.back()[1] = max(ans.back()[1], iv[1]);\n    }\n    return ans;\n}",
+      "patterns": ["intervals", "sorting"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-061",
+      "type": "drill",
+      "q": "Write `int minMergeCost(const vector<int>& a)` for a non-empty row of piles, where merging two adjacent piles costs their combined size. Return the smallest total cost to merge everything into one pile.",
+      "a": "Loop on `len` first, so every shorter interval is ready. `k` splits `[i, j]` into `[i, k]` and `[k + 1, j]`, and the last merge always costs the sum of `[i, j]`.",
+      "code": "int minMergeCost(const vector<int>& a) {\n    int n = a.size();\n    vector<int> pre(n + 1, 0);\n    for (int i = 0; i < n; i++) pre[i + 1] = pre[i] + a[i];\n    vector<vector<int>> dp(n, vector<int>(n, 0));\n    for (int len = 2; len <= n; len++) {\n        for (int i = 0; i + len <= n; i++) {\n            int j = i + len - 1;\n            dp[i][j] = INT_MAX;\n            for (int k = i; k < j; k++) {\n                dp[i][j] = min(dp[i][j], dp[i][k] + dp[k + 1][j]);\n            }\n            dp[i][j] += pre[j + 1] - pre[i];\n        }\n    }\n    return dp[0][n - 1];\n}",
+      "patterns": ["dp-interval", "prefix-sum"],
+      "skill": "impl",
+      "level": 3
+    },
+    {
+      "id": "templates-062",
+      "type": "drill",
+      "q": "Write `int minAssignment(const vector<vector<int>>& cost)` for `n` workers and `n` jobs, where `cost[i][j]` is worker `i` doing job `j`. Return the smallest total cost, using a DP over the set of taken jobs.",
+      "a": "`mask` is the set of taken jobs, so the next worker is `__builtin_popcount(mask)`. Adding a bit makes the number larger, so looping masks upward finishes every subset first.",
+      "code": "int minAssignment(const vector<vector<int>>& cost) {\n    int n = cost.size();\n    vector<int> dp(1 << n, INT_MAX);\n    dp[0] = 0;\n    for (int mask = 0; mask < (1 << n); mask++) {\n        int i = __builtin_popcount(mask);\n        for (int j = 0; j < n; j++) {\n            if (mask & (1 << j)) continue;\n            int nxt = mask | (1 << j);\n            dp[nxt] = min(dp[nxt], dp[mask] + cost[i][j]);\n        }\n    }\n    return dp[(1 << n) - 1];\n}",
+      "patterns": ["dp-bitmask", "bit-manipulation"],
+      "skill": "impl",
+      "level": 3
+    },
+    {
+      "id": "templates-063",
+      "type": "drill",
+      "q": "Write `int dfs(int u, const vector<vector<int>>& adj, vector<int>& memo)` and `int longestPath(int n, const vector<vector<int>>& adj)` for a DAG, with -1 meaning not computed. Return the largest number of edges on any path.",
+      "a": "Read the memo on the first line and write it just before returning. `memo` must be a reference, or nothing is remembered and the run turns exponential. Use -1 as the sentinel, because 0 is a valid answer here.",
+      "code": "int dfs(int u, const vector<vector<int>>& adj, vector<int>& memo) {\n    if (memo[u] != -1) return memo[u];\n    int best = 0;\n    for (int v : adj[u]) best = max(best, 1 + dfs(v, adj, memo));\n    memo[u] = best;\n    return best;\n}\n\nint longestPath(int n, const vector<vector<int>>& adj) {\n    vector<int> memo(n, -1);\n    int ans = 0;\n    for (int u = 0; u < n; u++) ans = max(ans, dfs(u, adj, memo));\n    return ans;\n}",
+      "patterns": ["dp-linear", "graph-traversal"],
+      "skill": "impl",
+      "level": 2
+    },
+    {
+      "id": "templates-064",
+      "type": "drill",
+      "q": "Write `int partition(vector<int>& a, int lo, int hi)` on the half-open range `[lo, hi)`, with `a[hi - 1]` as the pivot. Move smaller values left of the pivot and return its final index.",
+      "a": "`i` is the boundary: everything in `[lo, i)` is smaller than the pivot. The pivot waits at `hi - 1` during the scan and swaps into `i` at the end.",
+      "code": "int partition(vector<int>& a, int lo, int hi) {\n    int pivot = a[hi - 1];\n    int i = lo;\n    for (int j = lo; j < hi; j++) {\n        if (a[j] < pivot) swap(a[i++], a[j]);\n    }\n    swap(a[i], a[hi - 1]);\n    return i;\n}",
+      "patterns": ["sorting"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-065",
+      "type": "drill",
+      "q": "Using `partition(a, lo, hi)` on the half-open range `[lo, hi)`, write `int quickselect(vector<int> a, int k)`. For distinct values, return the `k`-th smallest, 0-indexed, or -1 if `k` is out of range, in expected O(n).",
+      "a": "After `partition`, `a[p]` is in its final place, so only the side holding `k` remains. The random pivot is what avoids O(n^2) on sorted input.",
+      "code": "int quickselect(vector<int> a, int k) {\n    int lo = 0, hi = a.size();\n    while (lo < hi) {\n        swap(a[lo + rand() % (hi - lo)], a[hi - 1]);\n        int p = partition(a, lo, hi);\n        if (p == k) return a[p];\n        if (p < k) lo = p + 1;\n        else hi = p;\n    }\n    return -1;\n}",
+      "patterns": ["sorting", "divide-and-conquer"],
+      "skill": "impl",
+      "level": 2
+    },
+    {
+      "id": "templates-066",
+      "type": "drill",
+      "q": "Write `void mergeSort(vector<int>& a, int lo, int hi)` on the half-open range `[lo, hi)`. Sort it stably, merging through a temporary vector.",
+      "a": "The base case is `hi - lo <= 1`, and the right half starts at `mid`, not `mid + 1`. Take from the left on `<=` to stay stable.",
+      "code": "void mergeSort(vector<int>& a, int lo, int hi) {\n    if (hi - lo <= 1) return;\n    int mid = lo + (hi - lo) / 2;\n    mergeSort(a, lo, mid);\n    mergeSort(a, mid, hi);\n    vector<int> tmp;\n    int i = lo, j = mid;\n    while (i < mid && j < hi) {\n        if (a[i] <= a[j]) tmp.push_back(a[i++]);\n        else tmp.push_back(a[j++]);\n    }\n    while (i < mid) tmp.push_back(a[i++]);\n    while (j < hi) tmp.push_back(a[j++]);\n    copy(tmp.begin(), tmp.end(), a.begin() + lo);\n}",
+      "patterns": ["sorting", "divide-and-conquer"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-067",
+      "type": "drill",
+      "q": "Write `struct LRUCache` with `list<pair<int, int>> items` (most recent first), a map `pos` from key to list iterator, `LRUCache(int capacity)` for `capacity >= 1`, `int get(int key)` and `void put(int key, int value)`. `get` returns -1 for a missing key, and both run in O(1).",
+      "a": "`splice` moves a node without invalidating any iterator, so `pos` stays correct. On eviction, erase the key from `pos` before popping the list back.",
+      "code": "struct LRUCache {\n    int cap;\n    list<pair<int, int>> items;\n    unordered_map<int, list<pair<int, int>>::iterator> pos;\n    LRUCache(int capacity) : cap(capacity) {}\n    int get(int key) {\n        if (!pos.count(key)) return -1;\n        items.splice(items.begin(), items, pos[key]);\n        return items.front().second;\n    }\n    void put(int key, int value) {\n        if (pos.count(key)) {\n            get(key);\n            items.front().second = value;\n            return;\n        }\n        if ((int)items.size() == cap) {\n            pos.erase(items.back().first);\n            items.pop_back();\n        }\n        items.push_front({key, value});\n        pos[key] = items.begin();\n    }\n};",
+      "patterns": ["design", "linked-list", "arrays-hashing"],
+      "skill": "impl",
+      "level": 2
+    },
+    {
+      "id": "templates-068",
+      "type": "drill",
+      "q": "Write `long long power(long long base, long long exp, long long mod)` for `base >= 0`, `exp >= 0` and `1 < mod < 2^31`. Return `base^exp % mod` in O(log exp).",
+      "a": "Square `base` every step, and multiply it into `ans` only when the low bit of `exp` is set. Keeping `mod` below `2^31` keeps every product inside `long long`.",
+      "code": "long long power(long long base, long long exp, long long mod) {\n    long long ans = 1;\n    base %= mod;\n    while (exp > 0) {\n        if (exp & 1) ans = ans * base % mod;\n        base = base * base % mod;\n        exp >>= 1;\n    }\n    return ans;\n}",
+      "patterns": ["math", "bit-manipulation"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-069",
+      "type": "drill",
+      "q": "Write `int gcd(int a, int b)` for non-negative inputs, using Euclid's algorithm. Return the greatest common divisor.",
+      "a": "`gcd(a, b)` equals `gcd(b, a % b)`, and the recursion stops at `b == 0` with the answer in `a`. C++17 also offers `gcd` in `<numeric>`.",
+      "code": "int gcd(int a, int b) {\n    return b == 0 ? a : gcd(b, a % b);\n}",
+      "patterns": ["math"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-070",
+      "type": "drill",
+      "q": "Write `vector<int> sieve(int n)` for `n >= 1`, using the sieve of Eratosthenes. Return all primes up to and including `n`.",
+      "a": "Start crossing off at `i * i`, because smaller multiples already have a smaller prime factor. Compute that start as `1LL * i * i`, or it overflows.",
+      "code": "vector<int> sieve(int n) {\n    vector<bool> isPrime(n + 1, true);\n    vector<int> primes;\n    for (int i = 2; i <= n; i++) {\n        if (!isPrime[i]) continue;\n        primes.push_back(i);\n        for (long long j = 1LL * i * i; j <= n; j += i) isPrime[j] = false;\n    }\n    return primes;\n}",
+      "patterns": ["math"],
+      "skill": "impl",
+      "level": 1
+    },
+    {
+      "id": "templates-071",
+      "type": "drill",
+      "q": "Write `struct SegTree` with `int n`, `vector<int> t` of size `2 * n`, a constructor from `const vector<int>& a`, `void update(int i, int val)` and `int query(int l, int r)`. It is a bottom-up sum tree where `query` sums the half-open range `[l, r)`.",
+      "a": "Leaves live at `t[n + i]`, and the parent of `i` is `i / 2`. In `query`, an odd `l` takes `t[l++]` and an odd `r` takes `t[--r]` before both climb.",
+      "code": "struct SegTree {\n    int n;\n    vector<int> t;\n    SegTree(const vector<int>& a) : n(a.size()), t(2 * n) {\n        for (int i = 0; i < n; i++) t[n + i] = a[i];\n        for (int i = n - 1; i > 0; i--) t[i] = t[2 * i] + t[2 * i + 1];\n    }\n    void update(int i, int val) {\n        i += n;\n        t[i] = val;\n        for (i /= 2; i >= 1; i /= 2) t[i] = t[2 * i] + t[2 * i + 1];\n    }\n    int query(int l, int r) {\n        int sum = 0;\n        for (l += n, r += n; l < r; l /= 2, r /= 2) {\n            if (l & 1) sum += t[l++];\n            if (r & 1) sum += t[--r];\n        }\n        return sum;\n    }\n};",
+      "patterns": ["range-query"],
+      "skill": "impl",
+      "level": 3
+    },
+    {
+      "id": "templates-072",
+      "type": "drill",
+      "q": "Write `struct Fenwick` with `vector<int> t`, a constructor `Fenwick(int n)`, `void add(int i, int delta)` for a 0-based `i`, and `int prefix(int i)`. `prefix` returns the sum of the first `i` elements.",
+      "a": "The tree is 1-based inside, so `add` starts with `i++` and `t[0]` stays unused. `i & -i` is the lowest set bit: `add` climbs by it and `prefix` strips it. The sum of `[l, r)` is `prefix(r) - prefix(l)`.",
+      "code": "struct Fenwick {\n    vector<int> t;\n    Fenwick(int n) : t(n + 1, 0) {}\n    void add(int i, int delta) {\n        for (i++; i < (int)t.size(); i += i & -i) t[i] += delta;\n    }\n    int prefix(int i) {\n        int sum = 0;\n        for (; i > 0; i -= i & -i) sum += t[i];\n        return sum;\n    }\n};",
+      "patterns": ["range-query"],
+      "skill": "impl",
+      "level": 3
+    },
+    {
+      "id": "templates-073",
+      "type": "drill",
+      "q": "Write `vector<int> prefixFunction(const string& s)`. Return `pi`, where `pi[i]` is the length of the longest proper prefix of `s[0..i]` that is also its suffix.",
+      "a": "On a mismatch fall back with `k = pi[k - 1]`, never straight to 0. To find `pat` in `text`, run this on `pat + '#' + text` and look for a value equal to `pat.size()`.",
+      "code": "vector<int> prefixFunction(const string& s) {\n    int n = s.size();\n    vector<int> pi(n, 0);\n    for (int i = 1; i < n; i++) {\n        int k = pi[i - 1];\n        while (k > 0 && s[i] != s[k]) k = pi[k - 1];\n        if (s[i] == s[k]) k++;\n        pi[i] = k;\n    }\n    return pi;\n}",
+      "patterns": ["string-matching"],
+      "skill": "impl",
+      "level": 3
+    },
+    {
+      "id": "templates-074",
+      "type": "drill",
+      "q": "With file-level `const long long BASE = 131, MOD = 1000000007;`, write `struct StringHash` with `vector<long long> h, p`, a constructor from `const string& s`, and `long long get(int l, int r)`. `get` returns the polynomial hash of the half-open range `[l, r)`.",
+      "a": "`get` subtracts the prefix shifted by `r - l` places, and the result can be negative, so add `MOD` before the last `% MOD`. Equal hashes only suggest equal strings, so confirm a match when a collision would matter.",
+      "code": "const long long BASE = 131, MOD = 1000000007;\n\nstruct StringHash {\n    vector<long long> h, p;\n    StringHash(const string& s) : h(s.size() + 1, 0), p(s.size() + 1, 1) {\n        int n = s.size();\n        for (int i = 0; i < n; i++) {\n            h[i + 1] = (h[i] * BASE + s[i]) % MOD;\n            p[i + 1] = p[i] * BASE % MOD;\n        }\n    }\n    long long get(int l, int r) {\n        return ((h[r] - h[l] * p[r - l]) % MOD + MOD) % MOD;\n    }\n};",
+      "patterns": ["string-matching"],
+      "skill": "impl",
+      "level": 3
+    },
+    {
+      "id": "templates-075",
+      "type": "drill",
+      "q": "Write `vector<int> reservoirSample(const vector<int>& stream, int k)` for `k <= stream.size()`, using `rand()`. Return `k` elements chosen uniformly at random, in one pass and O(k) extra space.",
+      "a": "Element `i`, 0-based, enters with probability `k / (i + 1)` and replaces a random slot. Every element then ends up in the sample with the same chance, `k / n`.",
+      "code": "vector<int> reservoirSample(const vector<int>& stream, int k) {\n    vector<int> ans(stream.begin(), stream.begin() + k);\n    int n = stream.size();\n    for (int i = k; i < n; i++) {\n        int j = rand() % (i + 1);\n        if (j < k) ans[j] = stream[i];\n    }\n    return ans;\n}",
+      "patterns": ["math"],
+      "skill": "impl",
+      "level": 2
+    }
+  ]
+}

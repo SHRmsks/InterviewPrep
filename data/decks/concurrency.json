@@ -1,0 +1,498 @@
+{
+  "deck": "concurrency",
+  "title": "Concurrency",
+  "cards": [
+    {
+      "id": "concurrency-001",
+      "type": "flash",
+      "q": "What is the difference between a data race and a race condition?",
+      "a": "A data race is unsynchronised access to the same memory by two threads, at least one writing, and in C++ it is undefined behaviour. A race condition is a logic bug where the outcome depends on timing, and it can exist even when every access is locked.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain", 
+      "level": 2
+    },
+    {
+      "id": "concurrency-002",
+      "type": "flash",
+      "q": "Why can two threads each running `counter++` on a shared int lose updates?",
+      "a": "`counter++` is a read, an add and a write. If both threads read the same value, one increment overwrites the other.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "concurrency-003",
+      "type": "flash",
+      "q": "Why is `if (!m.count(k)) m[k] = v;` a bug even if each map call is individually thread-safe?",
+      "a": "Another thread can insert between the check and the write. Thread-safe calls do not compose, so the pair needs one lock or a single atomic insert-if-absent operation.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "concurrency-004",
+      "type": "flash",
+      "q": "A mutex gives mutual exclusion. What second guarantee does it give?",
+      "a": "Visibility. An unlock synchronises with the next lock of that mutex, so the next holder sees every write made inside the critical section.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "concurrency-005",
+      "type": "flash",
+      "q": "When is a spinlock better than a blocking mutex?",
+      "a": "When the lock is held for less time than a sleep and wake would cost, and the waiter runs on a different core from the holder. On a single core, spinning wastes the time the holder needs to finish.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "concurrency-006",
+      "type": "flash",
+      "q": "Why does locking an uncontended mutex on Linux usually avoid a system call?",
+      "a": "glibc mutexes are built on futexes, where the lock state is an atomic word in user space. Taking a free lock is one atomic compare-and-swap, and the kernel is involved only when a thread must sleep or be woken.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 3
+    },
+    {
+      "id": "concurrency-007",
+      "type": "flash",
+      "q": "What happens if a thread locks a `std::mutex` it already holds?",
+      "a": "Undefined behaviour, and in practice it often deadlocks. `std::recursive_mutex` permits re-locking by the same thread.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "concurrency-008",
+      "type": "flash",
+      "q": "What is the bug in this blocking pop?",
+      "qcode": "mutex m;\ncondition_variable cv;\nqueue<int> q;\n\nint pop() {\n    unique_lock<mutex> lk(m);\n    if (q.empty()) cv.wait(lk);\n    int x = q.front();\n    q.pop();\n    return x;\n}",
+      "a": "The `if` must be a `while`, or `wait` must take a predicate. `wait` can return spuriously, or another consumer can empty the queue first, so `q.front()` may run on an empty queue.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "concurrency-009",
+      "type": "flash",
+      "q": "Why does a condition variable need a mutex?",
+      "a": "The condition lives in shared state, so checking it needs a lock. `wait` atomically releases the mutex and sleeps, so no notify can slip between the check and the sleep.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "concurrency-010",
+      "type": "flash",
+      "q": "Why must the waited-on flag be set while holding the mutex, even if the flag is `atomic<bool>`?",
+      "a": "Without the lock, the update and notify can land after the waiter checked the flag but before it sleeps. The notify finds nobody waiting, so the waiter sleeps forever, which is a lost wakeup.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 3
+    },
+    {
+      "id": "concurrency-011",
+      "type": "flash",
+      "q": "When is `notify_one` wrong where `notify_all` is right?",
+      "a": "When waiters wait for different conditions, or when one state change can unblock several of them. `notify_one` may then wake a thread that cannot proceed while a runnable one stays asleep.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "concurrency-012",
+      "type": "flash",
+      "q": "How does a binary semaphore differ from a mutex?",
+      "a": "A semaphore is a counter with no owner, so one thread can wait and a different thread can signal, which suits signalling between threads. A mutex has an owner: the thread that locked it must unlock it.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "concurrency-013",
+      "type": "flash",
+      "q": "Why can a read-write lock be slower than a plain mutex for short reads?",
+      "a": "Every reader still writes the shared reader count, so that cache line bounces between cores. The gain only appears when reads dominate and their sections are long enough to overlap.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "concurrency-014",
+      "type": "flash",
+      "q": "What starvation risk comes with a read-write lock?",
+      "a": "If readers are always preferred, a steady stream of them keeps the reader count above zero and writers wait forever. Writer-preferring locks block new readers once a writer queues, which shifts the risk to readers.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "concurrency-015",
+      "type": "flash",
+      "q": "How can this code deadlock?",
+      "qcode": "struct Account {\n    mutex m;\n    int balance = 0;\n};\n\nvoid transfer(Account& from, Account& to, int n) {\n    lock_guard<mutex> a(from.m);\n    lock_guard<mutex> b(to.m);\n    from.balance -= n;\n    to.balance += n;\n}",
+      "a": "`transfer(x, y, n)` and `transfer(y, x, n)` running at once lock the same two mutexes in opposite orders, so each can hold one and wait for the other. Lock in a global order such as account id, or take both with one `scoped_lock`.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "concurrency-016",
+      "type": "flash",
+      "q": "How does `std::scoped_lock` take several mutexes safely when callers disagree on the order?",
+      "a": "It uses a deadlock-avoidance algorithm, typically try-and-back-off. It locks one mutex and tries the rest, and on failure releases what it holds and retries, so it never blocks while holding the others.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "concurrency-017",
+      "type": "flash",
+      "q": "Why is calling an unknown callback while holding a lock dangerous?",
+      "a": "The callback may take other locks or re-enter your code, which creates a lock order you cannot see or control. Copy what it needs, release the lock, and then call it.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "concurrency-018",
+      "type": "flash",
+      "q": "How does livelock differ from deadlock?",
+      "a": "In deadlock, threads are blocked and idle. In livelock, they keep running and reacting to each other, such as backing off and retrying in step, but make no progress. Randomised backoff breaks the symmetry.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "concurrency-019",
+      "type": "flash",
+      "q": "On an `atomic<int> a`, why is `++a` safe while `a = a + 1` is not?",
+      "a": "`++a` is one indivisible read-modify-write. `a = a + 1` is an atomic load followed by a separate atomic store, so another thread's update between them is lost.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "concurrency-020",
+      "type": "flash",
+      "q": "Why can an atomic replace a mutex for a counter but not for keeping two fields consistent?",
+      "a": "An atomic makes operations on one location indivisible. An invariant across two locations needs both updates to appear together, which takes a lock or packing both into one atomic word.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "concurrency-021",
+      "type": "flash",
+      "q": "Why does this loop never reload `old` itself?",
+      "qcode": "atomic<int> a{1};\n\nvoid doubleIt() {\n    int old = a.load();\n    while (!a.compare_exchange_weak(old, old * 2)) {\n    }\n}",
+      "a": "On failure, `compare_exchange_weak` writes the current value into `old`, so the next pass recomputes from fresh data. This read-compute-swap retry is the standard lock-free update.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "concurrency-022",
+      "type": "flash",
+      "q": "Why can a successful compare-and-swap still be wrong in a lock-free stack?",
+      "a": "The head may have changed from node A to B and back to A, so the swap succeeds even though A's next pointer is stale. This is the ABA problem, and tagged pointers or hazard pointers address it.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 3
+    },
+    {
+      "id": "concurrency-023",
+      "type": "flash",
+      "q": "Is `volatile` enough to share a flag between C++ threads?",
+      "a": "No. It only stops the compiler from removing or merging accesses, and gives no atomicity or ordering, so it is still a data race. Use `std::atomic`.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "concurrency-024",
+      "type": "flash",
+      "q": "Why can another thread observe your writes in a different order from the one in your code?",
+      "a": "Compilers and CPUs reorder memory operations when single-threaded behaviour is unchanged, and store buffers delay when writes become visible. Only synchronisation creates ordering between threads.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "concurrency-025",
+      "type": "flash",
+      "q": "What does a release store paired with an acquire load guarantee?",
+      "a": "If the acquire load reads the value from the release store, every write made before that store is visible to the reader after the load. That is how one thread safely publishes data to another.",
+      "code": "int payload = 0;\natomic<bool> ready{false};\n\nvoid writer() {\n    payload = 42;\n    ready.store(true, memory_order_release);\n}\n\nint reader() {\n    while (!ready.load(memory_order_acquire)) {\n    }\n    return payload;  // always 42\n}",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "concurrency-026",
+      "type": "flash",
+      "q": "When is `memory_order_relaxed` safe?",
+      "a": "When only the atomic's own value matters and no other data depends on it, such as a statistics counter. It keeps atomicity but gives no ordering, so it cannot publish data.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "concurrency-027",
+      "type": "flash",
+      "q": "Why is `seq_cst` the default for `std::atomic`, and why might you avoid it?",
+      "a": "It gives a single total order of those operations that all threads agree on, which is the easiest model to reason about. It can need extra fences, so hot paths may use acquire and release instead.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "concurrency-028",
+      "type": "flash",
+      "q": "Why can two threads updating two different variables run slower than one thread updating both?",
+      "a": "If the variables share a cache line, each write invalidates the line in the other core's cache, so it bounces between them. This is false sharing, and padding or `alignas(64)` puts each variable on its own line.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "concurrency-029",
+      "type": "flash",
+      "q": "Why use a thread pool rather than a new thread per task?",
+      "a": "Thread creation has real cost, and unbounded threads waste memory and time on context switches. A pool reuses a fixed set of threads and bounds concurrency, with excess work waiting in a queue.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "concurrency-030",
+      "type": "flash",
+      "q": "How should thread pool size differ for CPU-bound and I/O-bound work?",
+      "a": "CPU-bound work needs about one thread per core, because more only adds switching. I/O-bound work can use more, roughly cores times (1 + wait time / compute time).",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "concurrency-031",
+      "type": "flash",
+      "q": "How can a fixed-size thread pool deadlock with no locks at all?",
+      "a": "Tasks submit subtasks to the same pool and block waiting for them. Once every worker is waiting, nobody is left to run the subtasks.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 3
+    },
+    {
+      "id": "concurrency-032",
+      "type": "flash",
+      "q": "Why should a producer-consumer queue be bounded?",
+      "a": "With no bound, producers that outpace consumers grow the queue until memory runs out. A bound blocks or rejects producers, which applies backpressure.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "concurrency-033",
+      "type": "flash",
+      "q": "Why does a bounded blocking queue commonly use two condition variables?",
+      "a": "Producers wait for \"not full\" and consumers wait for \"not empty\". With a single one, `notify_one` can wake a thread of the wrong kind, so you would need `notify_all`.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "concurrency-034",
+      "type": "flash",
+      "q": "What is the difference between concurrency and parallelism?",
+      "a": "Concurrency is structuring tasks so they overlap in time, which works even on one core. Parallelism is running them at the same instant on multiple cores.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "concurrency-035",
+      "type": "flash",
+      "q": "How can a single-threaded server handle thousands of connections?",
+      "a": "Connections mostly wait on the network. An event loop uses a readiness API such as `epoll` and runs only the handlers that can progress, so waiting connections cost no thread.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "concurrency-036",
+      "type": "flash",
+      "q": "What happens to an async event loop if one handler does a long CPU computation?",
+      "a": "Every other task stalls, because they all share that thread. Long CPU work belongs on a worker pool so the loop stays responsive.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "concurrency-037",
+      "type": "flash",
+      "q": "Why is this lazy initialisation broken?",
+      "qcode": "struct Widget {};\nWidget* inst = nullptr;\nmutex m;\n\nWidget* get() {\n    if (!inst) {\n        lock_guard<mutex> lk(m);\n        if (!inst) inst = new Widget();\n    }\n    return inst;\n}",
+      "a": "The first read of `inst` takes no lock, so it is a data race with the write. A thread can see a non-null pointer before the object's fields are visible, so `inst` must be `atomic` with acquire and release ordering.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "concurrency-038",
+      "type": "flash",
+      "q": "What is the simplest thread-safe lazy singleton in C++11 and later?",
+      "a": "A function-local static. The language guarantees it is initialised exactly once, and other threads wait until that finishes.",
+      "code": "struct Widget {};\n\nWidget& instance() {\n    static Widget w;\n    return w;\n}",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "concurrency-039",
+      "type": "flash",
+      "q": "What happens if a `std::thread` object is destroyed while still joinable?",
+      "a": "`std::terminate` is called. You must `join` or `detach` on every path, including when an exception unwinds.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "concurrency-040",
+      "type": "flash",
+      "q": "Why does passing a local to a thread function that takes `int&` need `std::ref`?",
+      "a": "`std::thread` copies its arguments into storage owned by the new thread, so a plain `x` cannot bind to `int&` and the call fails to compile. `std::ref(x)` passes a reference wrapper, and the local must outlive the thread.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "concurrency-041",
+      "type": "flash",
+      "q": "How does `lock_guard` differ from `unique_lock`?",
+      "a": "`lock_guard` locks in its constructor and unlocks in its destructor, nothing more. `unique_lock` adds deferred locking, manual unlock and relock, and moving, which is why `condition_variable::wait` requires it.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "concurrency-042",
+      "type": "flash",
+      "q": "What is the bug here?",
+      "qcode": "mutex m;\nint total = 0;\n\nvoid add() {\n    lock_guard<mutex>{m};\n    total++;\n}",
+      "a": "`lock_guard<mutex>{m};` creates an unnamed temporary that unlocks at the end of that statement, so the increment runs unprotected. Give the guard a name.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "concurrency-043",
+      "type": "flash",
+      "q": "Which C++17 types give you a read-write lock?",
+      "a": "`std::shared_mutex`, with `std::shared_lock` for readers and `std::unique_lock` for writers.",
+      "code": "shared_mutex sm;\nint value = 0;\n\nint getValue() {\n    shared_lock<shared_mutex> lk(sm);\n    return value;\n}\n\nvoid setValue(int v) {\n    unique_lock<shared_mutex> lk(sm);\n    value = v;\n}",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "syntax",
+      "level": 2
+    },
+    {
+      "id": "concurrency-044",
+      "type": "flash",
+      "q": "Why can `async(launch::async, f);` with the result discarded behave as if it ran synchronously?",
+      "a": "The returned future's destructor blocks until the task finishes, and a discarded future is destroyed at the end of the statement. Keep the future in a variable to let the work overlap.",
+      "patterns": [
+        "concurrency"
+      ],
+      "skill": "explain",
+      "level": 3
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:Interview App}",
+            "name": "Debug InterviewPrep",
+            "target": "InterviewPrep",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug InterviewPrep"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:Interview App}",
+            "name": "Release InterviewPrep",
+            "target": "InterviewPrep",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release InterviewPrep"
+        }
+    ]
+}

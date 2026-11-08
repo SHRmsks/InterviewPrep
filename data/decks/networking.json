@@ -1,0 +1,611 @@
+{
+  "deck": "networking",
+  "title": "Networking",
+  "cards": [
+    {
+      "id": "networking-001",
+      "type": "flash",
+      "q": "What does TCP give you over UDP, and what does it cost?",
+      "a": "TCP gives reliable, in-order bytes plus flow and congestion control. The cost is a connection handshake, larger headers, and delays from retransmission and ordering.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "networking-002",
+      "type": "flash",
+      "q": "Why do live voice and video often use UDP instead of TCP?",
+      "a": "A late packet is useless for live media, so retransmitting it wastes time. TCP's in-order delivery would stall everything behind a lost packet, while UDP lets the app skip it and move on.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "networking-003",
+      "type": "flash",
+      "q": "Why can one `recv` on a TCP socket return half a message or two messages at once?",
+      "a": "TCP is a byte stream with no message boundaries, so bytes arrive however the network and buffers split them. Protocols must frame messages themselves, with a length prefix or a delimiter.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "networking-004",
+      "type": "flash",
+      "q": "What are the three steps of the TCP handshake?",
+      "a": "The client sends a SYN with its initial sequence number. The server replies with a SYN-ACK carrying its own number and acknowledging the client's. The client sends an ACK, and data can flow.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "networking-005",
+      "type": "flash",
+      "q": "Why does TCP need three handshake messages rather than two?",
+      "a": "Each side must have its initial sequence number acknowledged, and the server's number is only confirmed by the third message. It also stops a delayed old SYN from opening a connection, because the client never confirms it.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "networking-006",
+      "type": "flash",
+      "q": "Why does closing a TCP connection usually take four segments when opening takes three?",
+      "a": "Each direction closes on its own. The peer ACKs a FIN at once but may still have data to send, so its own FIN can come much later.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "networking-007",
+      "type": "flash",
+      "q": "How does a TCP close with FIN differ from one with RST?",
+      "a": "FIN is an orderly close: everything sent so far is delivered first. RST aborts the connection: buffered data is discarded and the peer sees a connection reset error.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "networking-008",
+      "type": "flash",
+      "q": "What is the difference between flow control and congestion control?",
+      "a": "Flow control protects the receiver, which advertises how much it can buffer. Congestion control protects the network, with the sender estimating how much the path can carry.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "networking-009",
+      "type": "flash",
+      "q": "How does a TCP sender's congestion window grow in slow start, and what happens next?",
+      "a": "It roughly doubles every round trip until it reaches a threshold or sees loss. Congestion avoidance then grows it by about one segment per round trip.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "networking-010",
+      "type": "flash",
+      "q": "Why does classic TCP grow its window slowly but cut it sharply on loss?",
+      "a": "It treats loss as a sign of congestion. Additive increase probes for spare capacity and multiplicative decrease backs off fast, which makes competing flows converge toward a fair share.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "networking-011",
+      "type": "flash",
+      "q": "Why can a fast long-distance link still give low TCP throughput?",
+      "a": "A sender can have only one window of unacknowledged data per round trip, so throughput is at most window divided by RTT. The window must reach bandwidth times RTT to fill the link.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 3
+    },
+    {
+      "id": "networking-012",
+      "type": "flash",
+      "q": "Why does TIME_WAIT exist?",
+      "a": "The side that closed first waits for twice the maximum segment lifetime. That lets it resend the final ACK if the peer's FIN is retransmitted, and lets stray segments expire so they cannot land in a new connection on the same ports.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "networking-013",
+      "type": "flash",
+      "q": "Why can a proxy making many short backend connections run out of ports?",
+      "a": "Each connection to one backend address needs a distinct local port, and the side that closes first keeps that port in TIME_WAIT after closing. Short connections can exhaust the ephemeral range, so the fix is pooling and reusing connections.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "networking-014",
+      "type": "flash",
+      "q": "Why do servers set `SO_REUSEADDR` before `bind`?",
+      "a": "Without it, a restarted server can fail with \"address already in use\" while old connections on that port sit in TIME_WAIT.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "networking-015",
+      "type": "flash",
+      "q": "What does a growing pile of sockets in CLOSE_WAIT point to?",
+      "a": "The peer has closed but your application has not called `close`, so it is usually a leak in your code. Unlike TIME_WAIT, it does not clear on a timer.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 3
+    },
+    {
+      "id": "networking-016",
+      "type": "flash",
+      "q": "What does HTTP/2 multiplexing solve that HTTP/1.1 keep-alive does not?",
+      "a": "An HTTP/1.1 connection carries one response at a time in order, so a slow response holds up those behind it and browsers open several connections. HTTP/2 interleaves many concurrent streams on one connection.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "networking-017",
+      "type": "flash",
+      "q": "Why did HTTP/2 not fully remove head-of-line blocking?",
+      "a": "It removed blocking at the HTTP layer, but all streams still share one TCP connection. TCP delivers bytes in order, so one lost packet stalls every stream until it is retransmitted.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "networking-018",
+      "type": "flash",
+      "q": "Why is HTTP/3 built on QUIC over UDP rather than on an improved TCP?",
+      "a": "TCP lives in kernels and is inspected by middleboxes, so changing it is very slow. QUIC runs over UDP, usually in user space, gives each stream independent loss recovery, and builds in TLS 1.3.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "networking-019",
+      "type": "flash",
+      "q": "Why can a QUIC connection survive a phone moving from Wi-Fi to cellular when a TCP connection cannot?",
+      "a": "TCP identifies a connection by its IP and port 4-tuple, so a new IP address breaks it. QUIC identifies it with a connection ID, so it can continue from the new address.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 3
+    },
+    {
+      "id": "networking-020",
+      "type": "flash",
+      "q": "Why does TLS use asymmetric crypto only in the handshake?",
+      "a": "Asymmetric crypto is far slower, so it is used to authenticate the server and agree on a shared secret. Bulk data then uses fast symmetric encryption with keys derived from that secret.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "networking-021",
+      "type": "flash",
+      "q": "What happens in a TLS 1.3 handshake?",
+      "a": "The client sends its supported ciphers and a key share. The server replies with its key share, its certificate and a signature proving it owns the private key. Both sides derive session keys, so encrypted data can flow after one round trip.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "networking-022",
+      "type": "flash",
+      "q": "How does a client decide to trust a server's certificate?",
+      "a": "It verifies the signature chain up to a root CA in its trust store. It then checks that the hostname matches and that the certificate has not expired.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "networking-023",
+      "type": "flash",
+      "q": "Why can a stolen server private key not decrypt previously recorded TLS 1.3 traffic?",
+      "a": "Session keys come from ephemeral Diffie-Hellman keys that are discarded after the handshake. The long-term key only signs the handshake, so it cannot recover them. This property is forward secrecy.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 3
+    },
+    {
+      "id": "networking-024",
+      "type": "flash",
+      "q": "How does `www.example.com` get resolved with empty caches?",
+      "a": "Your machine asks a recursive resolver. The resolver asks a root server, then the `.com` TLD server, then the domain's authoritative server, each pointing it to the next. It returns the answer and caches it for the record's TTL.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "networking-025",
+      "type": "flash",
+      "q": "What is the trade-off in choosing a DNS TTL?",
+      "a": "A low TTL lets changes and failovers spread quickly but causes more lookups, adding latency and load. A high TTL saves lookups but leaves stale records in caches for longer after a change.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "networking-026",
+      "type": "flash",
+      "q": "Why does DNS normally use UDP rather than TCP?",
+      "a": "A query and reply usually fit in one packet each, so a TCP handshake would add a round trip for little benefit. Clients retry on timeout and fall back to TCP when a response is truncated.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "networking-027",
+      "type": "flash",
+      "q": "How does a CDN send a user to a nearby edge server?",
+      "a": "Either its DNS returns the address of a nearby edge, or anycast announces the same IP from many sites and BGP routing picks a close one.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "networking-028",
+      "type": "flash",
+      "q": "Why do sites put a content hash in static file names?",
+      "a": "A changed file gets a new URL, so assets can be cached with a very long TTL and never need a purge. Browsers and CDNs cannot serve a stale copy under the new name.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "networking-029",
+      "type": "flash",
+      "q": "How does an L4 load balancer differ from an L7 one?",
+      "a": "L4 forwards by IP and port without reading the payload, so it is fast and protocol-agnostic. L7 terminates the connection and understands HTTP, so it can route by path or header at a higher CPU cost.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "networking-030",
+      "type": "flash",
+      "q": "Why does L4 balancing work poorly with long-lived HTTP/2 or gRPC connections?",
+      "a": "L4 balances per connection, but one connection can carry a huge number of requests, so load ends up skewed. An L7 balancer can spread individual requests across backends.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 3
+    },
+    {
+      "id": "networking-031",
+      "type": "flash",
+      "q": "When is least-connections better than round-robin?",
+      "a": "When request durations vary widely. Round-robin can keep feeding a server stuck with slow requests, while least-connections sends new work to the least busy one.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "networking-032",
+      "type": "flash",
+      "q": "How does NAT let many home devices share one public IP?",
+      "a": "The router rewrites each outgoing packet's source IP and port and records the mapping in a table. Replies to that public port are rewritten back to the private host.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "networking-033",
+      "type": "flash",
+      "q": "Why can an outside host not start a connection to a laptop behind NAT?",
+      "a": "No mapping exists until the inside host sends something, so the router does not know where to forward the packet. Port forwarding or hole punching works around this.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "networking-034",
+      "type": "flash",
+      "q": "Why can one server port handle thousands of clients at once?",
+      "a": "A TCP connection is identified by the 4-tuple of source IP, source port, destination IP and destination port. Clients differ in their source address or port, so they can all share the server's port.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "networking-035",
+      "type": "flash",
+      "q": "Which system calls set up a TCP server, in order?",
+      "a": "`socket`, `bind`, `listen`, then `accept` in a loop. `accept` returns a new socket for each client while the listening socket keeps waiting.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "networking-036",
+      "type": "flash",
+      "q": "Does a successful `send` mean the peer received the data?",
+      "a": "No. It only means the data was copied into the local kernel send buffer. Only an application-level reply can confirm the peer got it.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "networking-037",
+      "type": "flash",
+      "q": "Why does `epoll` scale better than `select`?",
+      "a": "`select` makes the kernel and the caller scan the whole descriptor set on every call. `epoll` keeps the interest set in the kernel and returns only ready descriptors, so cost follows activity rather than connection count.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "networking-038",
+      "type": "flash",
+      "q": "What happens between typing a URL and seeing the page?",
+      "a": "The browser resolves the hostname through DNS, opens a TCP connection and runs the TLS handshake. It sends an HTTP request, often answered through a load balancer or CDN. It then parses the HTML, fetches subresources and renders the page.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "networking-039",
+      "type": "flash",
+      "q": "What work can a browser skip when you reload a page moments later?",
+      "a": "It can reuse the cached DNS answer and the open connection, which skips the TCP and TLS handshakes. Resources come from cache, or are revalidated with a conditional request that returns `304`.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "networking-040",
+      "type": "flash",
+      "q": "What is the difference between `401` and `403`?",
+      "a": "`401` means you are not authenticated, so send valid credentials and try again. `403` means the server refuses the request, and logging in again will not help.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "networking-041",
+      "type": "flash",
+      "q": "What do `502` and `504` from a reverse proxy each tell you?",
+      "a": "`502` means the proxy got an invalid response from the upstream server, such as a dropped connection. `504` means the upstream did not answer in time.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "networking-042",
+      "type": "flash",
+      "q": "Why retry a `503` but not a `400`?",
+      "a": "A 5xx says the server failed, which may be temporary. A 4xx says the request itself is wrong, so the same retry gets the same failure, with exceptions such as `429`.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "networking-043",
+      "type": "flash",
+      "q": "How do session cookies and JWTs differ in where state lives?",
+      "a": "A session cookie holds a random ID and the server looks up the session in a store, which makes revocation easy. A JWT carries signed claims, so servers verify it without a lookup, but revoking it before expiry is hard.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "networking-044",
+      "type": "flash",
+      "q": "Can a client read the contents of a standard JWT?",
+      "a": "Yes. It is signed, not encrypted, and the payload is only base64url-encoded. The signature stops tampering but gives no secrecy, so secrets do not belong in it.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "networking-045",
+      "type": "flash",
+      "q": "What do the `HttpOnly`, `Secure` and `SameSite` cookie flags each protect against?",
+      "a": "`HttpOnly` hides the cookie from JavaScript, which limits theft through XSS. `Secure` sends it only over HTTPS, which stops network sniffing. `SameSite` limits sending it on cross-site requests, which reduces CSRF.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "networking-046",
+      "type": "flash",
+      "q": "Who enforces CORS, and what does it actually restrict?",
+      "a": "The browser enforces it. It stops a page's script from reading a response from another origin unless the server allows that through CORS headers. Tools such as `curl` and server-side code are unaffected.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "networking-047",
+      "type": "flash",
+      "q": "When does a browser send a preflight `OPTIONS` request?",
+      "a": "Before a cross-origin request that is not \"simple\", such as one using `PUT`, custom headers or a JSON content type. The real request goes out only if the server's `Access-Control-Allow-*` headers approve it.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "networking-048",
+      "type": "flash",
+      "q": "Why does CORS not stop CSRF?",
+      "a": "CORS limits reading the response, but a CSRF attack only needs the request to be sent with the victim's cookies. A plain cross-site form post goes out with no CORS check, so the defences are `SameSite` cookies and CSRF tokens.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 3
+    },
+    {
+      "id": "networking-049",
+      "type": "flash",
+      "q": "How does a WebSocket connection get established?",
+      "a": "The client sends an HTTP GET with an `Upgrade: websocket` header, and the server replies `101 Switching Protocols`. The same TCP connection then carries framed messages in both directions.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "networking-050",
+      "type": "flash",
+      "q": "Why are WebSockets harder to scale than plain HTTP?",
+      "a": "Each client holds a long-lived connection to one server, so servers carry many open sockets and rebalancing is hard. A message for a user on another server must be routed there, usually through pub/sub.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "networking-051",
+      "type": "flash",
+      "q": "What does it mean for an HTTP method to be idempotent, and which common method is not?",
+      "a": "Idempotent methods such as `GET`, `PUT` and `DELETE` leave the server in the same state however many times they repeat. `POST` is not idempotent, so a retry may repeat its effect.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "networking-052",
+      "type": "flash",
+      "q": "`DELETE` returns `200` and then `404` on a retry. Is it still idempotent?",
+      "a": "Yes. Idempotency is about server state, not the response, and the resource is gone either way.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "networking-053",
+      "type": "flash",
+      "q": "When should a client use `PUT` rather than `POST` to create a resource?",
+      "a": "When the client chooses the URL. Repeating `PUT /users/42` leaves one resource, while retrying `POST /users` lets the server pick a new ID each time and can create duplicates.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "networking-054",
+      "type": "flash",
+      "q": "Why was IPv6 needed?",
+      "a": "IPv4's 32-bit space of about 4.3 billion addresses ran out, which is why NAT became so common. IPv6 uses 128-bit addresses, so every device can have a global address.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "networking-055",
+      "type": "flash",
+      "q": "How does IPv6 handle fragmentation differently from IPv4?",
+      "a": "IPv6 routers never fragment packets. Only the sender can, and it relies on path MTU discovery, whereas IPv4 routers may fragment in transit unless the Don't Fragment bit is set.",
+      "patterns": [
+        "networking"
+      ],
+      "skill": "explain",
+      "level": 3
+    }
+  ]
+}

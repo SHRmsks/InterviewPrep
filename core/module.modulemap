@@ -1,0 +1,4 @@
+module CCore {
+    header "capi.h"
+    export *
+}

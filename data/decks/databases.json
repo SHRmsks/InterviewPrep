@@ -1,0 +1,622 @@
+{
+  "deck": "databases",
+  "title": "Databases",
+  "cards": [
+    {
+      "id": "databases-001",
+      "type": "flash",
+      "q": "What does each letter of ACID protect against?",
+      "a": "Atomicity guards against half-applied transactions, consistency against broken constraints, isolation against interference from concurrent transactions, and durability against losing commits in a crash.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "databases-002",
+      "type": "flash",
+      "q": "How does the C in ACID differ from the C in CAP?",
+      "a": "ACID consistency means a transaction moves the database from one valid state to another, respecting constraints. CAP consistency means linearizability: every read sees the latest completed write across replicas.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-003",
+      "type": "flash",
+      "q": "Which anomaly does each standard isolation level stop?",
+      "a": "Read committed stops dirty reads. Repeatable read also stops non-repeatable reads. Serializable also stops phantoms and behaves as if transactions ran one at a time.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "databases-004",
+      "type": "flash",
+      "q": "How does a non-repeatable read differ from a phantom read?",
+      "a": "In a non-repeatable read, re-reading the same row gives a different value. In a phantom read, re-running a range query returns a different set of rows because another transaction inserted or deleted matches.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-005",
+      "type": "flash",
+      "q": "Two transactions read a counter, add one and write it back. What can go wrong under read committed, and how do you fix it?",
+      "a": "Both read the same value, so the second write overwrites the first and one update is lost. Use an atomic `SET x = x + 1` update, lock the row with `FOR UPDATE`, or add an optimistic version check.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-006",
+      "type": "flash",
+      "q": "How can two doctors both go off call under snapshot isolation when a rule requires one to stay?",
+      "a": "Each transaction reads a snapshot showing the other still on call, then updates only its own row. The writes touch different rows, so no conflict is detected. This is write skew, and serializable isolation prevents it.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 3
+    },
+    {
+      "id": "databases-007",
+      "type": "flash",
+      "q": "How does MVCC stop readers and writers from blocking each other?",
+      "a": "A write creates a new row version instead of overwriting the old one. Readers use a snapshot and see the newest version committed before it, so neither side waits. Writers to the same row still conflict.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-008",
+      "type": "flash",
+      "q": "Why does Postgres need `VACUUM`?",
+      "a": "Updates and deletes leave old row versions behind. `VACUUM` reclaims the ones no transaction can still see, otherwise tables and indexes bloat.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-009",
+      "type": "flash",
+      "q": "Why can one long-running transaction slow down an MVCC database?",
+      "a": "Old row versions must be kept for as long as that transaction might read them, so cleanup cannot remove them. Tables bloat and other queries wade through dead versions.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 3
+    },
+    {
+      "id": "databases-010",
+      "type": "flash",
+      "q": "Why not put an index on every column?",
+      "a": "Every index must be updated on each insert, delete and relevant update, so writes get slower. Indexes also take disk and memory, and many would never be used.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "databases-011",
+      "type": "flash",
+      "q": "When is a hash index worse than a B+ tree index?",
+      "a": "Whenever a query needs order, such as range filters, prefix matches or `ORDER BY`. Hashing scatters keys, so it only serves exact equality.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "databases-012",
+      "type": "flash",
+      "q": "Why might the planner ignore an index and scan the whole table?",
+      "a": "If the filter matches a large share of rows, many random index lookups cost more than one sequential scan. The planner estimates this from table statistics.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-013",
+      "type": "flash",
+      "q": "Why does `WHERE LOWER(email) = 'a@b.com'` skip a plain index on `email`?",
+      "a": "The index is ordered by raw `email` values, not by `LOWER(email)`, so it cannot seek on the result. Create an expression index or keep the column bare.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-014",
+      "type": "flash",
+      "q": "How does a clustered index differ from a secondary index?",
+      "a": "A clustered index stores the rows themselves in key order, so a table can have only one. A secondary index stores the key plus a reference to the row, which in InnoDB is the primary key.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-015",
+      "type": "flash",
+      "q": "Why can a random UUID primary key slow inserts in InnoDB?",
+      "a": "InnoDB clusters rows by primary key, so random keys land all over the tree, causing page splits and cache misses. Sequential keys append at the right edge instead.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 3
+    },
+    {
+      "id": "databases-016",
+      "type": "flash",
+      "q": "Why do databases use B+ trees rather than binary trees on disk?",
+      "a": "A B+ tree node fills a disk page and holds hundreds of keys, so the tree stays only a few levels deep. Each level can cost a disk read, and a binary tree would need dozens of levels.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "databases-017",
+      "type": "flash",
+      "q": "Why does a B+ tree keep values only in linked leaves?",
+      "a": "Keys-only internal nodes stay small, which raises fan-out and lowers height. Linked leaves let a range scan walk sideways without climbing back up the tree.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-018",
+      "type": "flash",
+      "q": "How does an LSM tree absorb writes so quickly?",
+      "a": "A write goes to a log and an in-memory table. When that table fills, it is flushed as a sorted immutable file, and background compaction merges those files. Random writes become sequential disk I/O.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-019",
+      "type": "flash",
+      "q": "Why are point reads usually slower in an LSM tree than in a B+ tree, and what helps?",
+      "a": "A key may sit in the memory table or in any of several sorted files, so a read may check many places. Bloom filters let it skip files that cannot contain the key.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-020",
+      "type": "flash",
+      "q": "When would you pick an LSM tree over a B+ tree?",
+      "a": "For write-heavy workloads, since writes are batched and sequential. B+ trees suit read-heavy workloads and give steadier reads, because LSM compaction adds background load.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-021",
+      "type": "flash",
+      "q": "Which filters can use a composite index on `(a, b, c)`?",
+      "a": "Filters on a leftmost prefix: `a`, `a, b` or `a, b, c`. A filter on `b` alone cannot seek, because the index is sorted by `a` first.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "databases-022",
+      "type": "flash",
+      "q": "Why do equality columns go before range columns in a composite index?",
+      "a": "Within one value of a column, entries are sorted by the next column. After a range condition, later columns are no longer sorted across the matched entries, so the index cannot seek on them.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-023",
+      "type": "flash",
+      "q": "Why can a covering index make a query much faster?",
+      "a": "The index holds every column the query needs, so the database answers from the index alone and skips the random reads into the table.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "databases-024",
+      "type": "flash",
+      "q": "What do you look for first in the plan of a slow query?",
+      "a": "Full scans of large tables, and big gaps between estimated and actual row counts. Bad estimates usually mean stale statistics, which `ANALYZE` refreshes.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-025",
+      "type": "flash",
+      "q": "What goes wrong if a customer's email is stored on every order row?",
+      "a": "An update anomaly: changing the email means updating many rows, and missing one leaves contradictory data. Normalisation stores each fact once.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "databases-026",
+      "type": "flash",
+      "q": "What does third normal form forbid?",
+      "a": "Non-key columns that depend on other non-key columns. If `zip` determines `city`, storing both in every row risks contradictions, so `city` moves to a table keyed by `zip`.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-027",
+      "type": "flash",
+      "q": "When would you denormalise on purpose?",
+      "a": "When a read path is hot and joins are too slow, such as keeping a comment count on a post. The price is keeping the copies in sync on every write.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-028",
+      "type": "flash",
+      "q": "When is each of nested loop, hash and merge join the best choice?",
+      "a": "Nested loop suits a small outer input with an index on the inner side. Hash join suits large unsorted inputs with an equality condition. Merge join suits inputs already sorted on the join key.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-029",
+      "type": "flash",
+      "q": "Why can a `WHERE` condition on the right table turn a `LEFT JOIN` into an inner join?",
+      "a": "Unmatched rows have NULL in the right table's columns, and a condition such as `r.status = 'x'` filters them out. Move the condition into the `ON` clause to keep them.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-030",
+      "type": "flash",
+      "q": "Why can `SUM(o.total)` come out too high after joining `orders` to `order_items`?",
+      "a": "Each order row repeats once per matching item, so its total is added several times. Aggregate the items in a subquery first, or sum at the item level.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-031",
+      "type": "flash",
+      "q": "When does optimistic locking beat pessimistic locking?",
+      "a": "When conflicts are rare. It takes no lock and checks a version number at write time, retrying on conflict, whereas pessimistic locking makes every transaction wait. Under heavy contention the retries cost more than waiting.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-032",
+      "type": "flash",
+      "q": "What does a database do when two transactions deadlock?",
+      "a": "It detects a cycle in the wait-for graph and aborts one transaction as the victim. The client must be ready to retry it.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-033",
+      "type": "flash",
+      "q": "How does two-phase locking give serializability?",
+      "a": "A transaction acquires locks in a growing phase and releases them in a shrinking phase, never acquiring after a release. Any two conflicting transactions are then forced into one consistent order.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 3
+    },
+    {
+      "id": "databases-034",
+      "type": "flash",
+      "q": "Why should you avoid calling an external API inside a database transaction?",
+      "a": "Locks and a connection stay held for an unpredictable wait, which blocks others. If the commit then fails, the external effect cannot be rolled back.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-035",
+      "type": "flash",
+      "q": "What is the core rule of write-ahead logging, and why does it matter?",
+      "a": "A change's log record must reach stable storage before the modified page does. After a crash, the log lets the database redo committed work and undo uncommitted work.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-036",
+      "type": "flash",
+      "q": "Why is committing through a log faster than writing the changed data pages?",
+      "a": "A commit needs only a sequential append and a flush of the log, while data pages would need random writes across the disk. Dirty pages go to disk later in batches.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-037",
+      "type": "flash",
+      "q": "What do you trade between synchronous and asynchronous replication?",
+      "a": "Synchronous replication waits for a replica, so failover loses no acknowledged write, but commits are slower and a stuck replica can stall them. Asynchronous replication commits fast, but a failover can lose the latest writes.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "databases-038",
+      "type": "flash",
+      "q": "A user saves a profile and sees the old one on refresh. What is the likely cause and fix?",
+      "a": "Replication lag: the read hit an asynchronous replica that has not applied the write yet. Route that user's reads to the primary for a while, or wait until the replica reaches the write's log position.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-039",
+      "type": "flash",
+      "q": "Why does multi-leader replication need conflict resolution?",
+      "a": "Two leaders can accept different writes to the same row at the same time, and neither blocks the other. They must later reconcile with a rule such as last-write-wins or an application merge.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-040",
+      "type": "flash",
+      "q": "Why do read replicas not increase write throughput?",
+      "a": "Every replica has to apply every write, so all writes still funnel through the primary. Scaling writes takes sharding.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "databases-041",
+      "type": "flash",
+      "q": "How do range sharding and hash sharding trade off?",
+      "a": "Range sharding keeps adjacent keys together, so range scans are cheap, but sequential keys pile onto one shard. Hash sharding spreads keys evenly, but a range query must touch every shard.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-042",
+      "type": "flash",
+      "q": "Why choose a shard key that keeps common queries on one shard?",
+      "a": "Cross-shard queries fan out to many nodes and need merging, and cross-shard transactions need a protocol such as two-phase commit. Both add latency and failure modes.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-043",
+      "type": "flash",
+      "q": "Why can two-phase commit block if the coordinator crashes?",
+      "a": "A participant that voted yes cannot decide alone, because others may have committed or aborted. It holds its locks until the coordinator recovers.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 3
+    },
+    {
+      "id": "databases-044",
+      "type": "flash",
+      "q": "What does the CAP theorem actually force you to choose?",
+      "a": "During a network partition, a system must either reject some requests to stay consistent or answer them and risk stale data. With no partition, there is no forced choice.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "databases-045",
+      "type": "flash",
+      "q": "What does PACELC add to CAP?",
+      "a": "It covers the normal case. With a partition you choose availability or consistency, and otherwise you choose latency or consistency, because synchronous replication takes time even when nothing is failing.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-046",
+      "type": "flash",
+      "q": "Why does `hash(key) % N` break down when servers are added or removed?",
+      "a": "Changing N remaps almost every key, not only those on the changed server. For a cache, that means a sudden wave of misses.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "databases-047",
+      "type": "flash",
+      "q": "How does consistent hashing limit how many keys move?",
+      "a": "Servers and keys hash onto a ring, and each key belongs to the next server clockwise. Adding or removing a server moves only the keys in its arc, about 1/N of the total.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-048",
+      "type": "flash",
+      "q": "Why does consistent hashing use virtual nodes?",
+      "a": "Each server takes many ring positions, which evens out load. A failed server's keys then spread across many servers rather than all landing on one neighbour.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-049",
+      "type": "flash",
+      "q": "How do you choose between a relational database and a document store?",
+      "a": "Pick relational when you need joins, ad hoc queries and multi-row transactions. Pick a document store when records are self-contained, are read and written as a whole, and have varying schemas.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "databases-050",
+      "type": "flash",
+      "q": "What is the catch with a schemaless database?",
+      "a": "The schema moves into your application code. Every reader must handle every old document shape that still exists.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-051",
+      "type": "flash",
+      "q": "What is the N+1 query problem, and how do you fix it?",
+      "a": "Code fetches a list and then runs one more query per item, often through lazy loading in an ORM. Fix it with a join or a single `WHERE id IN (...)` query, which ORMs call eager loading.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "databases-052",
+      "type": "flash",
+      "q": "How do `WHERE` and `HAVING` differ?",
+      "a": "`WHERE` filters rows before grouping and cannot use aggregates. `HAVING` filters groups after aggregation.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "databases-053",
+      "type": "flash",
+      "q": "Why does `WHERE x = NULL` return no rows?",
+      "a": "Any comparison with NULL yields unknown, not true, and `WHERE` keeps only true rows. Use `IS NULL`.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "databases-054",
+      "type": "flash",
+      "q": "How does `COUNT(*)` differ from `COUNT(col)`?",
+      "a": "`COUNT(*)` counts rows. `COUNT(col)` counts only rows where `col` is not NULL.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "databases-055",
+      "type": "flash",
+      "q": "Why can `x NOT IN (SELECT y FROM t)` return no rows at all?",
+      "a": "If any `y` is NULL, the comparison for a non-matching `x` becomes unknown rather than true, so no row passes. `NOT EXISTS` avoids this.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "databases-056",
+      "type": "flash",
+      "q": "In standard SQL, why can a `SELECT` alias not be used in `WHERE`, even though `ORDER BY` can use it?",
+      "a": "Clauses run logically as `FROM`, `WHERE`, `GROUP BY`, `HAVING`, `SELECT`, `ORDER BY`, `LIMIT`. `WHERE` runs before `SELECT`, so the alias does not exist yet.",
+      "patterns": [
+        "databases"
+      ],
+      "skill": "explain",
+      "level": 2
+    }
+  ]
+}

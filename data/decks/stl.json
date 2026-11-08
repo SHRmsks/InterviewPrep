@@ -1,0 +1,733 @@
+{
+  "deck": "stl",
+  "title": "C++ without autocomplete",
+  "cards": [
+    {
+      "id": "stl-001",
+      "type": "drill",
+      "q": "Declare `pq`, a min-heap of `int`.",
+      "a": "The default `priority_queue<int>` is a max-heap. To pass `greater<int>` you must also spell out the container, `vector<int>`.",
+      "code": "priority_queue<int, vector<int>, greater<int>> pq;",
+      "patterns": ["heap", "cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-002",
+      "type": "drill",
+      "q": "With `using P = pair<int, int>;`, declare a lambda `cmp` and a heap `pq` so the pair with the smallest `.second` is on top.",
+      "a": "A comparator returning true means `a` sinks below `b`, so `>` gives a min-heap. `decltype(cmp)` names the type, and C++17 also needs `cmp` passed to the constructor.",
+      "code": "auto cmp = [](const P& a, const P& b) { return a.second > b.second; };\npriority_queue<P, vector<P>, decltype(cmp)> pq(cmp);",
+      "patterns": ["heap", "cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-003",
+      "type": "drill",
+      "q": "Store in `int i` the index of the first element of sorted `v` that is not less than `x`.",
+      "a": "`lower_bound` returns an iterator, and subtracting `v.begin()` turns it into an index. If every element is smaller, `i` equals `v.size()`.",
+      "code": "int i = lower_bound(v.begin(), v.end(), x) - v.begin();",
+      "patterns": ["binary-search", "cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-004",
+      "type": "drill",
+      "q": "Set `bool has` to whether key `k` is in map `m`, without modifying `m`.",
+      "a": "`m[k]` inserts a zero for a missing key, so testing with it grows the map.",
+      "code": "bool has = m.find(k) != m.end();",
+      "patterns": ["arrays-hashing", "cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-005",
+      "type": "flash",
+      "q": "In what order does a range-for visit a `map`, and in what order an `unordered_map`?",
+      "a": "`map` goes in ascending key order. `unordered_map` order is unspecified and can change after a rehash.",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-006",
+      "type": "flash",
+      "q": "For `map<int, int> m`, why write `m.lower_bound(k)` and not `std::lower_bound` over `m.begin()` to `m.end()`?",
+      "a": "The member function descends the tree in O(log n). `std::lower_bound` needs random-access iterators to be fast, so on a `map` it walks step by step in O(n). It also compares whole `pair` elements, so it would need a custom comparator.",
+      "patterns": ["binary-search", "cpp"],
+      "skill": "syntax",
+      "level": 2
+    },
+    {
+      "id": "stl-007",
+      "type": "drill",
+      "q": "For `set<int> s`, set `ans` to the largest element `<= x`, leaving `ans` unchanged if there is none.",
+      "a": "`upper_bound` gives the first element `> x`, so the one before it is the floor. Check against `s.begin()`, because `prev(s.begin())` is undefined.",
+      "code": "auto it = s.upper_bound(x);\nif (it != s.begin()) ans = *prev(it);",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 2
+    },
+    {
+      "id": "stl-008",
+      "type": "drill",
+      "q": "Insert `x` into `set<int> s` and set `bool added` to whether `x` was new.",
+      "a": "`insert` returns `pair<iterator, bool>`. The `bool` is false if an equal element already existed.",
+      "code": "bool added = s.insert(x).second;",
+      "patterns": ["arrays-hashing", "cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-009",
+      "type": "drill",
+      "q": "Set `int lo` and `int hi` to the smallest and largest values in non-empty `multiset<int> ms`.",
+      "a": "`set` and `multiset` stay sorted, so the two ends hold the extremes. Use `rbegin()`, because `end()` points past the last element.",
+      "code": "int lo = *ms.begin();\nint hi = *ms.rbegin();",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-010",
+      "type": "drill",
+      "q": "Remove exactly one copy of `x` from `multiset<int> ms`, where `x` is known to be present.",
+      "a": "`ms.erase(x)` removes every copy, because the value overload erases all matches. The iterator overload erases one, and passing `end()` is undefined.",
+      "code": "ms.erase(ms.find(x));",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-011",
+      "type": "drill",
+      "q": "Erase every entry of `map<int, int> m` with value 0, in a single loop over iterators.",
+      "a": "`erase` invalidates `it` and returns the next valid iterator. Advance either by that assignment or by `it++`, never both.",
+      "code": "for (auto it = m.begin(); it != m.end();) {\n    if (it->second == 0) it = m.erase(it);\n    else it++;\n}",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-012",
+      "type": "drill",
+      "q": "Delete every element equal to `x` from `vector<int> v` in O(n).",
+      "a": "`remove` shifts the kept elements forward and returns the new logical end, without changing the size. `erase` then cuts off the tail.",
+      "code": "v.erase(remove(v.begin(), v.end(), x), v.end());",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-013",
+      "type": "drill",
+      "q": "Declare `dp`, a table of zeros with `m + 1` rows and `n + 1` columns.",
+      "a": "The second argument is one row, and the outer vector copies it `m + 1` times. `vector<int>(n + 1)` is already zero-filled.",
+      "code": "vector<vector<int>> dp(m + 1, vector<int>(n + 1));",
+      "patterns": ["dp-grid", "cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-014",
+      "type": "flash",
+      "q": "How many elements do `vector<int> a(3, 7);` and `vector<int> b{3, 7};` hold?",
+      "a": "`a` holds three 7s. `b` holds two elements, 3 and 7, because braces prefer the initializer-list constructor.",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 2
+    },
+    {
+      "id": "stl-015",
+      "type": "flash",
+      "q": "After `vector<int> v; v.reserve(10);`, is `v[0] = 1;` valid?",
+      "a": "No, it is undefined. `reserve` only sets capacity, so the size is still 0, and `resize(10)` is what creates elements.",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 2
+    },
+    {
+      "id": "stl-016",
+      "type": "flash",
+      "q": "Why does `auto& x = flags[0];` not compile for `vector<bool> flags`?",
+      "a": "`vector<bool>` packs elements into bits, so `operator[]` returns a temporary proxy object, not a `bool&`. A non-const reference cannot bind to a temporary.",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 2
+    },
+    {
+      "id": "stl-017",
+      "type": "flash",
+      "q": "What does this print?",
+      "qcode": "vector<bool> flags(2, false);\nauto x = flags[0];\nflags[0] = true;\ncout << x;",
+      "a": "`1`. `auto` deduces the proxy, which still refers to the bit. Write `bool x = flags[0];` to get a real copy.",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 2
+    },
+    {
+      "id": "stl-018",
+      "type": "flash",
+      "q": "Why is the last line undefined behaviour?",
+      "qcode": "vector<int> v = {1, 2, 3};\nint& first = v[0];\nv.push_back(4);\ncout << first;",
+      "a": "`push_back` may reallocate, which invalidates every reference, pointer and iterator into the vector. Take them after the last insertion, or hold an index instead.",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 2
+    },
+    {
+      "id": "stl-019",
+      "type": "flash",
+      "q": "In `map`, `set` and `list`, which iterators does an insert or an erase invalidate?",
+      "a": "An insert invalidates none. An erase invalidates only iterators to the erased element.",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 2
+    },
+    {
+      "id": "stl-020",
+      "type": "flash",
+      "q": "What does a rehash of an `unordered_map` invalidate?",
+      "a": "All iterators, but not pointers or references to elements. Any insert can trigger a rehash, so do not hold an iterator across one.",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 3
+    },
+    {
+      "id": "stl-021",
+      "type": "drill",
+      "q": "Append the pair `(1, 2)` to `vector<pair<int, int>> v` using `emplace_back`.",
+      "a": "`emplace_back` forwards constructor arguments, so it takes no braces: `v.emplace_back({1, 2})` does not compile. `push_back` takes an object, so `v.push_back({1, 2})` is the braced form.",
+      "code": "v.emplace_back(1, 2);",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-022",
+      "type": "drill",
+      "q": "With `using P = pair<int, int>;`, sort `vector<P> v` by `.second` ascending, using a lambda.",
+      "a": "For `sort`, returning true means `a` comes first. That is the opposite reading from `priority_queue`, where `>` gives a min-heap.",
+      "code": "sort(v.begin(), v.end(), [](const P& a, const P& b) {\n    return a.second < b.second;\n});",
+      "patterns": ["sorting", "cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-023",
+      "type": "flash",
+      "q": "Why is this comparator a bug?",
+      "qcode": "sort(v.begin(), v.end(), [](int a, int b) {\n    return a <= b;\n});",
+      "a": "A comparator must be a strict weak ordering, so `cmp(x, x)` must be false. `<=` breaks that, which makes the behaviour undefined, and `sort` can run out of bounds.",
+      "patterns": ["sorting", "cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-024",
+      "type": "drill",
+      "q": "Sort `vector<int> v` in descending order using a standard function object.",
+      "a": "`sort` takes an object, so write `greater<int>()` with parentheses. `priority_queue` takes a type, so there it is `greater<int>` without them.",
+      "code": "sort(v.begin(), v.end(), greater<int>());",
+      "patterns": ["sorting", "cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-025",
+      "type": "flash",
+      "q": "What does `stable_sort` guarantee that `sort` does not?",
+      "a": "Elements that compare equal keep their original relative order. That lets you sort by a secondary key first and by the primary key second.",
+      "patterns": ["sorting", "cpp"],
+      "skill": "syntax",
+      "level": 2
+    },
+    {
+      "id": "stl-026",
+      "type": "drill",
+      "q": "Rearrange `vector<int> v` in average O(n) so that `v[k]` holds the value it would have if `v` were sorted.",
+      "a": "Elements before `v[k]` are `<=` it and elements after are `>=` it, but neither side is sorted. The middle argument is an iterator, not the index `k`.",
+      "code": "nth_element(v.begin(), v.begin() + k, v.end());",
+      "patterns": ["sorting", "cpp"],
+      "skill": "syntax",
+      "level": 2
+    },
+    {
+      "id": "stl-027",
+      "type": "drill",
+      "q": "Put the `k` smallest elements of `vector<int> v` at the front in sorted order, in O(n log k).",
+      "a": "The rest of the vector is left in unspecified order. If the front `k` need not be sorted, `nth_element` is cheaper.",
+      "code": "partial_sort(v.begin(), v.begin() + k, v.end());",
+      "patterns": ["sorting", "cpp"],
+      "skill": "syntax",
+      "level": 2
+    },
+    {
+      "id": "stl-028",
+      "type": "drill",
+      "q": "Turn `vector<int> v` into its sorted distinct values.",
+      "a": "`unique` only collapses adjacent duplicates, so sort first. It returns the new logical end and leaves the size alone, so `erase` must cut the tail.",
+      "code": "sort(v.begin(), v.end());\nv.erase(unique(v.begin(), v.end()), v.end());",
+      "patterns": ["sorting", "cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-029",
+      "type": "drill",
+      "q": "Sum `vector<int> v` into `long long total` so that large sums do not overflow.",
+      "a": "The type of the third argument is the type of the running sum, so a plain `0` adds in `int` and overflows. `accumulate` is in `<numeric>`.",
+      "code": "long long total = accumulate(v.begin(), v.end(), 0LL);",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-030",
+      "type": "drill",
+      "q": "Reverse `string s` in place using the STL.",
+      "a": "`reverse` takes an iterator range and returns `void`, so its result cannot be assigned. `string` has no `.reverse()` member.",
+      "code": "reverse(s.begin(), s.end());",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-031",
+      "type": "drill",
+      "q": "Set `int mx` to the largest value in non-empty `vector<int> v`.",
+      "a": "`max_element` returns an iterator, so dereference it with `*`. On an empty range it returns `end()`, and dereferencing that is undefined.",
+      "code": "int mx = *max_element(v.begin(), v.end());",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-032",
+      "type": "drill",
+      "q": "Set `int i` to the index of the smallest value in non-empty `vector<int> v`.",
+      "a": "Subtract `v.begin()` to turn the iterator into an index. On ties you get the first smallest element.",
+      "code": "int i = min_element(v.begin(), v.end()) - v.begin();",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-033",
+      "type": "drill",
+      "q": "Using `next_permutation`, set `int cnt` to the number of distinct orderings of `vector<int> v`.",
+      "a": "Sort first, because `next_permutation` returns false after the largest ordering, wherever you started. `do`-`while` counts the starting ordering too.",
+      "code": "sort(v.begin(), v.end());\nint cnt = 0;\ndo {\n    cnt++;\n} while (next_permutation(v.begin(), v.end()));",
+      "patterns": ["backtracking", "cpp"],
+      "skill": "syntax",
+      "level": 2
+    },
+    {
+      "id": "stl-034",
+      "type": "drill",
+      "q": "`vector<int> parent(n)` needs `parent[i] == i` for every `i`. Set that with one STL call.",
+      "a": "`iota` is in `<numeric>` and writes consecutive values starting at the third argument. It overwrites existing elements, so the vector must already be sized.",
+      "code": "iota(parent.begin(), parent.end(), 0);",
+      "patterns": ["union-find", "cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-035",
+      "type": "flash",
+      "q": "What does this print?",
+      "qcode": "int a[4];\nmemset(a, 1, sizeof(a));\ncout << a[0];",
+      "a": "`16843009`, which is `0x01010101`. `memset` writes bytes, so only 0 and -1 give the expected `int` value. Use `fill` for anything else.",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-036",
+      "type": "flash",
+      "q": "Why does this not clear the whole array?",
+      "qcode": "void clearAll(int a[], int n) {\n    memset(a, 0, sizeof(a));\n}",
+      "a": "`a` decays to a pointer, so `sizeof(a)` is the pointer size, not the array size. Use `n * sizeof(int)` or `fill(a, a + n, 0)`.",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 2
+    },
+    {
+      "id": "stl-037",
+      "type": "flash",
+      "q": "What does this print?",
+      "qcode": "string s = \"abcdef\";\ncout << s.substr(2, 3);",
+      "a": "`cde`. The arguments are a start index and a length, not an end index.",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-038",
+      "type": "drill",
+      "q": "Set `string t` to the characters of `s` from index `l` to index `r`, both inclusive.",
+      "a": "The second argument is a length, so inclusive bounds need the `+ 1`.",
+      "code": "string t = s.substr(l, r - l + 1);",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-039",
+      "type": "drill",
+      "q": "Set `bool has` to whether `string s` contains `\"ab\"`.",
+      "a": "`string::find` returns an index, or `string::npos` if there is no match. It is not an iterator, so do not compare it with `s.end()`.",
+      "code": "bool has = s.find(\"ab\") != string::npos;",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-040",
+      "type": "drill",
+      "q": "Convert `string s` to `int x`, then convert `x` back to `string t`.",
+      "a": "`stoi` throws `invalid_argument` when no digits can be read and `out_of_range` when the value does not fit. Use `stoll` for `long long`.",
+      "code": "int x = stoi(s);\nstring t = to_string(x);",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-041",
+      "type": "flash",
+      "q": "What does `stoi(\"12abc\")` return?",
+      "a": "12. It parses the longest valid numeric prefix and ignores the rest, throwing only if there is no such prefix.",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 2
+    },
+    {
+      "id": "stl-042",
+      "type": "drill",
+      "q": "Set `int d` to the numeric value of digit character `c`.",
+      "a": "Digit characters have consecutive codes, so subtracting `'0'` gives 0 to 9. `int d = c;` would give the character code, such as 48 for `'0'`.",
+      "code": "int d = c - '0';",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-043",
+      "type": "drill",
+      "q": "Set `char c` to the letter at 0-based position `i` of the lowercase alphabet.",
+      "a": "`'a' + i` is an `int`, and assigning it to `char` turns it back into a letter. `c - 'a'` is the reverse.",
+      "code": "char c = 'a' + i;",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-044",
+      "type": "flash",
+      "q": "What does this print?",
+      "qcode": "cout << 'a' + 1;",
+      "a": "`98`. Arithmetic promotes `char` to `int`, so `cout` prints a number. `char('a' + 1)` prints `b`.",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-045",
+      "type": "drill",
+      "q": "Read one whole line from standard input, spaces included, into a new `string line`.",
+      "a": "`cin >> s` stops at whitespace. `getline` reads up to the newline and discards it.",
+      "code": "string line;\ngetline(cin, line);",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-046",
+      "type": "flash",
+      "q": "The input is `5` on one line and `hello` on the next. What does `line` hold?",
+      "qcode": "int n;\nstring line;\ncin >> n;\ngetline(cin, line);",
+      "a": "An empty string. `cin >> n` leaves the newline unread and `getline` stops there at once, so call `cin.ignore();` before it.",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 2
+    },
+    {
+      "id": "stl-047",
+      "type": "drill",
+      "q": "Split `string line` on whitespace into `vector<string> words` using a `stringstream`.",
+      "a": "`ss >> word` skips any run of whitespace and fails at the end of the stream, which ends the loop. `stringstream` is in `<sstream>`.",
+      "code": "stringstream ss(line);\nstring word;\nvector<string> words;\nwhile (ss >> word) words.push_back(word);",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-048",
+      "type": "drill",
+      "q": "Store the product of `int a` and `int b` in `long long p` without overflow.",
+      "a": "`long long p = a * b;` still overflows, because `a * b` is computed in `int` before the conversion. Making the first operand `long long` widens the whole product.",
+      "code": "long long p = 1LL * a * b;",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-049",
+      "type": "drill",
+      "q": "Declare `int mid` halfway between `int lo` and `int hi`, safe from overflow.",
+      "a": "`(lo + hi) / 2` overflows when the sum passes `INT_MAX`. `hi - lo` stays in range for `0 <= lo <= hi`.",
+      "code": "int mid = lo + (hi - lo) / 2;",
+      "patterns": ["binary-search", "cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-050",
+      "type": "flash",
+      "q": "Summing 1e5 values of up to 1e9 each, which type does the total need?",
+      "a": "`long long`. The total can reach 1e14, while `int` stops near 2.1e9 and `long long` near 9.2e18.",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-051",
+      "type": "drill",
+      "q": "Set `long long best` to the largest `long long` value, using `numeric_limits`.",
+      "a": "`max()` is a function, so keep the parentheses. For `int`, the shorter `INT_MAX` from `<climits>` does the same job.",
+      "code": "long long best = numeric_limits<long long>::max();",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-052",
+      "type": "flash",
+      "q": "Why does `max(a, b)` not compile when `a` is `long long` and `b` is `int`?",
+      "a": "`max` takes two arguments of one deduced type `T`, and here the deduction conflicts. Write `max<long long>(a, b)` or cast `b`.",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 2
+    },
+    {
+      "id": "stl-053",
+      "type": "drill",
+      "q": "Set `int best` to the smallest of `a`, `b` and `c` with a single call to `min`.",
+      "a": "The braces build an `initializer_list`, which has its own overload. `min(a, b, c)` is wrong, because its third parameter is a comparator.",
+      "code": "int best = min({a, b, c});",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 2
+    },
+    {
+      "id": "stl-054",
+      "type": "flash",
+      "q": "What happens when this runs?",
+      "qcode": "vector<int> v;\nfor (int i = 0; i < v.size() - 1; i++) {\n    cout << v[i];\n}",
+      "a": "`v.size()` is unsigned, so `v.size() - 1` wraps to a huge value and the loop reads out of bounds. Fix it with `int n = v.size();` and `i < n - 1`.",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-055",
+      "type": "drill",
+      "q": "Set `int ones` to the number of set bits in `int x`, using a compiler builtin.",
+      "a": "It takes an `unsigned int`, and `__builtin_popcountll` is the 64-bit form. Builtins are GCC and Clang extensions, not standard C++.",
+      "code": "int ones = __builtin_popcount(x);",
+      "patterns": ["bit-manipulation", "cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-056",
+      "type": "drill",
+      "q": "Set `int tz` to the number of trailing zero bits in nonzero `int x`, using a compiler builtin.",
+      "a": "The result is undefined for `x == 0`, so guard that case. `__builtin_ctzll` is the 64-bit form.",
+      "code": "int tz = __builtin_ctz(x);",
+      "patterns": ["bit-manipulation", "cpp"],
+      "skill": "syntax",
+      "level": 2
+    },
+    {
+      "id": "stl-057",
+      "type": "drill",
+      "q": "Declare `bitset<1000> b`, set bit 5, and store the number of set bits in `int ones`.",
+      "a": "The size is a compile-time constant. `b[i]` or `b.test(i)` reads a bit, and `b.to_string()` gives the binary text.",
+      "code": "bitset<1000> b;\nb.set(5);\nint ones = b.count();",
+      "patterns": ["bit-manipulation", "cpp"],
+      "skill": "syntax",
+      "level": 2
+    },
+    {
+      "id": "stl-058",
+      "type": "drill",
+      "q": "With `deque<int> dq`, add `x` at the front, add `y` at the back, then remove the front element.",
+      "a": "Both ends are O(1), and `dq[i]` gives random access, which `queue` does not. Read the ends with `dq.front()` and `dq.back()`.",
+      "code": "dq.push_front(x);\ndq.push_back(y);\ndq.pop_front();",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-059",
+      "type": "drill",
+      "q": "Move the top of `stack<int> st` into `int x`, removing it from the stack.",
+      "a": "`pop()` returns `void`, so read `top()` first.",
+      "code": "int x = st.top();\nst.pop();",
+      "patterns": ["stack", "cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-060",
+      "type": "drill",
+      "q": "Move the next element of `queue<int> q` into `int x`, removing it from the queue.",
+      "a": "`queue` uses `front()`, not `top()`; only `stack` and `priority_queue` have `top()`. Its `pop()` also returns `void`.",
+      "code": "int x = q.front();\nq.pop();",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-061",
+      "type": "drill",
+      "q": "Declare `cnt`, a fixed-size `array` of 26 `int` zeros.",
+      "a": "The empty braces zero it, while a local `array<int, 26> cnt;` holds garbage. Unlike a C array it compares with `==` and `<`, so it can be a `map` key.",
+      "code": "array<int, 26> cnt{};",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 2
+    },
+    {
+      "id": "stl-062",
+      "type": "flash",
+      "q": "How does `<` compare two `pair<int, int>` values?",
+      "a": "By `first`, then by `second` when the firsts are equal. So `sort` needs no comparator for that order, and `priority_queue` puts the largest `first` on top.",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-063",
+      "type": "drill",
+      "q": "Declare `tuple<int, int, string> t` holding 1, 2 and `\"a\"`, then read its last field into `string s`.",
+      "a": "The index in `get<2>` is a template argument, so it must be a compile-time constant. A loop variable will not work.",
+      "code": "tuple<int, int, string> t = {1, 2, \"a\"};\nstring s = get<2>(t);",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 2
+    },
+    {
+      "id": "stl-064",
+      "type": "drill",
+      "q": "Unpack `pair<int, int> p` into new variables `a` and `b` in one line.",
+      "a": "Structured bindings need C++17. Plain `auto` copies, while `auto& [a, b] = p;` binds to the original.",
+      "code": "auto [a, b] = p;",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-065",
+      "type": "drill",
+      "q": "Add every value of `map<string, int> m` to `int total`, using structured bindings named `k` and `v` and no copies.",
+      "a": "Each element is a `pair<const string, int>`. `const auto&` avoids copying the string key on every step.",
+      "code": "for (const auto& [k, v] : m) total += v;",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-066",
+      "type": "flash",
+      "q": "What does this print?",
+      "qcode": "vector<int> v = {1, 2, 3};\nfor (int x : v) x *= 2;\ncout << v[0];",
+      "a": "`1`. `x` is a copy, so the vector is unchanged. Write `for (int& x : v)` to modify elements.",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-067",
+      "type": "drill",
+      "q": "Add the length of every string in `vector<string> words` to `int total`, without copying any string.",
+      "a": "`auto w` copies each string. Use `const auto&` for anything larger than a small scalar that you only read.",
+      "code": "for (const auto& w : words) total += w.size();",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-068",
+      "type": "drill",
+      "q": "Given child lists `vector<vector<int>> adj`, define a recursive lambda `dfs` returning the size of the subtree at `u`, then store `dfs(0)` in `int total`.",
+      "a": "`auto dfs` does not compile, because the variable cannot appear in its own initialiser before its type is known. `function<int(int)>` names the type up front.",
+      "code": "function<int(int)> dfs = [&](int u) {\n    int size = 1;\n    for (int v : adj[u]) size += dfs(v);\n    return size;\n};\nint total = dfs(0);",
+      "patterns": ["tree-dfs", "cpp"],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "stl-069",
+      "type": "flash",
+      "q": "What does storing a recursive lambda in `function<int(int)>` cost?",
+      "a": "Every call is an indirect call through type erasure that the compiler usually cannot inline, and constructing the `function` may allocate. That is fine for most interview code, but a named function is faster in hot recursion.",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 2
+    },
+    {
+      "id": "stl-070",
+      "type": "flash",
+      "q": "Why must this lambda capture with `[&]`, not `[=]`?",
+      "qcode": "function<int(int)> f = [=](int i) {\n    return i == 0 ? 0 : f(i - 1);\n};",
+      "a": "`[=]` copies `f` before `f` is initialised, which is undefined behaviour. `[&]` stores a reference, and `f` is ready by the time the lambda runs.",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 2
+    },
+    {
+      "id": "stl-071",
+      "type": "drill",
+      "q": "Without `function`, define a recursive generic lambda `fact` that takes itself as `self`, then store `fact(fact, 5)` in `int ans`.",
+      "a": "The lambda receives itself as an argument, so there is no `function` overhead. The `-> int` is needed here, because the return type cannot be deduced through the recursive call.",
+      "code": "auto fact = [](auto&& self, int i) -> int {\n    return i == 0 ? 1 : i * self(self, i - 1);\n};\nint ans = fact(fact, 5);",
+      "patterns": ["cpp"],
+      "skill": "syntax",
+      "level": 3
+    },
+    {
+      "id": "stl-072",
+      "type": "flash",
+      "q": "What are the two problems with this by-value `seen` in a recursive `dfs`?",
+      "qcode": "void dfs(int u, const vector<vector<int>>& adj, vector<int> seen) {\n    seen[u] = 1;\n    for (int v : adj[u]) {\n        if (!seen[v]) dfs(v, adj, seen);\n    }\n}",
+      "a": "Each call copies the whole vector, which costs O(n) per call. Marks made by a deeper call are also lost when it returns, so declare `vector<int>& seen`.",
+      "patterns": ["graph-traversal", "cpp"],
+      "skill": "syntax",
+      "level": 2
+    },
+    {
+      "id": "stl-073",
+      "type": "drill",
+      "q": "Write `struct PairHash` so that `unordered_map<pair<int, int>, int, PairHash> m` compiles, combining `hash<int>` of both fields with a multiplier of 31, then declare `m`.",
+      "a": "`std::hash` has no `pair` specialisation, so the map needs a hasher as its third template argument. `operator()` must be `const`. A `map<pair<int, int>, int>` needs no hasher at all, at O(log n) per access.",
+      "code": "struct PairHash {\n    size_t operator()(const pair<int, int>& p) const {\n        return hash<int>()(p.first) * 31 + hash<int>()(p.second);\n    }\n};\nunordered_map<pair<int, int>, int, PairHash> m;",
+      "patterns": ["arrays-hashing", "cpp"],
+      "skill": "syntax",
+      "level": 2
+    },
+    {
+      "id": "stl-074",
+      "type": "drill",
+      "q": "Define `struct ListNode` with `int val`, `ListNode* next`, and a constructor `ListNode(int x)` that uses an initialiser list.",
+      "a": "Forgetting `next(nullptr)` leaves `next` uninitialised, so the first walk of the list can crash. Use `ListNode dummy(0);` for a stack node and `new ListNode(0)` for a heap node.",
+      "code": "struct ListNode {\n    int val;\n    ListNode* next;\n    ListNode(int x) : val(x), next(nullptr) {}\n};",
+      "patterns": ["linked-list", "cpp"],
+      "skill": "syntax",
+      "level": 1
+    }
+  ]
+}

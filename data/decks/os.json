@@ -1,0 +1,612 @@
+{
+  "deck": "os",
+  "title": "Operating systems",
+  "cards": [
+    {
+      "id": "os-001",
+      "type": "flash",
+      "q": "What do threads of one process share, and what does each keep private?",
+      "a": "They share the address space (code, globals, heap) and open file descriptors. Each thread keeps its own stack, registers, program counter and thread-local storage.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "os-002",
+      "type": "flash",
+      "q": "Why does one bad thread usually take down the whole process, while a crashing child process leaves its parent alive?",
+      "a": "Threads share an address space, so a wild write corrupts everyone, and a fatal signal such as SIGSEGV ends the whole process by default. A child has its own address space, so the parent is only notified and can restart it.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-003",
+      "type": "flash",
+      "q": "Why might a browser run each site in its own process rather than its own thread?",
+      "a": "A process boundary gives crash isolation and lets the OS sandbox each site, so one compromised page cannot read another site's memory. The cost is more memory and slower communication through IPC.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-004",
+      "type": "flash",
+      "q": "Why is a switch between threads of one process usually cheaper than a switch between processes?",
+      "a": "The address space stays the same, so page tables do not change and the TLB and caches stay useful. A process switch loads new page tables, which invalidates translations unless the TLB is tagged.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "os-005",
+      "type": "flash",
+      "q": "Where does most of the cost of a context switch come from in practice?",
+      "a": "Mostly from the aftermath, not the register save. The incoming thread starts with cold CPU caches and, across processes, a cold TLB, so it runs slowly until they refill.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-006",
+      "type": "flash",
+      "q": "What does a high count of voluntary context switches suggest, compared with a high count of involuntary ones?",
+      "a": "Voluntary switches mean threads are blocking, often on I/O or locks. Involuntary switches mean threads are being preempted, which points to more runnable threads than CPUs.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 3
+    },
+    {
+      "id": "os-007",
+      "type": "flash",
+      "q": "What does virtual memory give you that raw physical addressing cannot?",
+      "a": "Isolation between processes, a private contiguous address space for each one, and the ability to use more memory than RAM by paging to disk. It also lets the kernel share physical pages between processes.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "os-008",
+      "type": "flash",
+      "q": "Why can two processes hold the same pointer value yet read different data?",
+      "a": "Each process has its own page tables, so the same virtual address maps to a different physical frame. An address only means something relative to a page table.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "os-009",
+      "type": "flash",
+      "q": "With 4 KB pages, how is a virtual address split during translation?",
+      "a": "The low 12 bits are the page offset, which passes through unchanged. The upper bits are the virtual page number, which the page table maps to a physical frame number.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-010",
+      "type": "flash",
+      "q": "Why do 64-bit systems use multi-level page tables instead of one flat array?",
+      "a": "A flat table needs an entry for every virtual page, used or not, which is far too large for a 64-bit space. Multi-level tables allocate lower levels only for regions in use, so sparse address spaces stay cheap.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-011",
+      "type": "flash",
+      "q": "Why would paging be too slow without a TLB?",
+      "a": "Every load and store would first need a page table walk, which adds several extra memory accesses. The TLB caches recent translations, so most accesses skip the walk.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "os-012",
+      "type": "flash",
+      "q": "Why must the TLB be flushed or tagged on a process switch?",
+      "a": "Its entries describe the old process's address space and would translate the new process's addresses wrongly. A flush makes the new process start cold, while ASID or PCID tags let entries from several processes coexist.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-013",
+      "type": "flash",
+      "q": "Why can huge pages speed up a program with a large working set?",
+      "a": "Each TLB entry covers far more memory, such as 2 MB instead of 4 KB on x86-64, so the same number of entries reach more data and misses drop. The cost is wasted memory when a huge page is only partly used.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-014",
+      "type": "flash",
+      "q": "Why is `munmap` in a heavily threaded process more expensive than it looks?",
+      "a": "Other CPUs running that process may still cache the old translation in their TLBs. The kernel must interrupt them to invalidate those entries, a TLB shootdown, and they stall while it happens.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 3
+    },
+    {
+      "id": "os-015",
+      "type": "flash",
+      "q": "Is a page fault always an error?",
+      "a": "No. Most faults are routine work such as demand paging, copy-on-write and stack growth. It only becomes SIGSEGV when the address is unmapped or the access violates the page's permissions.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "os-016",
+      "type": "flash",
+      "q": "What separates a minor page fault from a major one?",
+      "a": "A minor fault needs no disk I/O because the page is already in memory or can be zero-filled, so the kernel only fixes the mapping. A major fault must read from disk, which can be orders of magnitude slower.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-017",
+      "type": "flash",
+      "q": "What happens after a page fault on a valid page that is not in RAM?",
+      "a": "The CPU traps to the kernel, which finds a free frame, evicting a page if needed, and reads the data from disk. It then updates the page table and re-runs the faulting instruction.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-018",
+      "type": "flash",
+      "q": "Why can adding more processes to a busy machine make throughput collapse?",
+      "a": "When combined working sets exceed RAM, pages are evicted and faulted back in constantly. This is thrashing: the CPU sits waiting on disk instead of doing work.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-019",
+      "type": "flash",
+      "q": "Why can `malloc` succeed and the process still be killed later for lack of memory?",
+      "a": "Linux overcommits by default, so `malloc` can reserve address space while frames are assigned only on first write. If RAM and swap run out at that point, the OOM killer picks a process to kill.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-020",
+      "type": "flash",
+      "q": "Why is stack allocation faster than heap allocation?",
+      "a": "Stack allocation only moves the stack pointer. A heap allocator has to find a free block, update metadata, possibly take a lock, and sometimes ask the OS for more memory.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "os-021",
+      "type": "flash",
+      "q": "Why does a stack overflow show up as a segfault rather than a clean error?",
+      "a": "Growing past the stack limit touches an unmapped guard region, and that access faults like any other invalid access. Deep recursion and large local arrays are the usual causes.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-022",
+      "type": "flash",
+      "q": "Why does `malloc` usually not make a system call?",
+      "a": "The allocator keeps free lists of memory it already got from the OS through `brk` or `mmap`. It only calls into the kernel when those lists cannot satisfy a request.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-023",
+      "type": "flash",
+      "q": "Why can a long-running server use far more memory than its live objects need?",
+      "a": "Heap fragmentation. Freed blocks are scattered between live ones, so whole pages cannot be returned to the OS and large requests cannot reuse the small gaps.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-024",
+      "type": "flash",
+      "q": "Why must programs use system calls to reach hardware instead of touching it directly?",
+      "a": "User-mode code cannot run privileged instructions or reach kernel memory, because the CPU faults if it tries. A system call is a controlled entry point where the kernel checks arguments and permissions before acting.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "os-025",
+      "type": "flash",
+      "q": "Is a system call the same as a context switch?",
+      "a": "No. The same thread keeps running and only the privilege mode changes. A context switch happens only if the kernel then schedules another thread, for example because the call blocks.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-026",
+      "type": "flash",
+      "q": "What happens on the CPU when a program makes a system call?",
+      "a": "The C library puts the call number and arguments in registers and runs a trap instruction, `syscall` on x86-64. The CPU switches to kernel mode and jumps to a fixed kernel entry point, which does the work and returns to user mode.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-027",
+      "type": "flash",
+      "q": "What goes wrong if a round-robin time slice is too short, and if it is too long?",
+      "a": "Too short and the CPU spends much of its time on context switches. Too long and it degrades toward first-come-first-served, so interactive tasks feel slow.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-028",
+      "type": "flash",
+      "q": "Why do schedulers favour I/O-bound tasks over CPU-bound tasks?",
+      "a": "I/O-bound tasks run briefly and then block, so running them first costs little CPU and keeps the system responsive. CPU-bound tasks still get all the time left over.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-029",
+      "type": "flash",
+      "q": "Why can a high-priority thread end up waiting on a medium-priority one?",
+      "a": "Priority inversion: a low-priority thread holds a lock the high-priority thread needs, and a medium-priority thread keeps preempting the lock holder. Priority inheritance fixes it by temporarily raising the holder's priority.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-030",
+      "type": "flash",
+      "q": "What failure does preemptive scheduling prevent that cooperative scheduling allows?",
+      "a": "Under cooperative scheduling, a task that never yields, such as one stuck in a loop, hangs everything else. A preemptive OS uses a timer interrupt to take the CPU back.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-031",
+      "type": "flash",
+      "q": "Why does Unix split process creation into `fork` and `exec`?",
+      "a": "The gap lets the child set up its environment with ordinary code, such as redirecting file descriptors or dropping privileges. `exec` then replaces the program while those settings stay in place.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-032",
+      "type": "flash",
+      "q": "What does `fork` return?",
+      "a": "The child's PID in the parent, 0 in the child, and -1 in the parent on failure.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "syntax",
+      "level": 1
+    },
+    {
+      "id": "os-033",
+      "type": "flash",
+      "q": "How many times is `x` printed?",
+      "qcode": "fork();\nfork();\nputs(\"x\");",
+      "a": "Four. Each `fork` doubles the number of running processes, and all four reach the `puts`.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "os-034",
+      "type": "flash",
+      "q": "Why is calling `fork` from a multi-threaded program risky?",
+      "a": "Only the calling thread exists in the child. A lock held by another thread at that moment stays locked forever, so the child should call only async-signal-safe functions until `exec`.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 3
+    },
+    {
+      "id": "os-035",
+      "type": "flash",
+      "q": "What is the difference between a zombie process and an orphan process?",
+      "a": "A zombie has exited but its parent has not called `wait`, so only its exit record remains. An orphan is still running after its parent died, and init adopts it.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-036",
+      "type": "flash",
+      "q": "Why is `fork` cheap even for a process using gigabytes of memory?",
+      "a": "The child gets its own page tables pointing at the same physical pages, marked read-only, so no page data is copied up front. This is copy-on-write.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "os-037",
+      "type": "flash",
+      "q": "What happens when a process writes to a copy-on-write page?",
+      "a": "The write hits a read-only entry and faults. The kernel allocates a new frame, copies the page, and points the writer at the copy with write permission.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-038",
+      "type": "flash",
+      "q": "What is a file descriptor, concretely?",
+      "a": "A small integer that indexes a per-process table. Each entry points to a kernel open file description, which holds the offset and flags and refers to the inode.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-039",
+      "type": "flash",
+      "q": "What differs between opening a file twice and calling `dup` on a descriptor?",
+      "a": "Two `open` calls create two open file descriptions with independent offsets. `dup` gives a second descriptor to the same description, so the offset is shared, which is also what a child inherits across `fork`.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-040",
+      "type": "flash",
+      "q": "How does a shell implement `ls > out.txt`?",
+      "a": "After `fork`, the child opens `out.txt`, uses `dup2` to put it on descriptor 1, and then calls `exec`. `ls` writes to stdout as usual without knowing it was redirected.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-041",
+      "type": "flash",
+      "q": "Why can a process reading from a pipe hang after the writer has finished?",
+      "a": "A reader sees end of file only when every write end is closed. A forgotten copy of the write end, often one the reader inherited across `fork`, keeps the pipe open.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-042",
+      "type": "flash",
+      "q": "Why should a service be stopped with SIGTERM before SIGKILL?",
+      "a": "SIGTERM can be handled, so the process can finish in-flight work, flush data and exit cleanly. SIGKILL cannot be caught, blocked or ignored, so the process gets no chance to clean up.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "os-043",
+      "type": "flash",
+      "q": "Why is calling `printf` or `malloc` inside a signal handler unsafe?",
+      "a": "The signal can arrive while the thread is inside those same functions, holding their lock or with their data half updated. Re-entering can deadlock or corrupt state, so handlers should call only async-signal-safe functions or set a `volatile sig_atomic_t` flag.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-044",
+      "type": "flash",
+      "q": "Which four conditions must all hold for a deadlock?",
+      "a": "Mutual exclusion, hold and wait, no preemption, and circular wait. Removing any one of them makes deadlock impossible.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "os-045",
+      "type": "flash",
+      "q": "How do deadlock prevention, avoidance and detection differ?",
+      "a": "Prevention designs out a necessary condition, such as by using a global lock order. Avoidance checks each request and refuses any that could lead to an unsafe state. Detection lets deadlock happen, finds a cycle in the wait-for graph, and aborts a participant.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-046",
+      "type": "flash",
+      "q": "What does an inode hold, and what is missing from it?",
+      "a": "It holds metadata such as size, owner, permissions, timestamps and link count, plus the locations of the data blocks. The file name is missing, because names live in directory entries.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "os-047",
+      "type": "flash",
+      "q": "What happens to a hard link and to a symlink when the original name is deleted?",
+      "a": "A hard link is another directory entry for the same inode, so the data stays reachable. A symlink is a small file holding a path, so it dangles.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "os-048",
+      "type": "flash",
+      "q": "Why can writes fail with \"no space left on device\" while `df` shows free blocks?",
+      "a": "The filesystem may have run out of inodes, often from millions of tiny files. Check with `df -i`.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-049",
+      "type": "flash",
+      "q": "Why does deleting a large log file sometimes free no disk space?",
+      "a": "`rm` only removes the directory entry. If a process still has the file open, the inode and its blocks stay allocated until the last descriptor closes.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-050",
+      "type": "flash",
+      "q": "Why does a database call `fsync` at commit when `write` already returned success?",
+      "a": "`write` only copies into the page cache and marks it dirty, and the kernel writes it back later. A crash in that window loses the data, so `fsync` blocks until it reaches stable storage.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "os-051",
+      "type": "flash",
+      "q": "Why does a healthy Linux machine show almost no free memory?",
+      "a": "The kernel uses spare RAM as page cache for file data, because idle memory is wasted. That cache is reclaimed on demand, so \"available\" is the figure to watch, not \"free\".",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-052",
+      "type": "flash",
+      "q": "Why can the last `printf` output vanish when a program crashes?",
+      "a": "stdio buffers output in user space, by line on a terminal but in larger blocks on a file or pipe. If the process dies before a flush, the buffer never reaches the kernel.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-053",
+      "type": "flash",
+      "q": "Why can `mmap` beat `read` for random access to a large file?",
+      "a": "Page cache pages are mapped straight into the address space, so there is no copy into a user buffer and no system call per access. After the first fault, each access is an ordinary memory load.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-054",
+      "type": "flash",
+      "q": "What is the difference between `MAP_SHARED` and `MAP_PRIVATE`?",
+      "a": "With `MAP_SHARED`, writes go to the underlying file and other mappings see them. With `MAP_PRIVATE`, the first write to a page makes a private copy, so the file never changes.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "os-055",
+      "type": "flash",
+      "q": "Why can reading a memory-mapped file crash with SIGBUS?",
+      "a": "Another process may have truncated the file, so the mapped page no longer has data behind it. With `read` this would be a short read, but a load instruction has no return value to report it.",
+      "patterns": [
+        "os"
+      ],
+      "skill": "explain",
+      "level": 3
+    }
+  ]
+}

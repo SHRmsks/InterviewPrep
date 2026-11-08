@@ -1,0 +1,754 @@
+{
+  "deck": "complexity",
+  "title": "Complexity",
+  "cards": [
+    {
+      "id": "complexity-001",
+      "type": "flash",
+      "q": "What does `v.push_back(x)` cost, worst case and amortised?",
+      "a": "Worst case O(n), when the buffer reallocates and moves every element. Amortised O(1), because capacity grows by a constant factor, so n pushes move only O(n) elements in total.",
+      "patterns": [
+        "complexity"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-002",
+      "type": "flash",
+      "q": "A custom array grows by a fixed 1000 slots instead of doubling. What do n appends cost in total?",
+      "a": "O(n^2): it copies everything every 1000 appends, and those copies add up to about n^2 / 2000. Only geometric growth gives amortised O(1).",
+      "patterns": [
+        "complexity"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "complexity-003",
+      "type": "flash",
+      "q": "What does `v.erase(v.begin())` cost, and what happens if you drain a vector this way?",
+      "a": "O(n) per call, because every later element shifts left. Draining costs O(n^2) in total. Use a `deque`, a read index, or pop from the back.",
+      "patterns": [
+        "complexity"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-004",
+      "type": "flash",
+      "q": "You keep a `vector` in order using `lower_bound` plus `insert`. What do n insertions cost?",
+      "a": "O(n^2) in the worst case. The search is O(log n), but each `insert` shifts O(n) elements, and the shifting dominates.",
+      "patterns": [
+        "complexity",
+        "binary-search"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "complexity-005",
+      "type": "flash",
+      "q": "On a `deque`, what do `push_front`, `push_back`, `operator[]` and a middle `insert` cost?",
+      "a": "The end pushes and `operator[]` are O(1). A middle `insert` is O(n), shifting elements towards the nearer end.",
+      "patterns": [
+        "complexity"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-006",
+      "type": "flash",
+      "q": "`list::insert` is O(1). So why does inserting at index `k` cost O(k)?",
+      "a": "Reaching position `k` means following `k` links, since a `list` has no random access. The O(1) applies only once you hold an iterator to that position.",
+      "patterns": [
+        "complexity",
+        "linked-list"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-007",
+      "type": "flash",
+      "q": "What do `insert`, `find`, `erase` and `lower_bound` cost on `map` and `set`?",
+      "a": "O(log n) comparisons each, because both are balanced BSTs. With long keys, multiply by the cost of one comparison.",
+      "patterns": [
+        "complexity",
+        "bst"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-008",
+      "type": "flash",
+      "q": "Why is `lower_bound(s.begin(), s.end(), x)` on a `set` slower than `s.lower_bound(x)`?",
+      "a": "The free function makes O(log n) comparisons but O(n) iterator steps, because `set` iterators are not random access. The member function walks the tree in O(log n).",
+      "patterns": [
+        "complexity",
+        "bst"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "complexity-009",
+      "type": "flash",
+      "q": "What are the average and worst-case costs of an `unordered_map` lookup?",
+      "a": "O(1) on average and O(n) in the worst case, when many keys share a bucket. So n inserts can reach O(n^2), and crafted keys make this easy because `std::hash<int>` is the identity in libstdc++ and libc++.",
+      "patterns": [
+        "complexity",
+        "arrays-hashing"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-010",
+      "type": "flash",
+      "q": "When is `map` a better choice than `unordered_map`?",
+      "a": "When you need keys in order, nearest-key queries such as `lower_bound`, or a firm O(log n) worst case. For plain lookups, `unordered_map` is usually faster.",
+      "patterns": [
+        "complexity",
+        "arrays-hashing",
+        "bst"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-011",
+      "type": "flash",
+      "q": "What do `top`, `push` and `pop` cost on a `priority_queue`?",
+      "a": "`top` is O(1). `push` and `pop` are O(log n), because an element moves at most the height of the binary heap.",
+      "patterns": [
+        "complexity",
+        "heap"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-012",
+      "type": "flash",
+      "q": "Building a heap of n items: what do `make_heap` and n separate `push` calls cost?",
+      "a": "`make_heap` is O(n), while n pushes are O(n log n) in the worst case. Bottom-up building sifts each node down at most its height, and most nodes sit near the leaves, so the heights sum to O(n).",
+      "patterns": [
+        "complexity",
+        "heap"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "complexity-013",
+      "type": "flash",
+      "q": "Compare the ways to get the k largest of n items.",
+      "a": "Full `sort` is O(n log n), a size-k min-heap or `partial_sort` is O(n log k), and `nth_element` is O(n) on average. `nth_element` leaves the k items unordered.",
+      "patterns": [
+        "complexity",
+        "heap",
+        "sorting"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "complexity-014",
+      "type": "flash",
+      "q": "What is the difference between amortised O(1) and average O(1)?",
+      "a": "Amortised bounds the total cost of any sequence of operations, with no randomness involved, as with `push_back`. Average assumes typical inputs or hashing, as with `unordered_map`, so a bad case can exceed it.",
+      "patterns": [
+        "complexity"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "complexity-015",
+      "type": "flash",
+      "q": "Why is a monotonic stack O(n) despite a `while` inside a `for`?",
+      "a": "Each element is pushed once and popped at most once, so the `while` runs at most n times across the whole `for`. Count total pops, not pops per step.",
+      "patterns": [
+        "complexity",
+        "monotonic-stack"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-016",
+      "type": "flash",
+      "q": "Why is a sliding window O(n) when `left` moves inside a loop over `right`?",
+      "a": "`left` only moves forward and stops at n at the latest, so its moves total at most n across the whole run. That gives O(n) as long as each add or remove is O(1).",
+      "patterns": [
+        "complexity",
+        "sliding-window"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-017",
+      "type": "flash",
+      "q": "A queue is built from two stacks. What does `pop` cost, worst case and amortised?",
+      "a": "Worst case O(n), when the output stack is empty and everything moves across. Amortised O(1), because each element moves across at most once.",
+      "patterns": [
+        "complexity",
+        "stack"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "complexity-018",
+      "type": "flash",
+      "q": "What does union-find cost with path compression and union by size, and with neither?",
+      "a": "Together they give amortised inverse Ackermann time, effectively constant. With neither, trees can degrade into chains, and a find costs O(n).",
+      "patterns": [
+        "complexity",
+        "union-find"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "complexity-019",
+      "type": "flash",
+      "q": "In T(n) = a T(n/b) + f(n), what do you compare to solve it?",
+      "a": "Compare f(n) with n^(log_b a), the total work at the leaves. If one is polynomially larger it dominates, and if they match you multiply by log n.",
+      "patterns": [
+        "complexity",
+        "divide-and-conquer"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "complexity-020",
+      "type": "flash",
+      "q": "Solve T(n) = 2T(n/2) + O(n) and name an algorithm with this shape.",
+      "a": "O(n log n): log n levels, each doing O(n) work. Merge sort is the standard example.",
+      "patterns": [
+        "complexity",
+        "divide-and-conquer"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-021",
+      "type": "flash",
+      "q": "Solve T(n) = T(n/2) + O(1) and name an algorithm with this shape.",
+      "a": "O(log n): constant work on each of log n levels. Binary search is the standard example.",
+      "patterns": [
+        "complexity",
+        "binary-search"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-022",
+      "type": "flash",
+      "q": "Solve T(n) = T(n/2) + O(n). Where does this shape appear?",
+      "a": "O(n): the work is n + n/2 + n/4 + ..., which stays under 2n. Quickselect with good pivots has this shape.",
+      "patterns": [
+        "complexity",
+        "divide-and-conquer"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "complexity-023",
+      "type": "flash",
+      "q": "Solve T(n) = 2T(n/2) + O(1). Where does this shape appear?",
+      "a": "O(n): the levels hold 1, 2, 4, ..., n calls, which sum to under 2n. Visiting every node of a balanced binary tree has this shape.",
+      "patterns": [
+        "complexity",
+        "tree-dfs"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "complexity-024",
+      "type": "flash",
+      "q": "Solve T(n) = T(n - 1) + O(n). Where does this shape appear?",
+      "a": "O(n^2): the work is the sum of 1 to n. Quicksort with worst-case pivots has this shape, and the master theorem does not apply because `n` shrinks by subtraction.",
+      "patterns": [
+        "complexity",
+        "sorting"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-025",
+      "type": "flash",
+      "q": "Solve T(n) = 2T(n - 1) + O(1). Where does this shape appear?",
+      "a": "O(2^n): the number of calls doubles on each of n levels. Include-or-skip subset recursion has this shape.",
+      "patterns": [
+        "complexity",
+        "backtracking"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-026",
+      "type": "flash",
+      "q": "Is naive recursive Fibonacci O(2^n)?",
+      "a": "Yes as an upper bound, but the tight bound is about O(1.618^n). Memoising brings it down to O(n), because there are only n distinct states.",
+      "patterns": [
+        "complexity",
+        "dp-linear"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "complexity-027",
+      "type": "flash",
+      "q": "Why can no comparison sort beat O(n log n) in the worst case?",
+      "a": "It must tell apart n! possible orders, and each comparison has two outcomes, so it needs at least log2(n!) comparisons. That quantity grows as n log n.",
+      "patterns": [
+        "complexity",
+        "sorting"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "complexity-028",
+      "type": "flash",
+      "q": "Here `pat` has length `L`. What does this loop cost?",
+      "qcode": "for (int i = 0; i + L <= n; i++)\n    if (s.substr(i, L) == pat) cnt++;",
+      "a": "O(nL) even when nothing matches, because each `substr` copies L characters before the compare starts. `s.compare(i, L, pat)` avoids the copy and stops at the first mismatch, though its worst case is still O(nL).",
+      "patterns": [
+        "complexity"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-029",
+      "type": "flash",
+      "q": "What do these two loops cost?",
+      "qcode": "for (int i = 0; i < n; i++) a += 'x';\nfor (int i = 0; i < n; i++) b = b + 'x';",
+      "a": "The `+=` loop is O(n) in total, because appending is amortised O(1). The `b = b + 'x'` loop is O(n^2), because every step copies the whole string into a new one.",
+      "patterns": [
+        "complexity"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-030",
+      "type": "flash",
+      "q": "A recursive binary search takes `vector<int> a` by value along with `lo` and `hi`. What does it cost?",
+      "a": "O(n log n) rather than O(log n), because each of the log n calls copies all n elements. Pass `const vector<int>&` instead.",
+      "patterns": [
+        "complexity",
+        "binary-search"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-031",
+      "type": "flash",
+      "q": "A backtracking function takes `vector<int> path` by value. What does that add?",
+      "a": "An O(n) copy at every node of the recursion tree, which can turn O(2^n) into O(n * 2^n). Pass by reference, and push before and pop after each recursive call.",
+      "patterns": [
+        "complexity",
+        "backtracking"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-032",
+      "type": "flash",
+      "q": "Keys are strings of length L. What does one lookup really cost in `unordered_map` and in `map`?",
+      "a": "`unordered_map` is O(L) on average, because hashing and the final compare both read the key. `map` is O(L log n) in the worst case, because each of O(log n) comparisons can scan the whole key.",
+      "patterns": [
+        "complexity",
+        "arrays-hashing"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-033",
+      "type": "flash",
+      "q": "`sort` runs with a comparator that costs `c` per call. What is the total?",
+      "a": "O(c * n log n), because the comparator runs O(n log n) times. For strings of length L that means O(L * n log n), and a comparator taking its arguments by value also copies on every call.",
+      "patterns": [
+        "complexity",
+        "sorting"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-034",
+      "type": "flash",
+      "q": "What does this loop cost?",
+      "qcode": "for (int i = 0; i < n; i++)\n    best = max(best, v[i] - *min_element(v.begin(), v.begin() + i + 1));",
+      "a": "O(n^2), because `min_element` scans a whole prefix on every step. A running minimum gives the same result in O(n). Watch for `count`, `find` and `accumulate` inside loops too.",
+      "patterns": [
+        "complexity"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-035",
+      "type": "flash",
+      "q": "Over n strings of length L, what does `for (auto s : words)` add compared with `for (const auto& s : words)`?",
+      "a": "O(nL) in total, because `auto` copies every string even if the body only reads it. `const auto&` binds without copying.",
+      "patterns": [
+        "complexity"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-036",
+      "type": "flash",
+      "q": "What do BFS and DFS cost with an adjacency list, and with an adjacency matrix?",
+      "a": "O(V + E) with a list, because each node and edge is handled a constant number of times. O(V^2) with a matrix, because each node scans a full row.",
+      "patterns": [
+        "complexity",
+        "graph-traversal"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-037",
+      "type": "flash",
+      "q": "What do BFS or DFS cost on an R by C map of cells with 4 neighbours each?",
+      "a": "O(R * C) time and memory. There are R * C nodes and at most 4 edges per node, so edges add only a constant factor.",
+      "patterns": [
+        "complexity",
+        "grid"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-038",
+      "type": "flash",
+      "q": "What changes in BFS if you mark a node visited when it is popped rather than when it is pushed?",
+      "a": "A node can sit in the queue once per incoming edge, so the queue can grow to O(E) rather than O(V). Mark on push.",
+      "patterns": [
+        "complexity",
+        "graph-traversal"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "complexity-039",
+      "type": "flash",
+      "q": "On a complete binary tree of n nodes, compare peak memory for BFS and DFS.",
+      "a": "BFS holds a whole level, up to about n/2 nodes, so O(n). DFS holds one root-to-leaf path, so O(log n).",
+      "patterns": [
+        "complexity",
+        "tree-bfs",
+        "tree-dfs"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "complexity-040",
+      "type": "flash",
+      "q": "BFS runs over n dictionary words of length L, and each popped word tries all single-letter changes against a hash set. What does it cost?",
+      "a": "O(n * 26 * L^2): each word has 26L candidates, and building and hashing each candidate costs O(L). The second L is easy to miss.",
+      "patterns": [
+        "complexity",
+        "graph-traversal"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "complexity-041",
+      "type": "flash",
+      "q": "What does Dijkstra cost with a binary heap, and when does a plain O(V^2) array version win?",
+      "a": "O((V + E) log V) with a heap. On dense graphs, where E is near V^2, that becomes O(V^2 log V), so the array version wins.",
+      "patterns": [
+        "complexity",
+        "shortest-path"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "complexity-042",
+      "type": "flash",
+      "q": "How many subsets do n items have, and what does it cost to output them all?",
+      "a": "2^n subsets. Copying each takes up to O(n), so O(n * 2^n) in total, which is fine up to about n = 20.",
+      "patterns": [
+        "complexity",
+        "backtracking"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-043",
+      "type": "flash",
+      "q": "How many orderings do n distinct items have, and what does it cost to output them all?",
+      "a": "O(n * n!) to output them all, because each of the n factorial orderings has length n. That is about 3.6e6 orderings at n = 10, which is fine, and about 6e9 at n = 13, which is not.",
+      "patterns": [
+        "complexity",
+        "backtracking"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-044",
+      "type": "flash",
+      "q": "How many k-item combinations of n items exist, and what does it cost to output them all?",
+      "a": "C(n, k) combinations at O(k) each, so O(k * C(n, k)). The count peaks at k = n/2: C(20, 10) is about 1.8e5 and C(30, 15) is about 1.6e8.",
+      "patterns": [
+        "complexity",
+        "backtracking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "complexity-045",
+      "type": "flash",
+      "q": "What is the standard upper bound for N-queens backtracking, and why?",
+      "a": "O(n!) complete placements, because each row must take a column not used so far. Counting partial placements adds only a factor of about e, and diagonal pruning keeps the real search far smaller.",
+      "patterns": [
+        "complexity",
+        "backtracking"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "complexity-046",
+      "type": "flash",
+      "q": "How do you compute the running time of a DP?",
+      "a": "Number of states times the cost of one transition. LIS has n states at O(n) each, so O(n^2).",
+      "patterns": [
+        "complexity",
+        "dp-linear"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-047",
+      "type": "flash",
+      "q": "0/1 knapsack is O(nW). Why is that called pseudo-polynomial?",
+      "a": "The cost scales with the numeric value of W, not with the digits needed to write it. W = 1e9 fits in one `int` yet makes the table hopeless.",
+      "patterns": [
+        "complexity",
+        "dp-knapsack"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "complexity-048",
+      "type": "flash",
+      "q": "What does Held-Karp bitmask DP cost for n cities?",
+      "a": "2^n * n states with O(n) transitions each, so O(2^n * n^2) time and O(2^n * n) memory. That is about 1.7e7 steps at n = 16 and about 4e8 at n = 20.",
+      "patterns": [
+        "complexity",
+        "dp-bitmask"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "complexity-049",
+      "type": "flash",
+      "q": "Edit distance takes O(nm) time. How much memory does it need?",
+      "a": "O(min(n, m)) with two rows if you only want the distance. Reconstructing the edits from the table needs O(nm).",
+      "patterns": [
+        "complexity",
+        "dp-string"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "complexity-050",
+      "type": "flash",
+      "q": "A recursive DFS walks a chain of 1e6 nodes. What can go wrong?",
+      "a": "Stack overflow, because recursion uses O(depth) memory. A default stack is often about 8 MB, and 1e6 frames of tens of bytes exceed that. Use an explicit stack or BFS.",
+      "patterns": [
+        "complexity",
+        "graph-traversal"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-051",
+      "type": "flash",
+      "q": "What extra memory do merge sort and quicksort use?",
+      "a": "Merge sort uses O(n) for merging plus O(log n) stack. Quicksort uses O(log n) stack on average and O(n) in the worst case, unless it always recurses into the smaller side first.",
+      "patterns": [
+        "complexity",
+        "sorting"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "complexity-052",
+      "type": "flash",
+      "q": "Roughly, what is log2 of 1e3, 1e5, 1e6, 1e9 and 1e18?",
+      "a": "About 10, 17, 20, 30 and 60. So n log n at n = 1e6 is about 2e7, and binary search over 1e18 takes about 60 steps.",
+      "patterns": [
+        "complexity"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-053",
+      "type": "flash",
+      "q": "What does this nest cost?",
+      "qcode": "for (int i = n; i > 0; i /= 2)\n    for (int j = 0; j < i; j++) work();",
+      "a": "O(n), not O(n log n). The inner loop runs n, then n/2, then n/4 times, and that series stays under 2n.",
+      "patterns": [
+        "complexity"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "complexity-054",
+      "type": "flash",
+      "q": "What does this nest cost?",
+      "qcode": "for (int i = 1; i <= n; i++)\n    for (int j = i; j <= n; j += i) work();",
+      "a": "O(n log n): the inner loop runs about n/i times, and the sum of n/i is n times the harmonic series, about n ln n. Loops over multiples or divisors have this shape.",
+      "patterns": [
+        "complexity"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "complexity-055",
+      "type": "flash",
+      "q": "Roughly how many simple operations does C++ run per second, and what should you plan for?",
+      "a": "Roughly 1e8 to 1e9. Plan for about 1e8, which leaves room for constants and cache misses.",
+      "patterns": [
+        "complexity"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-056",
+      "type": "flash",
+      "q": "`n` is up to 1e5. Which complexities fit?",
+      "a": "O(n log n) at about 1.7e6 fits easily, and O(n sqrt n) at about 3e7 usually fits. O(n^2) at 1e10 does not.",
+      "patterns": [
+        "complexity"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-057",
+      "type": "flash",
+      "q": "`n` is up to 5000. What does that suggest?",
+      "a": "O(n^2) at 2.5e7 fits, so pairwise loops or a 2D DP are likely intended. O(n^2 log n) at about 3e8 is risky, and O(n^3) is out.",
+      "patterns": [
+        "complexity"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-058",
+      "type": "flash",
+      "q": "`n` is up to 500. What does that suggest?",
+      "a": "O(n^3) at about 1.25e8 is probably the target. Think interval DP or Floyd-Warshall.",
+      "patterns": [
+        "complexity",
+        "dp-interval"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-059",
+      "type": "flash",
+      "q": "`n` is up to 20. What does that suggest?",
+      "a": "Exponential work in n: O(n * 2^n) is about 2e7. Think bitmask DP or subset enumeration.",
+      "patterns": [
+        "complexity",
+        "dp-bitmask"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-060",
+      "type": "flash",
+      "q": "`n` is up to 10. What does that suggest?",
+      "a": "Factorial work is allowed: 10! is about 3.6e6, so trying every ordering is likely fine.",
+      "patterns": [
+        "complexity",
+        "backtracking"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-061",
+      "type": "flash",
+      "q": "`n` is up to 1e9 or 1e18. What does that suggest?",
+      "a": "No linear loop and no array of size n. Aim for O(log n) with binary search, fast exponentiation or a formula. O(sqrt n) works at 1e9, about 3e4 steps, but not at 1e18, at 1e9 steps.",
+      "patterns": [
+        "complexity"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-062",
+      "type": "flash",
+      "q": "A 1e4 by 1e4 `int` DP table: will it fit in memory?",
+      "a": "Usually not: 1e8 `int`s take 400 MB. If each row depends only on the previous one, keep two rows.",
+      "patterns": [
+        "complexity",
+        "dp-grid"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "complexity-063",
+      "type": "flash",
+      "q": "`n` and `q` are each up to 2e5. Why does that rule out O(n) per query?",
+      "a": "The total is O(nq), which is 4e10. Multiply the limits, then aim for O(log n) per query, about 3.5e6 steps overall.",
+      "patterns": [
+        "complexity",
+        "range-query"
+      ],
+      "skill": "explain",
+      "level": 1
+    }
+  ]
+}

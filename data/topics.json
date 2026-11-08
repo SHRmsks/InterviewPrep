@@ -1,0 +1,153 @@
+{
+  "about": "Finer topics under the bank's patterns. A problem is labeled with one or two of these, primary first. Patterns not listed here are fine enough on their own: sweep-line, monotonic-queue, tree-bfs, topo-sort, mst, dp-interval, dp-bitmask, dp-state-machine. Each signal says what in a problem points to the topic.",
+  "topics": [
+    {"slug": "arrays-hashing/complement", "name": "Complement lookup", "signal": "While scanning, look up a needed partner (target minus x, a seen prefix) in a hash map of earlier values."},
+    {"slug": "arrays-hashing/counting", "name": "Frequency counting", "signal": "Count occurrences to compare multisets or find the most or least common items."},
+    {"slug": "arrays-hashing/group-by-key", "name": "Group by canonical key", "signal": "Items are equal under some normalization (sorted letters, a tuple of counts), so bucket them by that key."},
+    {"slug": "arrays-hashing/set-lookup", "name": "Set membership", "signal": "Existence checks in a hash set, such as starting a run only where x-1 is absent."},
+    {"slug": "arrays-hashing/in-place-index", "name": "Array as its own hash", "signal": "Values lie in 1..n, so mark by sign or swap each value into its own index for O(1) space."},
+
+    {"slug": "two-pointers/opposite-ends", "name": "Opposite ends", "signal": "Pointers at both ends of a sorted array or string move inward by a rule (pair sum, container, palindrome)."},
+    {"slug": "two-pointers/fast-slow", "name": "Fast and slow", "signal": "Two speeds over a list or sequence: find a cycle, the middle, or the nth from the end."},
+    {"slug": "two-pointers/read-write", "name": "Read and write pointers", "signal": "Compact or partition in place with a write index trailing a read index (remove duplicates, move zeroes, colors)."},
+    {"slug": "two-pointers/k-sum", "name": "k-sum", "signal": "Sort, fix one or more values, then two pointers for the rest, skipping duplicates."},
+    {"slug": "two-pointers/merge-two", "name": "Walk two sequences", "signal": "Advance through two sorted sequences together: merge, intersect, or check a subsequence."},
+
+    {"slug": "sliding-window/fixed-size", "name": "Fixed-size window", "signal": "The window is exactly k long; add the new element and drop the old one each step."},
+    {"slug": "sliding-window/longest-valid", "name": "Longest valid window", "signal": "Grow right, shrink left only when the window breaks a rule; maximize its length."},
+    {"slug": "sliding-window/shortest-valid", "name": "Shortest valid window", "signal": "Once the window satisfies the rule, shrink left while it still does; minimize its length."},
+    {"slug": "sliding-window/count-subarrays", "name": "Count windows", "signal": "Count subarrays meeting a rule, often exactly(K) = atMost(K) - atMost(K-1)."},
+
+    {"slug": "prefix-sum/range-sum", "name": "Range sums", "signal": "Precompute prefix sums (1D or 2D) so any range total is a subtraction."},
+    {"slug": "prefix-sum/subarray-hash", "name": "Prefix sum with a hash map", "signal": "Count or find subarrays with a given sum or remainder by storing earlier prefix values."},
+    {"slug": "prefix-sum/difference-array", "name": "Difference array", "signal": "Many range updates, read once at the end: add at start, subtract after end, then prefix-sum."},
+    {"slug": "prefix-sum/left-right-pass", "name": "Left and right passes", "signal": "Combine a prefix pass and a suffix pass, such as product except self or max-to-the-left arrays."},
+
+    {"slug": "binary-search/bounds", "name": "Lower and upper bound", "signal": "First or last position meeting a condition in a sorted array."},
+    {"slug": "binary-search/rotated", "name": "Rotated array", "signal": "A sorted array rotated at an unknown pivot; decide which half is sorted."},
+    {"slug": "binary-search/2d-matrix", "name": "Sorted matrix", "signal": "Search a matrix whose rows and columns are sorted, as one array or from a corner."},
+    {"slug": "binary-search/property", "name": "Search on a property", "signal": "No sorted order, but a monotone property splits the array (peak element, bad version)."},
+    {"slug": "binary-search/partition", "name": "Partition two arrays", "signal": "Binary search a cut across two sorted arrays, as in the median of two sorted arrays or kth across them."},
+
+    {"slug": "binary-search-answer/feasibility", "name": "Search the answer with a check", "signal": "Minimize the maximum (or maximize the minimum): binary search the answer and test it greedily (ship in D days, Koko)."},
+    {"slug": "binary-search-answer/kth-by-count", "name": "Kth by counting", "signal": "Binary search a value and count how many items are at most it (kth smallest in a matrix or of pair distances)."},
+
+    {"slug": "sorting/custom-order", "name": "Custom comparator", "signal": "The answer depends on sorting by a non-obvious key or comparator (largest number, reorder logs)."},
+    {"slug": "sorting/counting-bucket", "name": "Counting and bucket sort", "signal": "Bounded values or frequencies allow O(n) bucketing (top k by buckets, maximum gap, h-index)."},
+    {"slug": "sorting/quickselect", "name": "Quickselect", "signal": "Find the kth element or partition around it without fully sorting."},
+
+    {"slug": "intervals/merge", "name": "Merge intervals", "signal": "Sort by start and merge overlaps, or insert one interval into a sorted list."},
+    {"slug": "intervals/greedy-by-end", "name": "Greedy by end", "signal": "Sort by end time and keep the earliest finishing (non-overlapping intervals, arrows, max meetings)."},
+    {"slug": "intervals/overlap-count", "name": "Count overlaps", "signal": "How many intervals overlap at once (meeting rooms, car pooling): sort endpoints or use a heap."},
+
+    {"slug": "stack/brackets", "name": "Bracket matching", "signal": "Match opening and closing symbols, or track depth and validity of nesting."},
+    {"slug": "stack/expression", "name": "Evaluate nested expressions", "signal": "Calculators, RPN, decode string: push context on open, combine on close."},
+    {"slug": "stack/history", "name": "Stack as history", "signal": "Later items cancel or modify earlier ones (asteroid collision, backspace, simplify path)."},
+
+    {"slug": "monotonic-stack/next-greater", "name": "Next greater or smaller", "signal": "For each element, the next or previous element that is greater or smaller (daily temperatures)."},
+    {"slug": "monotonic-stack/span-area", "name": "Spans and contributions", "signal": "Each element's reach left and right gives areas or counts (largest rectangle, sum of subarray minimums)."},
+    {"slug": "monotonic-stack/greedy-removal", "name": "Pop to build the best sequence", "signal": "Build the smallest or largest result by popping worse earlier choices (remove k digits, smallest subsequence)."},
+
+    {"slug": "linked-list/reverse", "name": "Reverse links", "signal": "Reverse the whole list, a sublist, or k-groups by rewiring next pointers."},
+    {"slug": "linked-list/merge-split", "name": "Merge, split, reorder", "signal": "Merge sorted lists, partition around a value, or split and interleave halves, usually with a dummy head."},
+    {"slug": "linked-list/clone-rewire", "name": "Clone or flatten", "signal": "Deep copy with extra pointers, or flatten nested lists, using a map or interleaved copies."},
+
+    {"slug": "tree-dfs/bottom-up", "name": "Combine children", "signal": "A node's answer comes from its children's results (height, diameter, balanced, subtree checks)."},
+    {"slug": "tree-dfs/top-down", "name": "Pass state down", "signal": "Carry depth, bounds or the path so far from parent to child (validate BST by range, good nodes)."},
+    {"slug": "tree-dfs/path-sums", "name": "Path sums", "signal": "Root-to-leaf or any-node paths: return one branch upward and update a global best (max path sum)."},
+    {"slug": "tree-dfs/build-serialize", "name": "Build or serialize", "signal": "Construct a tree from traversals, or encode and decode one."},
+    {"slug": "tree-dfs/lca", "name": "Lowest common ancestor", "signal": "Find where two nodes' paths from the root diverge."},
+
+    {"slug": "bst/inorder", "name": "BST inorder order", "signal": "Inorder traversal is sorted: kth smallest, validate, recover swapped nodes."},
+    {"slug": "bst/navigate", "name": "Navigate a BST", "signal": "Go left or right by comparison to search, insert, delete, or trim to a range."},
+
+    {"slug": "trie/prefix", "name": "Prefix lookup", "signal": "Insert words and query prefixes or whole words (autocomplete, replace words)."},
+    {"slug": "trie/board-search", "name": "Trie with DFS", "signal": "Search many words at once over a board or within words (word search II, concatenated words)."},
+    {"slug": "trie/bitwise", "name": "Bitwise trie", "signal": "Store numbers bit by bit to find the maximum XOR pair."},
+
+    {"slug": "heap/top-k", "name": "Top k", "signal": "Keep the k best seen so far in a size-k heap."},
+    {"slug": "heap/k-way-merge", "name": "K-way merge", "signal": "Merge k sorted lists or rows, or find the kth smallest across them."},
+    {"slug": "heap/two-heaps", "name": "Two heaps", "signal": "Keep a running median or balance with a max-heap and a min-heap."},
+    {"slug": "heap/scheduling", "name": "Schedule by heap", "signal": "Repeatedly take the cheapest, earliest or most frequent available item (task scheduler, IPO, reorganize)."},
+
+    {"slug": "graph-traversal/components", "name": "Connected components", "signal": "Count or label groups with DFS or BFS over an adjacency list."},
+    {"slug": "graph-traversal/bfs-steps", "name": "Fewest steps by BFS", "signal": "Unweighted shortest path where each move costs one (word ladder, open the lock)."},
+    {"slug": "graph-traversal/multi-source-bfs", "name": "Multi-source BFS", "signal": "Start BFS from many sources at once and spread in levels (rotting oranges, walls and gates)."},
+    {"slug": "graph-traversal/cycle-detect", "name": "Cycle detection", "signal": "Detect a cycle with three-color DFS in a directed graph, or parent tracking in an undirected one."},
+    {"slug": "graph-traversal/bipartite", "name": "Two-coloring", "signal": "Split nodes into two groups with no edge inside a group."},
+    {"slug": "graph-traversal/state-space", "name": "BFS over states", "signal": "A node is a whole state (position plus keys, a mask, a board), and BFS explores state changes."},
+
+    {"slug": "grid/flood-fill", "name": "Flood fill", "signal": "DFS or BFS over cells to mark regions (number of islands, max area)."},
+    {"slug": "grid/from-border", "name": "Start from the border", "signal": "Search inward from edge cells to find what is or isn't reachable (surrounded regions, Pacific Atlantic)."},
+
+    {"slug": "union-find/connectivity", "name": "Union-find connectivity", "signal": "Merge sets as edges arrive and ask if two items are connected (redundant connection, provinces)."},
+    {"slug": "union-find/group-by-key", "name": "Union by shared key", "signal": "Union items that share an attribute (accounts merge, similar strings, equations)."},
+    {"slug": "union-find/offline", "name": "Offline unions", "signal": "Sort edges and queries, then union in order to answer queries (limited path lengths, Kruskal-like)."},
+
+    {"slug": "shortest-path/dijkstra", "name": "Dijkstra", "signal": "Nonnegative weights: pop the closest node from a heap (network delay, path with minimum effort)."},
+    {"slug": "shortest-path/bounded-steps", "name": "Limited edges", "signal": "Cheapest path with at most k edges: Bellman-Ford rounds or BFS with a step count."},
+    {"slug": "shortest-path/all-pairs", "name": "All pairs", "signal": "Distances between every pair: Floyd-Warshall on a small graph."},
+
+    {"slug": "backtracking/subsets", "name": "Subsets", "signal": "Include or exclude each element, skipping equal neighbors when there are duplicates."},
+    {"slug": "backtracking/permutations", "name": "Permutations", "signal": "Order matters: a used[] array or swapping, with duplicate skipping."},
+    {"slug": "backtracking/combination-sum", "name": "Combination sum", "signal": "Choose items to hit a target with rules on reuse, pruning when over."},
+    {"slug": "backtracking/constraint-placement", "name": "Constraint placement", "signal": "Place items under constraints and undo on conflict (n-queens, sudoku)."},
+    {"slug": "backtracking/grid-path", "name": "Grid path search", "signal": "DFS on a grid marking visited and unmarking on return (word search)."},
+    {"slug": "backtracking/partition", "name": "Partition a string", "signal": "Cut a string or array into valid pieces (palindrome partitioning, IP addresses, word break II)."},
+
+    {"slug": "dp-linear/take-or-skip", "name": "Take or skip", "signal": "dp[i] chooses between using item i or not, from the last one or two states (house robber, climbing stairs)."},
+    {"slug": "dp-linear/kadane", "name": "Best ending here", "signal": "Track the best subarray ending at each index (max subarray, max product)."},
+    {"slug": "dp-linear/lis", "name": "Increasing subsequence", "signal": "Longest increasing or chained subsequence, O(n^2) or patience sorting with binary search."},
+    {"slug": "dp-linear/count-ways", "name": "Count ways", "signal": "Number of ways or decodings, summing smaller states (decode ways)."},
+    {"slug": "dp-linear/split-points", "name": "Split points", "signal": "dp[i] tries every last cut j < i (word break, min cuts, perfect squares)."},
+    {"slug": "dp-linear/reach", "name": "Reach and minimum steps", "signal": "Fewest steps or cheapest cost to reach the end (jump game II, min cost tickets)."},
+
+    {"slug": "dp-grid/paths", "name": "Grid paths", "signal": "Count or minimize paths moving only right or down, with obstacles or costs."},
+    {"slug": "dp-grid/max-square", "name": "Largest square or rectangle", "signal": "dp of the biggest shape ending at each cell (maximal square)."},
+
+    {"slug": "dp-string/two-strings", "name": "Two strings", "signal": "dp[i][j] over prefixes of two strings (LCS, edit distance, interleaving, distinct subsequences)."},
+    {"slug": "dp-string/palindrome", "name": "Palindromes", "signal": "Palindromic substrings or subsequences by expanding or by interval dp."},
+    {"slug": "dp-string/pattern-match", "name": "Pattern matching", "signal": "Match with wildcards or regex operators like * and ?."},
+
+    {"slug": "dp-knapsack/zero-one", "name": "0/1 knapsack", "signal": "Each item used at most once to reach a sum or capacity (partition equal subset, target sum)."},
+    {"slug": "dp-knapsack/unbounded", "name": "Unbounded knapsack", "signal": "Items can be reused (coin change, combination sum IV)."},
+
+    {"slug": "dp-tree/node-states", "name": "Node states", "signal": "Each node returns a few states such as taken or not (house robber III, cameras)."},
+    {"slug": "dp-tree/rerooting", "name": "Rerooting", "signal": "Answer for every node as root by reusing a first DFS (sum of distances in tree)."},
+
+    {"slug": "greedy/sort-then-pick", "name": "Sort, then pick", "signal": "After sorting, a simple local choice is optimal (assign cookies, boats, two city scheduling)."},
+    {"slug": "greedy/reach", "name": "Farthest reach", "signal": "Track the farthest point reachable so far (jump game, gas station)."},
+    {"slug": "greedy/two-pass", "name": "Two passes", "signal": "A left-to-right pass and a right-to-left pass, then combine (candy)."},
+    {"slug": "greedy/running-balance", "name": "Running balance", "signal": "A running counter or balance decides each step (parentheses to add, lemonade change)."},
+    {"slug": "greedy/construct", "name": "Build the answer", "signal": "Build the result piece by piece, always taking the best safe piece (reorganize string, monotone digits)."},
+
+    {"slug": "bit-manipulation/xor", "name": "XOR cancels", "signal": "Pairs cancel under XOR (single number, missing number)."},
+    {"slug": "bit-manipulation/bit-tricks", "name": "Bit tests and counts", "signal": "Count, test, set or clear bits (power of two, counting bits, reverse bits)."},
+    {"slug": "bit-manipulation/subset-masks", "name": "Masks as subsets", "signal": "Enumerate or represent subsets as bitmasks."},
+
+    {"slug": "math/number-theory", "name": "Number theory", "signal": "GCD, primes, divisibility, modular arithmetic."},
+    {"slug": "math/digits-overflow", "name": "Digits and overflow", "signal": "Work digit by digit, watching the 32-bit range (reverse integer, palindrome number, atoi)."},
+    {"slug": "math/combinatorics", "name": "Counting formulas", "signal": "Count with nCr, Pascal's triangle or inclusion-exclusion."},
+    {"slug": "math/geometry", "name": "Geometry", "signal": "Points, lines, rectangles, areas and angles."},
+    {"slug": "math/closed-form", "name": "Find the formula", "signal": "Spot a pattern or closed form instead of simulating (bulb switcher, nim)."},
+    {"slug": "math/big-number", "name": "Numbers as strings", "signal": "Add or multiply numbers stored as strings, arrays or lists."},
+
+    {"slug": "string-matching/prefix-function", "name": "KMP and Z", "signal": "Prefix-function or Z-array for pattern search and repeated structure."},
+    {"slug": "string-matching/rolling-hash", "name": "Rolling hash", "signal": "Rabin-Karp hashes to compare substrings fast (longest duplicate substring)."},
+
+    {"slug": "range-query/segment-tree", "name": "Segment tree", "signal": "Range queries with updates (sum, min, max), possibly lazy."},
+    {"slug": "range-query/fenwick", "name": "Fenwick tree", "signal": "Prefix sums with point updates, or counting inversions by value."},
+    {"slug": "range-query/ordered-set", "name": "Ordered set", "signal": "A balanced tree or sorted container answers floor, ceiling or rank as items arrive."},
+
+    {"slug": "divide-and-conquer/merge-count", "name": "Count during merge sort", "signal": "Count pairs across halves while merging (reverse pairs, count of smaller numbers after self)."},
+    {"slug": "divide-and-conquer/split-combine", "name": "Split and combine", "signal": "Solve halves recursively and combine (different ways to add parentheses, sorted array to BST)."},
+
+    {"slug": "design/cache", "name": "Caches", "signal": "LRU or LFU: a hash map plus an ordered list for O(1) updates."},
+    {"slug": "design/stream", "name": "Iterators and streams", "signal": "Process data as it arrives or one item at a time (moving average, peeking iterator)."},
+    {"slug": "design/fast-ops", "name": "Structure with fast operations", "signal": "Support each operation in O(1) or O(log n) (min stack, randomized set, time map)."},
+
+    {"slug": "simulation/matrix-walk", "name": "Matrix walks", "signal": "Spiral, rotate, transpose or diagonal traversal of a matrix."},
+    {"slug": "simulation/step-rules", "name": "Apply rules step by step", "signal": "Follow given rules exactly, tick by tick (game of life, robot moves, text justification)."},
+    {"slug": "simulation/string-format", "name": "Parse and format strings", "signal": "Parse or rebuild text by a fixed format (compress, zigzag, validate IP)."}
+  ]
+}

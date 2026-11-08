@@ -1,0 +1,2652 @@
+{
+"1": [
+"arrays-hashing/complement"
+],
+"2": [
+"math/big-number"
+],
+"3": [
+"sliding-window/longest-valid"
+],
+"4": [
+"binary-search/partition"
+],
+"5": [
+"dp-string/palindrome"
+],
+"6": [
+"simulation/string-format"
+],
+"7": [
+"math/digits-overflow"
+],
+"8": [
+"math/digits-overflow"
+],
+"9": [
+"math/digits-overflow"
+],
+"10": [
+"dp-string/pattern-match"
+],
+"11": [
+"two-pointers/opposite-ends"
+],
+"12": [
+"greedy/construct"
+],
+"15": [
+"two-pointers/k-sum"
+],
+"16": [
+"two-pointers/k-sum"
+],
+"18": [
+"two-pointers/k-sum"
+],
+"19": [
+"two-pointers/fast-slow"
+],
+"20": [
+"stack/brackets"
+],
+"21": [
+"linked-list/merge-split"
+],
+"22": [
+"backtracking/constraint-placement"
+],
+"23": [
+"heap/k-way-merge"
+],
+"24": [
+"linked-list/reverse"
+],
+"25": [
+"linked-list/reverse"
+],
+"26": [
+"two-pointers/read-write"
+],
+"27": [
+"two-pointers/read-write"
+],
+"28": [
+"string-matching/prefix-function"
+],
+"29": [
+"bit-manipulation/bit-tricks"
+],
+"30": [
+"sliding-window/fixed-size",
+"arrays-hashing/counting"
+],
+"32": [
+"stack/brackets"
+],
+"33": [
+"binary-search/rotated"
+],
+"34": [
+"binary-search/bounds"
+],
+"35": [
+"binary-search/bounds"
+],
+"36": [
+"arrays-hashing/set-lookup"
+],
+"37": [
+"backtracking/constraint-placement"
+],
+"38": [
+"simulation/string-format"
+],
+"39": [
+"backtracking/combination-sum"
+],
+"40": [
+"backtracking/combination-sum"
+],
+"41": [
+"arrays-hashing/in-place-index"
+],
+"42": [
+"two-pointers/opposite-ends"
+],
+"43": [
+"math/big-number"
+],
+"44": [
+"dp-string/pattern-match"
+],
+"45": [
+"greedy/reach"
+],
+"46": [
+"backtracking/permutations"
+],
+"47": [
+"backtracking/permutations"
+],
+"48": [
+"simulation/matrix-walk"
+],
+"49": [
+"arrays-hashing/group-by-key"
+],
+"51": [
+"backtracking/constraint-placement"
+],
+"52": [
+"backtracking/constraint-placement"
+],
+"53": [
+"dp-linear/kadane"
+],
+"54": [
+"simulation/matrix-walk"
+],
+"55": [
+"greedy/reach"
+],
+"56": [
+"intervals/merge"
+],
+"57": [
+"intervals/merge"
+],
+"59": [
+"simulation/matrix-walk"
+],
+"60": [
+"math/combinatorics"
+],
+"61": [
+"two-pointers/fast-slow"
+],
+"62": [
+"dp-grid/paths"
+],
+"63": [
+"dp-grid/paths"
+],
+"64": [
+"dp-grid/paths"
+],
+"65": [
+"simulation/string-format"
+],
+"66": [
+"math/big-number"
+],
+"67": [
+"math/big-number"
+],
+"68": [
+"simulation/step-rules"
+],
+"69": [
+"binary-search/bounds"
+],
+"70": [
+"dp-linear/take-or-skip"
+],
+"71": [
+"stack/history"
+],
+"72": [
+"dp-string/two-strings"
+],
+"74": [
+"binary-search/2d-matrix"
+],
+"75": [
+"two-pointers/read-write"
+],
+"76": [
+"sliding-window/shortest-valid"
+],
+"77": [
+"backtracking/subsets"
+],
+"78": [
+"backtracking/subsets"
+],
+"79": [
+"backtracking/grid-path"
+],
+"80": [
+"two-pointers/read-write"
+],
+"81": [
+"binary-search/rotated"
+],
+"84": [
+"monotonic-stack/span-area"
+],
+"85": [
+"monotonic-stack/span-area"
+],
+"86": [
+"linked-list/merge-split"
+],
+"87": [
+"dp-interval"
+],
+"88": [
+"two-pointers/merge-two"
+],
+"90": [
+"backtracking/subsets"
+],
+"91": [
+"dp-linear/count-ways"
+],
+"92": [
+"linked-list/reverse"
+],
+"93": [
+"backtracking/partition"
+],
+"95": [
+"divide-and-conquer/split-combine"
+],
+"96": [
+"dp-linear/count-ways"
+],
+"97": [
+"dp-string/two-strings"
+],
+"98": [
+"tree-dfs/top-down"
+],
+"99": [
+"bst/inorder"
+],
+"100": [
+"tree-dfs/bottom-up"
+],
+"101": [
+"tree-dfs/bottom-up"
+],
+"102": [
+"tree-bfs"
+],
+"103": [
+"tree-bfs"
+],
+"104": [
+"tree-dfs/bottom-up"
+],
+"105": [
+"tree-dfs/build-serialize"
+],
+"106": [
+"tree-dfs/build-serialize"
+],
+"108": [
+"divide-and-conquer/split-combine"
+],
+"109": [
+"divide-and-conquer/split-combine"
+],
+"110": [
+"tree-dfs/bottom-up"
+],
+"111": [
+"tree-dfs/bottom-up"
+],
+"112": [
+"tree-dfs/top-down"
+],
+"113": [
+"tree-dfs/top-down"
+],
+"115": [
+"dp-string/two-strings"
+],
+"116": [
+"tree-bfs"
+],
+"117": [
+"tree-bfs"
+],
+"120": [
+"dp-grid/paths"
+],
+"123": [
+"dp-state-machine"
+],
+"124": [
+"tree-dfs/path-sums"
+],
+"125": [
+"two-pointers/opposite-ends"
+],
+"126": [
+"graph-traversal/bfs-steps"
+],
+"127": [
+"graph-traversal/bfs-steps"
+],
+"128": [
+"arrays-hashing/set-lookup"
+],
+"129": [
+"tree-dfs/top-down"
+],
+"130": [
+"grid/from-border"
+],
+"131": [
+"backtracking/partition",
+"dp-string/palindrome"
+],
+"132": [
+"dp-linear/split-points",
+"dp-string/palindrome"
+],
+"134": [
+"greedy/reach"
+],
+"135": [
+"greedy/two-pass"
+],
+"136": [
+"bit-manipulation/xor"
+],
+"137": [
+"bit-manipulation/bit-tricks"
+],
+"138": [
+"linked-list/clone-rewire"
+],
+"139": [
+"dp-linear/split-points"
+],
+"140": [
+"backtracking/partition"
+],
+"141": [
+"two-pointers/fast-slow"
+],
+"142": [
+"two-pointers/fast-slow"
+],
+"143": [
+"two-pointers/fast-slow",
+"linked-list/reverse"
+],
+"146": [
+"design/cache"
+],
+"148": [
+"linked-list/merge-split"
+],
+"149": [
+"math/geometry"
+],
+"150": [
+"stack/expression"
+],
+"151": [
+"simulation/string-format"
+],
+"152": [
+"dp-linear/kadane"
+],
+"153": [
+"binary-search/rotated"
+],
+"155": [
+"design/fast-ops"
+],
+"158": [
+"design/stream"
+],
+"160": [
+"two-pointers/fast-slow"
+],
+"161": [
+"two-pointers/merge-two"
+],
+"162": [
+"binary-search/property"
+],
+"164": [
+"sorting/counting-bucket"
+],
+"165": [
+"simulation/string-format"
+],
+"166": [
+"math/digits-overflow"
+],
+"167": [
+"two-pointers/opposite-ends"
+],
+"168": [
+"math/digits-overflow"
+],
+"169": [
+"arrays-hashing/counting"
+],
+"171": [
+"math/digits-overflow"
+],
+"172": [
+"math/number-theory"
+],
+"173": [
+"bst/inorder"
+],
+"174": [
+"dp-grid/paths"
+],
+"179": [
+"sorting/custom-order"
+],
+"187": [
+"arrays-hashing/set-lookup"
+],
+"188": [
+"dp-state-machine"
+],
+"189": [
+"two-pointers/opposite-ends"
+],
+"190": [
+"bit-manipulation/bit-tricks"
+],
+"191": [
+"bit-manipulation/bit-tricks"
+],
+"198": [
+"dp-linear/take-or-skip"
+],
+"199": [
+"tree-bfs"
+],
+"200": [
+"grid/flood-fill"
+],
+"202": [
+"two-pointers/fast-slow"
+],
+"204": [
+"math/number-theory"
+],
+"206": [
+"linked-list/reverse"
+],
+"207": [
+"topo-sort"
+],
+"208": [
+"trie/prefix"
+],
+"209": [
+"sliding-window/shortest-valid"
+],
+"210": [
+"topo-sort"
+],
+"211": [
+"trie/prefix"
+],
+"212": [
+"trie/board-search"
+],
+"213": [
+"dp-linear/take-or-skip"
+],
+"214": [
+"string-matching/prefix-function"
+],
+"215": [
+"sorting/quickselect"
+],
+"216": [
+"backtracking/combination-sum"
+],
+"217": [
+"arrays-hashing/set-lookup"
+],
+"218": [
+"sweep-line"
+],
+"219": [
+"arrays-hashing/set-lookup"
+],
+"220": [
+"range-query/ordered-set"
+],
+"221": [
+"dp-grid/max-square"
+],
+"223": [
+"math/geometry"
+],
+"224": [
+"stack/expression"
+],
+"226": [
+"tree-dfs/bottom-up"
+],
+"227": [
+"stack/expression"
+],
+"229": [
+"arrays-hashing/counting"
+],
+"230": [
+"bst/inorder"
+],
+"231": [
+"bit-manipulation/bit-tricks"
+],
+"234": [
+"two-pointers/fast-slow",
+"linked-list/reverse"
+],
+"235": [
+"bst/navigate"
+],
+"236": [
+"tree-dfs/lca"
+],
+"238": [
+"prefix-sum/left-right-pass"
+],
+"239": [
+"monotonic-queue"
+],
+"240": [
+"binary-search/2d-matrix"
+],
+"241": [
+"divide-and-conquer/split-combine"
+],
+"242": [
+"arrays-hashing/counting"
+],
+"244": [
+"two-pointers/merge-two"
+],
+"249": [
+"arrays-hashing/group-by-key"
+],
+"251": [
+"design/stream"
+],
+"252": [
+"intervals/overlap-count"
+],
+"253": [
+"intervals/overlap-count"
+],
+"256": [
+"dp-linear/take-or-skip"
+],
+"257": [
+"tree-dfs/top-down"
+],
+"258": [
+"math/closed-form"
+],
+"260": [
+"bit-manipulation/xor"
+],
+"261": [
+"union-find/connectivity"
+],
+"263": [
+"math/number-theory"
+],
+"268": [
+"bit-manipulation/xor"
+],
+"269": [
+"topo-sort"
+],
+"270": [
+"bst/navigate"
+],
+"271": [
+"simulation/string-format"
+],
+"272": [
+"bst/inorder"
+],
+"273": [
+"simulation/string-format"
+],
+"274": [
+"sorting/counting-bucket"
+],
+"278": [
+"binary-search/bounds"
+],
+"279": [
+"dp-knapsack/unbounded"
+],
+"282": [
+"backtracking/partition"
+],
+"283": [
+"two-pointers/read-write"
+],
+"286": [
+"graph-traversal/multi-source-bfs"
+],
+"287": [
+"two-pointers/fast-slow"
+],
+"289": [
+"simulation/step-rules"
+],
+"292": [
+"math/closed-form"
+],
+"295": [
+"heap/two-heaps"
+],
+"297": [
+"tree-dfs/build-serialize"
+],
+"299": [
+"arrays-hashing/counting"
+],
+"300": [
+"dp-linear/lis"
+],
+"303": [
+"prefix-sum/range-sum"
+],
+"304": [
+"prefix-sum/range-sum"
+],
+"305": [
+"union-find/connectivity"
+],
+"309": [
+"dp-state-machine"
+],
+"310": [
+"topo-sort"
+],
+"312": [
+"dp-interval"
+],
+"314": [
+"tree-bfs"
+],
+"315": [
+"divide-and-conquer/merge-count",
+"range-query/fenwick"
+],
+"316": [
+"monotonic-stack/greedy-removal"
+],
+"317": [
+"graph-traversal/bfs-steps"
+],
+"319": [
+"math/closed-form"
+],
+"321": [
+"monotonic-stack/greedy-removal",
+"two-pointers/merge-two"
+],
+"322": [
+"dp-knapsack/unbounded"
+],
+"323": [
+"union-find/connectivity"
+],
+"324": [
+"sorting/quickselect"
+],
+"326": [
+"math/number-theory"
+],
+"327": [
+"divide-and-conquer/merge-count"
+],
+"328": [
+"linked-list/merge-split"
+],
+"329": [
+"topo-sort"
+],
+"336": [
+"trie/prefix"
+],
+"337": [
+"dp-tree/node-states"
+],
+"338": [
+"bit-manipulation/bit-tricks"
+],
+"340": [
+"sliding-window/longest-valid"
+],
+"341": [
+"design/stream"
+],
+"342": [
+"bit-manipulation/bit-tricks"
+],
+"343": [
+"dp-linear/split-points"
+],
+"344": [
+"two-pointers/opposite-ends"
+],
+"345": [
+"two-pointers/opposite-ends"
+],
+"346": [
+"design/stream"
+],
+"347": [
+"heap/top-k"
+],
+"348": [
+"design/fast-ops"
+],
+"349": [
+"arrays-hashing/set-lookup"
+],
+"350": [
+"arrays-hashing/counting"
+],
+"353": [
+"simulation/step-rules"
+],
+"354": [
+"dp-linear/lis"
+],
+"355": [
+"heap/k-way-merge"
+],
+"359": [
+"design/fast-ops"
+],
+"362": [
+"design/stream"
+],
+"365": [
+"math/number-theory"
+],
+"366": [
+"tree-dfs/bottom-up"
+],
+"367": [
+"binary-search/bounds"
+],
+"368": [
+"dp-linear/lis"
+],
+"371": [
+"bit-manipulation/bit-tricks"
+],
+"373": [
+"heap/k-way-merge"
+],
+"374": [
+"binary-search/bounds"
+],
+"377": [
+"dp-knapsack/unbounded"
+],
+"378": [
+"binary-search-answer/kth-by-count"
+],
+"380": [
+"design/fast-ops"
+],
+"381": [
+"design/fast-ops"
+],
+"383": [
+"arrays-hashing/counting"
+],
+"387": [
+"arrays-hashing/counting"
+],
+"389": [
+"bit-manipulation/xor"
+],
+"392": [
+"two-pointers/merge-two"
+],
+"394": [
+"stack/expression"
+],
+"395": [
+"divide-and-conquer/split-combine"
+],
+"396": [
+"math/closed-form"
+],
+"399": [
+"union-find/group-by-key"
+],
+"400": [
+"math/closed-form"
+],
+"402": [
+"monotonic-stack/greedy-removal"
+],
+"404": [
+"tree-dfs/top-down"
+],
+"406": [
+"sorting/custom-order"
+],
+"407": [
+"shortest-path/dijkstra"
+],
+"408": [
+"simulation/string-format"
+],
+"409": [
+"arrays-hashing/counting"
+],
+"410": [
+"binary-search-answer/feasibility"
+],
+"412": [
+"simulation/step-rules"
+],
+"413": [
+"dp-linear/count-ways"
+],
+"415": [
+"math/big-number"
+],
+"416": [
+"dp-knapsack/zero-one"
+],
+"417": [
+"grid/from-border"
+],
+"419": [
+"grid/flood-fill"
+],
+"421": [
+"trie/bitwise"
+],
+"424": [
+"sliding-window/longest-valid"
+],
+"427": [
+"divide-and-conquer/split-combine"
+],
+"428": [
+"tree-dfs/build-serialize"
+],
+"430": [
+"linked-list/clone-rewire"
+],
+"432": [
+"design/fast-ops"
+],
+"433": [
+"graph-traversal/bfs-steps"
+],
+"435": [
+"intervals/greedy-by-end"
+],
+"437": [
+"prefix-sum/subarray-hash",
+"tree-dfs/top-down"
+],
+"438": [
+"sliding-window/fixed-size"
+],
+"441": [
+"binary-search/bounds"
+],
+"442": [
+"arrays-hashing/in-place-index"
+],
+"443": [
+"two-pointers/read-write"
+],
+"445": [
+"linked-list/reverse"
+],
+"448": [
+"arrays-hashing/in-place-index"
+],
+"450": [
+"bst/navigate"
+],
+"451": [
+"sorting/counting-bucket"
+],
+"452": [
+"intervals/greedy-by-end"
+],
+"453": [
+"math/closed-form"
+],
+"455": [
+"greedy/sort-then-pick"
+],
+"456": [
+"monotonic-stack/next-greater"
+],
+"459": [
+"string-matching/prefix-function"
+],
+"460": [
+"design/cache"
+],
+"465": [
+"dp-bitmask"
+],
+"468": [
+"simulation/string-format"
+],
+"473": [
+"dp-bitmask"
+],
+"475": [
+"binary-search/bounds"
+],
+"477": [
+"bit-manipulation/bit-tricks"
+],
+"480": [
+"heap/two-heaps"
+],
+"486": [
+"dp-interval"
+],
+"489": [
+"backtracking/grid-path"
+],
+"490": [
+"graph-traversal/bfs-steps"
+],
+"493": [
+"divide-and-conquer/merge-count"
+],
+"494": [
+"dp-knapsack/zero-one"
+],
+"496": [
+"monotonic-stack/next-greater"
+],
+"498": [
+"simulation/matrix-walk"
+],
+"502": [
+"heap/scheduling"
+],
+"503": [
+"monotonic-stack/next-greater"
+],
+"507": [
+"math/number-theory"
+],
+"509": [
+"dp-linear/take-or-skip"
+],
+"515": [
+"tree-bfs"
+],
+"516": [
+"dp-string/palindrome"
+],
+"518": [
+"dp-knapsack/unbounded"
+],
+"523": [
+"prefix-sum/subarray-hash"
+],
+"525": [
+"prefix-sum/subarray-hash"
+],
+"526": [
+"dp-bitmask"
+],
+"528": [
+"prefix-sum/range-sum",
+"binary-search/bounds"
+],
+"529": [
+"grid/flood-fill"
+],
+"532": [
+"arrays-hashing/counting"
+],
+"539": [
+"sorting/counting-bucket"
+],
+"540": [
+"binary-search/property"
+],
+"541": [
+"two-pointers/opposite-ends"
+],
+"542": [
+"graph-traversal/multi-source-bfs"
+],
+"543": [
+"tree-dfs/bottom-up"
+],
+"546": [
+"dp-interval"
+],
+"547": [
+"graph-traversal/components"
+],
+"557": [
+"two-pointers/opposite-ends"
+],
+"560": [
+"prefix-sum/subarray-hash"
+],
+"561": [
+"greedy/sort-then-pick"
+],
+"566": [
+"simulation/matrix-walk"
+],
+"567": [
+"sliding-window/fixed-size"
+],
+"572": [
+"tree-dfs/bottom-up"
+],
+"581": [
+"prefix-sum/left-right-pass"
+],
+"583": [
+"dp-string/two-strings"
+],
+"594": [
+"arrays-hashing/counting"
+],
+"605": [
+"greedy/construct"
+],
+"609": [
+"arrays-hashing/group-by-key"
+],
+"611": [
+"two-pointers/k-sum"
+],
+"617": [
+"tree-dfs/top-down"
+],
+"621": [
+"heap/scheduling"
+],
+"622": [
+"design/fast-ops"
+],
+"632": [
+"heap/k-way-merge"
+],
+"633": [
+"two-pointers/opposite-ends"
+],
+"636": [
+"stack/history"
+],
+"642": [
+"trie/prefix"
+],
+"643": [
+"sliding-window/fixed-size"
+],
+"645": [
+"arrays-hashing/in-place-index"
+],
+"647": [
+"dp-string/palindrome"
+],
+"652": [
+"tree-dfs/bottom-up"
+],
+"653": [
+"bst/inorder"
+],
+"657": [
+"simulation/step-rules"
+],
+"658": [
+"binary-search/bounds"
+],
+"661": [
+"simulation/matrix-walk"
+],
+"662": [
+"tree-bfs"
+],
+"664": [
+"dp-interval"
+],
+"670": [
+"greedy/construct"
+],
+"673": [
+"dp-linear/lis"
+],
+"678": [
+"greedy/running-balance"
+],
+"680": [
+"two-pointers/opposite-ends"
+],
+"682": [
+"stack/history"
+],
+"684": [
+"union-find/connectivity"
+],
+"690": [
+"tree-dfs/bottom-up"
+],
+"692": [
+"heap/top-k"
+],
+"694": [
+"grid/flood-fill"
+],
+"695": [
+"grid/flood-fill"
+],
+"697": [
+"arrays-hashing/counting"
+],
+"698": [
+"dp-bitmask"
+],
+"700": [
+"bst/navigate"
+],
+"701": [
+"bst/navigate"
+],
+"703": [
+"heap/top-k",
+"design/stream"
+],
+"704": [
+"binary-search/bounds"
+],
+"706": [
+"design/fast-ops"
+],
+"713": [
+"sliding-window/count-subarrays"
+],
+"714": [
+"dp-state-machine"
+],
+"716": [
+"design/fast-ops"
+],
+"718": [
+"dp-string/two-strings"
+],
+"721": [
+"union-find/group-by-key"
+],
+"723": [
+"simulation/step-rules"
+],
+"724": [
+"prefix-sum/range-sum"
+],
+"726": [
+"stack/expression"
+],
+"727": [
+"dp-string/two-strings"
+],
+"733": [
+"grid/flood-fill"
+],
+"735": [
+"stack/history"
+],
+"736": [
+"stack/expression"
+],
+"739": [
+"monotonic-stack/next-greater"
+],
+"740": [
+"dp-linear/take-or-skip"
+],
+"741": [
+"dp-grid/paths"
+],
+"743": [
+"shortest-path/dijkstra"
+],
+"744": [
+"binary-search/bounds"
+],
+"746": [
+"dp-linear/take-or-skip"
+],
+"749": [
+"simulation/step-rules",
+"grid/flood-fill"
+],
+"752": [
+"graph-traversal/bfs-steps"
+],
+"754": [
+"math/closed-form"
+],
+"759": [
+"sweep-line"
+],
+"761": [
+"divide-and-conquer/split-combine"
+],
+"763": [
+"intervals/merge"
+],
+"765": [
+"union-find/connectivity"
+],
+"766": [
+"simulation/matrix-walk"
+],
+"767": [
+"heap/scheduling"
+],
+"771": [
+"arrays-hashing/set-lookup"
+],
+"772": [
+"stack/expression"
+],
+"773": [
+"graph-traversal/state-space"
+],
+"777": [
+"two-pointers/merge-two"
+],
+"778": [
+"shortest-path/dijkstra"
+],
+"779": [
+"bit-manipulation/bit-tricks"
+],
+"780": [
+"math/number-theory"
+],
+"781": [
+"arrays-hashing/counting"
+],
+"784": [
+"backtracking/subsets"
+],
+"785": [
+"graph-traversal/bipartite"
+],
+"787": [
+"shortest-path/bounded-steps"
+],
+"790": [
+"dp-linear/count-ways"
+],
+"791": [
+"arrays-hashing/counting"
+],
+"799": [
+"simulation/step-rules"
+],
+"802": [
+"topo-sort"
+],
+"815": [
+"graph-traversal/bfs-steps"
+],
+"827": [
+"grid/flood-fill"
+],
+"829": [
+"math/number-theory"
+],
+"833": [
+"simulation/string-format"
+],
+"834": [
+"dp-tree/rerooting"
+],
+"836": [
+"math/geometry"
+],
+"837": [
+"dp-linear/count-ways"
+],
+"841": [
+"graph-traversal/components"
+],
+"844": [
+"stack/history"
+],
+"845": [
+"prefix-sum/left-right-pass"
+],
+"846": [
+"greedy/sort-then-pick"
+],
+"851": [
+"topo-sort"
+],
+"852": [
+"binary-search/property"
+],
+"853": [
+"sorting/custom-order"
+],
+"855": [
+"design/fast-ops",
+"range-query/ordered-set"
+],
+"856": [
+"stack/expression"
+],
+"857": [
+"heap/top-k",
+"sorting/custom-order"
+],
+"860": [
+"greedy/running-balance"
+],
+"862": [
+"monotonic-queue"
+],
+"863": [
+"graph-traversal/bfs-steps"
+],
+"864": [
+"graph-traversal/state-space"
+],
+"867": [
+"simulation/matrix-walk"
+],
+"868": [
+"bit-manipulation/bit-tricks"
+],
+"870": [
+"greedy/sort-then-pick"
+],
+"871": [
+"heap/scheduling"
+],
+"874": [
+"simulation/step-rules"
+],
+"875": [
+"binary-search-answer/feasibility"
+],
+"876": [
+"two-pointers/fast-slow"
+],
+"877": [
+"dp-interval"
+],
+"881": [
+"greedy/sort-then-pick",
+"two-pointers/opposite-ends"
+],
+"886": [
+"graph-traversal/bipartite"
+],
+"888": [
+"arrays-hashing/set-lookup"
+],
+"889": [
+"tree-dfs/build-serialize"
+],
+"895": [
+"design/fast-ops"
+],
+"901": [
+"monotonic-stack/next-greater"
+],
+"904": [
+"sliding-window/longest-valid"
+],
+"905": [
+"two-pointers/read-write"
+],
+"907": [
+"monotonic-stack/span-area"
+],
+"909": [
+"graph-traversal/bfs-steps"
+],
+"918": [
+"dp-linear/kadane"
+],
+"920": [
+"dp-linear/count-ways"
+],
+"921": [
+"greedy/running-balance"
+],
+"924": [
+"union-find/connectivity"
+],
+"928": [
+"union-find/connectivity"
+],
+"929": [
+"simulation/string-format"
+],
+"930": [
+"prefix-sum/subarray-hash"
+],
+"931": [
+"dp-grid/paths"
+],
+"933": [
+"design/stream"
+],
+"934": [
+"grid/flood-fill",
+"graph-traversal/multi-source-bfs"
+],
+"935": [
+"dp-linear/count-ways"
+],
+"938": [
+"bst/navigate"
+],
+"939": [
+"arrays-hashing/set-lookup"
+],
+"940": [
+"dp-linear/count-ways"
+],
+"947": [
+"union-find/group-by-key"
+],
+"958": [
+"tree-bfs"
+],
+"962": [
+"monotonic-stack/next-greater"
+],
+"963": [
+"math/geometry"
+],
+"968": [
+"dp-tree/node-states"
+],
+"973": [
+"heap/top-k"
+],
+"974": [
+"prefix-sum/subarray-hash"
+],
+"975": [
+"monotonic-stack/next-greater",
+"dp-linear/reach"
+],
+"977": [
+"two-pointers/opposite-ends"
+],
+"979": [
+"tree-dfs/bottom-up"
+],
+"980": [
+"backtracking/grid-path"
+],
+"981": [
+"design/fast-ops",
+"binary-search/bounds"
+],
+"983": [
+"dp-linear/reach"
+],
+"986": [
+"two-pointers/merge-two"
+],
+"987": [
+"tree-dfs/top-down",
+"sorting/custom-order"
+],
+"990": [
+"union-find/group-by-key"
+],
+"991": [
+"greedy/construct"
+],
+"992": [
+"sliding-window/count-subarrays"
+],
+"994": [
+"graph-traversal/multi-source-bfs"
+],
+"997": [
+"arrays-hashing/counting"
+],
+"1002": [
+"arrays-hashing/counting"
+],
+"1004": [
+"sliding-window/longest-valid"
+],
+"1008": [
+"tree-dfs/build-serialize"
+],
+"1010": [
+"arrays-hashing/complement"
+],
+"1011": [
+"binary-search-answer/feasibility"
+],
+"1021": [
+"stack/brackets"
+],
+"1025": [
+"math/closed-form"
+],
+"1027": [
+"dp-linear/lis"
+],
+"1028": [
+"tree-dfs/build-serialize"
+],
+"1029": [
+"greedy/sort-then-pick"
+],
+"1031": [
+"prefix-sum/range-sum"
+],
+"1038": [
+"bst/inorder"
+],
+"1041": [
+"simulation/step-rules"
+],
+"1043": [
+"dp-linear/split-points"
+],
+"1044": [
+"string-matching/rolling-hash",
+"binary-search-answer/feasibility"
+],
+"1046": [
+"heap/scheduling"
+],
+"1047": [
+"stack/history"
+],
+"1048": [
+"dp-linear/lis"
+],
+"1049": [
+"dp-knapsack/zero-one"
+],
+"1051": [
+"sorting/counting-bucket"
+],
+"1052": [
+"sliding-window/fixed-size"
+],
+"1071": [
+"math/number-theory"
+],
+"1081": [
+"monotonic-stack/greedy-removal"
+],
+"1086": [
+"heap/top-k"
+],
+"1091": [
+"graph-traversal/bfs-steps"
+],
+"1092": [
+"dp-string/two-strings"
+],
+"1094": [
+"intervals/overlap-count"
+],
+"1095": [
+"binary-search/property"
+],
+"1101": [
+"union-find/connectivity"
+],
+"1108": [
+"simulation/string-format"
+],
+"1109": [
+"prefix-sum/difference-array"
+],
+"1110": [
+"tree-dfs/bottom-up"
+],
+"1111": [
+"stack/brackets"
+],
+"1125": [
+"dp-bitmask"
+],
+"1136": [
+"topo-sort"
+],
+"1143": [
+"dp-string/two-strings"
+],
+"1146": [
+"design/fast-ops",
+"binary-search/bounds"
+],
+"1160": [
+"arrays-hashing/counting"
+],
+"1162": [
+"graph-traversal/multi-source-bfs"
+],
+"1171": [
+"prefix-sum/subarray-hash"
+],
+"1186": [
+"dp-linear/kadane"
+],
+"1189": [
+"arrays-hashing/counting"
+],
+"1190": [
+"stack/expression"
+],
+"1197": [
+"graph-traversal/bfs-steps"
+],
+"1202": [
+"union-find/group-by-key"
+],
+"1207": [
+"arrays-hashing/counting"
+],
+"1209": [
+"stack/history"
+],
+"1217": [
+"math/closed-form"
+],
+"1218": [
+"dp-linear/lis"
+],
+"1221": [
+"greedy/running-balance"
+],
+"1229": [
+"two-pointers/merge-two"
+],
+"1233": [
+"trie/prefix"
+],
+"1235": [
+"dp-linear/take-or-skip",
+"binary-search/bounds"
+],
+"1236": [
+"graph-traversal/components"
+],
+"1244": [
+"design/fast-ops"
+],
+"1248": [
+"sliding-window/count-subarrays"
+],
+"1249": [
+"stack/brackets"
+],
+"1254": [
+"grid/flood-fill"
+],
+"1260": [
+"simulation/matrix-walk"
+],
+"1266": [
+"math/closed-form"
+],
+"1268": [
+"trie/prefix"
+],
+"1274": [
+"divide-and-conquer/split-combine"
+],
+"1275": [
+"simulation/step-rules"
+],
+"1277": [
+"dp-grid/max-square"
+],
+"1281": [
+"math/digits-overflow"
+],
+"1283": [
+"binary-search-answer/feasibility"
+],
+"1288": [
+"intervals/merge"
+],
+"1290": [
+"bit-manipulation/bit-tricks"
+],
+"1293": [
+"graph-traversal/state-space"
+],
+"1295": [
+"math/digits-overflow"
+],
+"1297": [
+"sliding-window/fixed-size"
+],
+"1301": [
+"dp-grid/paths"
+],
+"1304": [
+"math/closed-form"
+],
+"1312": [
+"dp-string/palindrome"
+],
+"1319": [
+"union-find/connectivity"
+],
+"1323": [
+"greedy/construct"
+],
+"1326": [
+"greedy/reach"
+],
+"1328": [
+"greedy/construct"
+],
+"1335": [
+"dp-linear/split-points"
+],
+"1342": [
+"bit-manipulation/bit-tricks"
+],
+"1343": [
+"sliding-window/fixed-size"
+],
+"1344": [
+"math/geometry"
+],
+"1345": [
+"graph-traversal/bfs-steps"
+],
+"1347": [
+"arrays-hashing/counting"
+],
+"1351": [
+"binary-search/2d-matrix"
+],
+"1352": [
+"design/stream"
+],
+"1353": [
+"heap/scheduling"
+],
+"1358": [
+"sliding-window/count-subarrays"
+],
+"1365": [
+"sorting/counting-bucket"
+],
+"1366": [
+"sorting/custom-order"
+],
+"1368": [
+"shortest-path/dijkstra"
+],
+"1376": [
+"tree-dfs/bottom-up"
+],
+"1383": [
+"heap/top-k",
+"greedy/sort-then-pick"
+],
+"1392": [
+"string-matching/prefix-function"
+],
+"1394": [
+"arrays-hashing/counting"
+],
+"1396": [
+"design/fast-ops"
+],
+"1404": [
+"math/big-number"
+],
+"1405": [
+"heap/scheduling",
+"greedy/construct"
+],
+"1406": [
+"dp-linear/take-or-skip"
+],
+"1411": [
+"dp-linear/count-ways"
+],
+"1413": [
+"prefix-sum/range-sum"
+],
+"1423": [
+"sliding-window/fixed-size"
+],
+"1428": [
+"binary-search/2d-matrix"
+],
+"1429": [
+"design/stream"
+],
+"1434": [
+"dp-bitmask"
+],
+"1436": [
+"arrays-hashing/set-lookup"
+],
+"1438": [
+"sliding-window/longest-valid",
+"monotonic-queue"
+],
+"1443": [
+"tree-dfs/bottom-up"
+],
+"1448": [
+"tree-dfs/top-down"
+],
+"1456": [
+"sliding-window/fixed-size"
+],
+"1462": [
+"shortest-path/all-pairs"
+],
+"1463": [
+"dp-grid/paths"
+],
+"1466": [
+"graph-traversal/components"
+],
+"1472": [
+"design/fast-ops"
+],
+"1475": [
+"monotonic-stack/next-greater"
+],
+"1477": [
+"sliding-window/shortest-valid"
+],
+"1478": [
+"dp-linear/split-points"
+],
+"1480": [
+"prefix-sum/range-sum"
+],
+"1482": [
+"binary-search-answer/feasibility"
+],
+"1488": [
+"range-query/ordered-set"
+],
+"1492": [
+"math/number-theory"
+],
+"1493": [
+"sliding-window/longest-valid"
+],
+"1498": [
+"two-pointers/opposite-ends"
+],
+"1512": [
+"arrays-hashing/counting"
+],
+"1518": [
+"simulation/step-rules"
+],
+"1523": [
+"math/closed-form"
+],
+"1535": [
+"simulation/step-rules"
+],
+"1537": [
+"two-pointers/merge-two"
+],
+"1539": [
+"binary-search/property"
+],
+"1541": [
+"greedy/running-balance"
+],
+"1547": [
+"dp-interval"
+],
+"1552": [
+"binary-search-answer/feasibility"
+],
+"1559": [
+"graph-traversal/cycle-detect"
+],
+"1570": [
+"two-pointers/merge-two"
+],
+"1584": [
+"mst"
+],
+"1590": [
+"prefix-sum/subarray-hash"
+],
+"1603": [
+"design/fast-ops"
+],
+"1604": [
+"arrays-hashing/group-by-key"
+],
+"1610": [
+"sliding-window/longest-valid"
+],
+"1611": [
+"bit-manipulation/bit-tricks"
+],
+"1614": [
+"stack/brackets"
+],
+"1626": [
+"dp-linear/lis"
+],
+"1631": [
+"shortest-path/dijkstra"
+],
+"1636": [
+"sorting/custom-order"
+],
+"1639": [
+"dp-string/two-strings"
+],
+"1642": [
+"heap/top-k"
+],
+"1647": [
+"greedy/construct"
+],
+"1648": [
+"greedy/sort-then-pick"
+],
+"1650": [
+"two-pointers/fast-slow"
+],
+"1652": [
+"sliding-window/fixed-size"
+],
+"1653": [
+"prefix-sum/left-right-pass"
+],
+"1658": [
+"sliding-window/longest-valid"
+],
+"1664": [
+"prefix-sum/left-right-pass"
+],
+"1665": [
+"greedy/sort-then-pick"
+],
+"1669": [
+"linked-list/merge-split"
+],
+"1674": [
+"prefix-sum/difference-array"
+],
+"1679": [
+"arrays-hashing/complement"
+],
+"1700": [
+"simulation/step-rules"
+],
+"1703": [
+"prefix-sum/range-sum",
+"sliding-window/fixed-size"
+],
+"1710": [
+"greedy/sort-then-pick"
+],
+"1721": [
+"two-pointers/fast-slow"
+],
+"1732": [
+"prefix-sum/range-sum"
+],
+"1739": [
+"math/closed-form"
+],
+"1749": [
+"dp-linear/kadane"
+],
+"1751": [
+"dp-linear/take-or-skip",
+"binary-search/bounds"
+],
+"1760": [
+"binary-search-answer/feasibility"
+],
+"1762": [
+"monotonic-stack/next-greater"
+],
+"1768": [
+"two-pointers/merge-two"
+],
+"1769": [
+"prefix-sum/left-right-pass"
+],
+"1781": [
+"arrays-hashing/counting"
+],
+"1797": [
+"design/fast-ops"
+],
+"1801": [
+"heap/scheduling"
+],
+"1802": [
+"binary-search-answer/feasibility"
+],
+"1824": [
+"dp-linear/reach"
+],
+"1825": [
+"design/stream",
+"range-query/ordered-set"
+],
+"1827": [
+"greedy/running-balance"
+],
+"1828": [
+"math/geometry"
+],
+"1832": [
+"arrays-hashing/set-lookup"
+],
+"1833": [
+"greedy/sort-then-pick"
+],
+"1834": [
+"heap/scheduling"
+],
+"1838": [
+"sliding-window/longest-valid"
+],
+"1839": [
+"sliding-window/longest-valid"
+],
+"1840": [
+"greedy/two-pass"
+],
+"1846": [
+"greedy/sort-then-pick"
+],
+"1854": [
+"prefix-sum/difference-array"
+],
+"1861": [
+"two-pointers/read-write"
+],
+"1871": [
+"dp-linear/reach"
+],
+"1876": [
+"sliding-window/fixed-size"
+],
+"1877": [
+"two-pointers/opposite-ends"
+],
+"1901": [
+"binary-search/property"
+],
+"1910": [
+"stack/history"
+],
+"1912": [
+"design/fast-ops",
+"range-query/ordered-set"
+],
+"1922": [
+"math/number-theory"
+],
+"1926": [
+"graph-traversal/bfs-steps"
+],
+"1928": [
+"shortest-path/dijkstra"
+],
+"1944": [
+"monotonic-stack/next-greater"
+],
+"1962": [
+"heap/scheduling"
+],
+"1963": [
+"greedy/running-balance"
+],
+"1966": [
+"prefix-sum/left-right-pass"
+],
+"1971": [
+"union-find/connectivity"
+],
+"1979": [
+"math/number-theory"
+],
+"2008": [
+"dp-linear/take-or-skip",
+"binary-search/bounds"
+],
+"2009": [
+"sliding-window/longest-valid"
+],
+"2021": [
+"prefix-sum/difference-array"
+],
+"2024": [
+"sliding-window/longest-valid"
+],
+"2034": [
+"design/fast-ops"
+],
+"2035": [
+"bit-manipulation/subset-masks",
+"binary-search/bounds"
+],
+"2040": [
+"binary-search-answer/kth-by-count"
+],
+"2050": [
+"topo-sort"
+],
+"2054": [
+"binary-search/bounds"
+],
+"2055": [
+"prefix-sum/range-sum"
+],
+"2074": [
+"linked-list/reverse"
+],
+"2095": [
+"two-pointers/fast-slow"
+],
+"2096": [
+"tree-dfs/lca"
+],
+"2099": [
+"heap/top-k"
+],
+"2101": [
+"graph-traversal/components"
+],
+"2104": [
+"monotonic-stack/span-area"
+],
+"2115": [
+"topo-sort"
+],
+"2116": [
+"greedy/running-balance"
+],
+"2127": [
+"topo-sort"
+],
+"2141": [
+"binary-search-answer/feasibility"
+],
+"2144": [
+"greedy/sort-then-pick"
+],
+"2145": [
+"prefix-sum/range-sum"
+],
+"2149": [
+"two-pointers/read-write"
+],
+"2161": [
+"two-pointers/read-write"
+],
+"2163": [
+"heap/top-k",
+"prefix-sum/left-right-pass"
+],
+"2187": [
+"binary-search-answer/feasibility"
+],
+"2188": [
+"dp-linear/split-points"
+],
+"2193": [
+"two-pointers/opposite-ends"
+],
+"2196": [
+"tree-dfs/build-serialize"
+],
+"2203": [
+"shortest-path/dijkstra"
+],
+"2208": [
+"heap/scheduling"
+],
+"2213": [
+"range-query/segment-tree"
+],
+"2215": [
+"arrays-hashing/set-lookup"
+],
+"2226": [
+"binary-search-answer/feasibility"
+],
+"2246": [
+"tree-dfs/path-sums"
+],
+"2251": [
+"binary-search/bounds"
+],
+"2258": [
+"binary-search-answer/feasibility",
+"graph-traversal/multi-source-bfs"
+],
+"2265": [
+"tree-dfs/bottom-up"
+],
+"2271": [
+"sliding-window/longest-valid"
+],
+"2296": [
+"design/fast-ops"
+],
+"2300": [
+"binary-search/bounds"
+],
+"2327": [
+"dp-linear/count-ways"
+],
+"2337": [
+"two-pointers/merge-two"
+],
+"2349": [
+"design/fast-ops"
+],
+"2360": [
+"graph-traversal/cycle-detect"
+],
+"2384": [
+"greedy/construct"
+],
+"2385": [
+"graph-traversal/bfs-steps"
+],
+"2401": [
+"sliding-window/longest-valid"
+],
+"2402": [
+"heap/scheduling"
+],
+"2418": [
+"sorting/custom-order"
+],
+"2422": [
+"two-pointers/opposite-ends"
+],
+"2434": [
+"monotonic-stack/greedy-removal"
+],
+"2439": [
+"binary-search-answer/feasibility"
+],
+"2444": [
+"sliding-window/count-subarrays"
+],
+"2448": [
+"binary-search-answer/feasibility"
+],
+"2461": [
+"sliding-window/fixed-size"
+],
+"2466": [
+"dp-linear/count-ways"
+],
+"2467": [
+"tree-dfs/top-down"
+],
+"2472": [
+"dp-string/palindrome"
+],
+"2484": [
+"prefix-sum/left-right-pass"
+],
+"2502": [
+"simulation/step-rules"
+],
+"2503": [
+"heap/scheduling"
+],
+"2520": [
+"math/digits-overflow"
+],
+"2542": [
+"heap/top-k"
+],
+"2551": [
+"greedy/sort-then-pick"
+],
+"2559": [
+"prefix-sum/range-sum"
+],
+"2560": [
+"binary-search-answer/feasibility"
+],
+"2563": [
+"two-pointers/opposite-ends"
+],
+"2571": [
+"bit-manipulation/bit-tricks"
+],
+"2574": [
+"prefix-sum/left-right-pass"
+],
+"2591": [
+"greedy/construct"
+],
+"2592": [
+"greedy/sort-then-pick"
+],
+"2594": [
+"binary-search-answer/feasibility"
+],
+"2603": [
+"topo-sort"
+],
+"2615": [
+"prefix-sum/range-sum",
+"arrays-hashing/group-by-key"
+],
+"2616": [
+"binary-search-answer/feasibility"
+],
+"2657": [
+"arrays-hashing/counting"
+],
+"2663": [
+"greedy/construct"
+],
+"2672": [
+"simulation/step-rules"
+],
+"2680": [
+"prefix-sum/left-right-pass"
+],
+"2697": [
+"two-pointers/opposite-ends"
+],
+"2762": [
+"sliding-window/count-subarrays",
+"monotonic-queue"
+],
+"2768": [
+"arrays-hashing/counting"
+],
+"2791": [
+"tree-dfs/bottom-up",
+"bit-manipulation/bit-tricks"
+],
+"2812": [
+"graph-traversal/multi-source-bfs",
+"shortest-path/dijkstra"
+],
+"2817": [
+"range-query/ordered-set"
+],
+"2833": [
+"math/closed-form"
+],
+"2850": [
+"backtracking/permutations"
+],
+"2858": [
+"dp-tree/rerooting"
+],
+"2861": [
+"binary-search-answer/feasibility"
+],
+"2866": [
+"monotonic-stack/span-area"
+],
+"2904": [
+"sliding-window/shortest-valid"
+],
+"2918": [
+"greedy/construct"
+],
+"2929": [
+"math/combinatorics"
+],
+"2939": [
+"bit-manipulation/bit-tricks"
+],
+"2948": [
+"sorting/custom-order"
+],
+"2954": [
+"math/combinatorics"
+],
+"2958": [
+"sliding-window/longest-valid"
+],
+"2962": [
+"sliding-window/count-subarrays"
+],
+"2964": [
+"arrays-hashing/complement"
+],
+"2965": [
+"arrays-hashing/counting"
+],
+"2996": [
+"arrays-hashing/set-lookup"
+],
+"3005": [
+"arrays-hashing/counting"
+],
+"3010": [
+"greedy/sort-then-pick"
+],
+"3014": [
+"greedy/sort-then-pick"
+],
+"3020": [
+"arrays-hashing/counting"
+],
+"3026": [
+"prefix-sum/subarray-hash"
+],
+"3034": [
+"string-matching/prefix-function"
+],
+"3035": [
+"greedy/construct"
+],
+"3043": [
+"trie/prefix"
+],
+"3067": [
+"tree-dfs/top-down"
+],
+"3069": [
+"simulation/step-rules"
+],
+"3071": [
+"arrays-hashing/counting"
+],
+"3076": [
+"arrays-hashing/counting"
+],
+"3090": [
+"sliding-window/longest-valid"
+],
+"3105": [
+"dp-linear/kadane"
+],
+"3136": [
+"simulation/string-format"
+],
+"3144": [
+"dp-linear/split-points"
+],
+"3161": [
+"range-query/segment-tree"
+],
+"3163": [
+"simulation/string-format"
+],
+"3169": [
+"intervals/merge"
+],
+"3186": [
+"dp-linear/take-or-skip"
+],
+"3203": [
+"tree-dfs/bottom-up"
+],
+"3208": [
+"sliding-window/fixed-size"
+],
+"3300": [
+"math/digits-overflow"
+],
+"3336": [
+"dp-linear/count-ways",
+"math/number-theory"
+],
+"3345": [
+"math/number-theory"
+],
+"3348": [
+"greedy/construct"
+],
+"3355": [
+"prefix-sum/difference-array"
+],
+"3356": [
+"binary-search-answer/feasibility",
+"prefix-sum/difference-array"
+],
+"3367": [
+"dp-tree/node-states"
+],
+"3371": [
+"arrays-hashing/complement"
+],
+"3399": [
+"binary-search-answer/feasibility"
+],
+"3408": [
+"design/fast-ops",
+"heap/scheduling"
+],
+"3413": [
+"sliding-window/longest-valid"
+],
+"3414": [
+"dp-linear/take-or-skip"
+],
+"3453": [
+"binary-search-answer/feasibility"
+],
+"3471": [
+"arrays-hashing/counting"
+],
+"3484": [
+"design/fast-ops"
+],
+"3498": [
+"simulation/step-rules"
+],
+"3513": [
+"math/closed-form"
+],
+"3517": [
+"greedy/construct"
+],
+"3524": [
+"dp-linear/count-ways"
+],
+"3532": [
+"union-find/connectivity"
+],
+"3607": [
+"union-find/connectivity",
+"range-query/ordered-set"
+],
+"3622": [
+"math/digits-overflow"
+],
+"3623": [
+"math/combinatorics"
+],
+"3625": [
+"math/geometry"
+],
+"3629": [
+"graph-traversal/bfs-steps"
+],
+"3634": [
+"sliding-window/longest-valid"
+],
+"3649": [
+"two-pointers/opposite-ends"
+],
+"3650": [
+"shortest-path/dijkstra"
+],
+"3652": [
+"prefix-sum/range-sum"
+],
+"3699": [
+"dp-linear/count-ways"
+],
+"3718": [
+"arrays-hashing/set-lookup"
+],
+"3727": [
+"greedy/sort-then-pick"
+],
+"3731": [
+"arrays-hashing/set-lookup"
+],
+"3754": [
+"math/digits-overflow"
+],
+"3870": [
+"math/closed-form"
+],
+"3871": [
+"math/closed-form"
+],
+"3883": [
+"dp-linear/count-ways"
+],
+"3893": [
+"intervals/overlap-count"
+]
+}

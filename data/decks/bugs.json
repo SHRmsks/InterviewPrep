@@ -1,0 +1,1077 @@
+{
+  "deck": "bugs",
+  "title": "Spot the bug",
+  "cards": [
+    {
+      "id": "bugs-001",
+      "type": "flash",
+      "q": "Return the largest index `i` with `a[i] <= x` in a sorted array, or -1 if there is none.",
+      "qcode": "int lastAtMost(const vector<int>& a, int x) {\n    int lo = -1, hi = (int)a.size() - 1;\n    while (lo < hi) {\n        int mid = lo + (hi - lo) / 2;\n        if (a[mid] <= x) lo = mid;\n        else hi = mid - 1;\n    }\n    return lo;\n}",
+      "a": "`mid` rounds down, so once `hi == lo + 1` the branch `lo = mid` makes no progress. `a = {1, 2}, x = 2` loops forever. Round up whenever a branch assigns `lo = mid`.",
+      "code": "int mid = lo + (hi - lo + 1) / 2;",
+      "patterns": [
+        "binary-search"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "termination"
+    },
+    {
+      "id": "bugs-002",
+      "type": "flash",
+      "q": "Return the first index whose value is at least `x`, or `a.size()` if there is none.",
+      "qcode": "int firstAtLeast(const vector<int>& a, int x) {\n    int lo = 0, hi = a.size();\n    while (lo <= hi) {\n        int mid = lo + (hi - lo) / 2;\n        if (a[mid] >= x) hi = mid;\n        else lo = mid + 1;\n    }\n    return lo;\n}",
+      "a": "With a half-open range the loop must stop at `lo == hi`, but `<=` keeps going and `hi = mid` then changes nothing. `a = {1, 3}, x = 2` loops forever. Use `lo < hi`, which also stops `a[mid]` reading past the end.",
+      "code": "while (lo < hi)",
+      "patterns": [
+        "binary-search"
+      ],
+      "skill": "edge",
+      "level": 1,
+      "bug": "termination"
+    },
+    {
+      "id": "bugs-003",
+      "type": "flash",
+      "q": "Find the minimum of a non-empty rotated sorted array with distinct values.",
+      "qcode": "int findMin(const vector<int>& a) {\n    int lo = 0, hi = (int)a.size() - 1;\n    while (lo < hi) {\n        int mid = lo + (hi - lo) / 2;\n        if (a[mid] > a[hi]) lo = mid + 1;\n        else hi = mid - 1;\n    }\n    return a[lo];\n}",
+      "a": "When `a[mid] <= a[hi]`, `mid` itself can be the minimum, and `hi = mid - 1` throws it away. `a = {3, 1, 2}` returns 3 instead of 1. Keep it with `hi = mid`.",
+      "code": "else hi = mid;",
+      "patterns": [
+        "binary-search"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "off-by-one"
+    },
+    {
+      "id": "bugs-004",
+      "type": "flash",
+      "q": "Return the index of `x` in a rotated sorted array with distinct values, or -1.",
+      "qcode": "int searchRotated(const vector<int>& a, int x) {\n    int lo = 0, hi = (int)a.size() - 1;\n    while (lo <= hi) {\n        int mid = lo + (hi - lo) / 2;\n        if (a[mid] == x) return mid;\n        if (a[lo] < a[mid]) {\n            if (a[lo] <= x && x < a[mid]) hi = mid - 1;\n            else lo = mid + 1;\n        } else {\n            if (a[mid] < x && x <= a[hi]) lo = mid + 1;\n            else hi = mid - 1;\n        }\n    }\n    return -1;\n}",
+      "a": "When `lo == mid` the left part is the single element `a[lo]`, but strict `<` sends the code to the branch for a sorted right part. `a = {3, 1}, x = 1` returns -1 instead of 1. Test `a[lo] <= a[mid]`.",
+      "code": "if (a[lo] <= a[mid])",
+      "patterns": [
+        "binary-search"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "off-by-one"
+    },
+    {
+      "id": "bugs-005",
+      "type": "flash",
+      "q": "Return the integer square root of a non-negative int `n`: the largest `r` with `r * r <= n`.",
+      "qcode": "int isqrt(int n) {\n    int lo = 0, hi = n / 2 + 1;\n    while (lo < hi) {\n        int mid = lo + (hi - lo + 1) / 2;\n        if (mid * mid <= n) lo = mid;\n        else hi = mid - 1;\n    }\n    return lo;\n}",
+      "a": "`mid * mid` is computed in `int` and overflows once `mid` passes 46340. `n = 2147483647` overflows on the first probe, and a plain build wraps to 0 and returns 1073741824 instead of 46340. Compare in 64 bits with `(long long)mid * mid <= n`.",
+      "code": "if ((long long)mid * mid <= n) lo = mid;",
+      "patterns": [
+        "binary-search",
+        "math"
+      ],
+      "skill": "edge",
+      "level": 1,
+      "bug": "overflow"
+    },
+    {
+      "id": "bugs-006",
+      "type": "flash",
+      "q": "Versions `1..n` turn bad at some point and stay bad. Return the first bad version for any int `n`.",
+      "qcode": "int firstBad(int n, const function<bool(int)>& isBad) {\n    int lo = 1, hi = n;\n    while (lo < hi) {\n        int mid = (lo + hi) / 2;\n        if (isBad(mid)) hi = mid;\n        else lo = mid + 1;\n    }\n    return lo;\n}",
+      "a": "`lo + hi` overflows `int` when the sum passes `INT_MAX`. `n = 2147483647` overflows on the first step, and the negative `mid` keeps the loop from ever reaching the answer. Write `mid = lo + (hi - lo) / 2`.",
+      "code": "int mid = lo + (hi - lo) / 2;",
+      "patterns": [
+        "binary-search"
+      ],
+      "skill": "edge",
+      "level": 1,
+      "bug": "overflow"
+    },
+    {
+      "id": "bugs-007",
+      "type": "flash",
+      "q": "Find the smallest ship capacity that moves a non-empty package list, in order, within `days` days.",
+      "qcode": "int minCapacity(const vector<int>& w, int days) {\n    long long lo = 1, hi = accumulate(w.begin(), w.end(), 0LL);\n    while (lo < hi) {\n        long long cap = lo + (hi - lo) / 2;\n        int used = 1;\n        long long load = 0;\n        for (int x : w) {\n            if (load + x > cap) { used++; load = 0; }\n            load += x;\n        }\n        if (used <= days) hi = cap;\n        else lo = cap + 1;\n    }\n    return lo;\n}",
+      "a": "Capacity must start at the heaviest package, because the feasibility check still loads a package that exceeds `cap`. `w = {5, 5}, days = 3` returns 1 instead of 5. Start `lo` at `*max_element(w.begin(), w.end())`.",
+      "code": "long long lo = *max_element(w.begin(), w.end()), hi = accumulate(w.begin(), w.end(), 0LL);",
+      "patterns": [
+        "binary-search-answer"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "wrong-init"
+    },
+    {
+      "id": "bugs-008",
+      "type": "flash",
+      "q": "Return the length of the longest substring with no repeated character.",
+      "qcode": "int longestUnique(const string& s) {\n    unordered_map<char, int> last;\n    int best = 0, lo = 0;\n    for (int hi = 0; hi < (int)s.size(); hi++) {\n        if (last.count(s[hi])) lo = last[s[hi]] + 1;\n        last[s[hi]] = hi;\n        best = max(best, hi - lo + 1);\n    }\n    return best;\n}",
+      "a": "`last` still holds characters that already left the window, so `lo` can jump backwards. `s = \"abba\"` returns 3 instead of 2. Only move forward with `lo = max(lo, last[s[hi]] + 1)`.",
+      "code": "if (last.count(s[hi])) lo = max(lo, last[s[hi]] + 1);",
+      "patterns": [
+        "sliding-window"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "state-reset"
+    },
+    {
+      "id": "bugs-009",
+      "type": "flash",
+      "q": "Given positive integers and `target > 0`, return the shortest subarray length with sum at least `target`, or 0.",
+      "qcode": "int shortestAtLeast(const vector<int>& a, int target) {\n    int best = INT_MAX, sum = 0, lo = 0;\n    for (int hi = 0; hi < (int)a.size(); hi++) {\n        sum += a[hi];\n        while (sum >= target) {\n            sum -= a[lo++];\n            best = min(best, hi - lo + 1);\n        }\n    }\n    return best == INT_MAX ? 0 : best;\n}",
+      "a": "The length is recorded after the shrink, so it describes a window that may no longer meet the target. `a = {5}, target = 5` returns 0 instead of 1. Update `best` first, then remove `a[lo]`.",
+      "code": "best = min(best, hi - lo + 1);\nsum -= a[lo++];",
+      "patterns": [
+        "sliding-window"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "off-by-one"
+    },
+    {
+      "id": "bugs-010",
+      "type": "flash",
+      "q": "Return the length of the longest substring with at most `k` distinct characters.",
+      "qcode": "int longestKDistinct(const string& s, int k) {\n    unordered_map<char, int> cnt;\n    int best = 0, lo = 0;\n    for (int hi = 0; hi < (int)s.size(); hi++) {\n        cnt[s[hi]]++;\n        while ((int)cnt.size() > k) {\n            cnt[s[lo]]--;\n            lo++;\n        }\n        best = max(best, hi - lo + 1);\n    }\n    return best;\n}",
+      "a": "A key whose count reaches 0 stays in the map, so `cnt.size()` never drops. `s = \"abac\", k = 2` keeps shrinking and runs `lo` off the end of the string. Erase the key when its count hits 0.",
+      "code": "if (--cnt[s[lo]] == 0) cnt.erase(s[lo]);",
+      "patterns": [
+        "sliding-window"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "state-reset"
+    },
+    {
+      "id": "bugs-011",
+      "type": "flash",
+      "q": "Return the length of the shortest window of `s` containing every character of `t` with multiplicity, or 0.",
+      "qcode": "int minWindow(const string& s, const string& t) {\n    vector<int> need(128, 0), have(128, 0);\n    for (char c : t) need[c]++;\n    int missing = t.size(), best = INT_MAX, lo = 0;\n    for (int hi = 0; hi < (int)s.size(); hi++) {\n        if (have[s[hi]]++ < need[s[hi]]) missing--;\n        while (missing == 0) {\n            best = min(best, hi - lo + 1);\n            if (--have[s[lo]] <= need[s[lo]]) missing++;\n            lo++;\n        }\n    }\n    return best == INT_MAX ? 0 : best;\n}",
+      "a": "After the decrement a required character is short only when `have < need`, so `<=` also fires for spare characters and ends the shrink early. `s = \"xa\", t = \"a\"` returns 2 instead of 1. Use strict `<`.",
+      "code": "if (--have[s[lo]] < need[s[lo]]) missing++;",
+      "patterns": [
+        "sliding-window"
+      ],
+      "skill": "edge",
+      "level": 3,
+      "bug": "off-by-one"
+    },
+    {
+      "id": "bugs-012",
+      "type": "flash",
+      "q": "Return the maximum of every window of size `k`, with `1 <= k <= a.size()`.",
+      "qcode": "vector<int> windowMax(const vector<int>& a, int k) {\n    deque<int> dq;\n    vector<int> out;\n    for (int i = 0; i < (int)a.size(); i++) {\n        while (!dq.empty() && a[dq.back()] <= a[i]) dq.pop_back();\n        dq.push_back(i);\n        if (dq.front() < i - k) dq.pop_front();\n        if (i >= k - 1) out.push_back(a[dq.front()]);\n    }\n    return out;\n}",
+      "a": "The window ending at `i` starts at `i - k + 1`, so index `i - k` is already out, yet `<` keeps it for one extra step. `a = {3, 1, 1}, k = 2` returns `{3, 3}` instead of `{3, 1}`. Pop when `dq.front() <= i - k`.",
+      "code": "if (dq.front() <= i - k) dq.pop_front();",
+      "patterns": [
+        "monotonic-queue",
+        "sliding-window"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "off-by-one"
+    },
+    {
+      "id": "bugs-013",
+      "type": "flash",
+      "q": "Return all unique triplets of values that sum to zero.",
+      "qcode": "vector<vector<int>> threeSum(vector<int> a) {\n    sort(a.begin(), a.end());\n    vector<vector<int>> res;\n    int n = a.size();\n    for (int i = 0; i + 2 < n; i++) {\n        if (a[i] == a[i + 1]) continue;\n        int l = i + 1, r = n - 1;\n        while (l < r) {\n            int s = a[i] + a[l] + a[r];\n            if (s < 0) l++;\n            else if (s > 0) r--;\n            else {\n                res.push_back({a[i], a[l], a[r]});\n                l++; r--;\n                while (l < r && a[l] == a[l - 1]) l++;\n            }\n        }\n    }\n    return res;\n}",
+      "a": "Comparing with `a[i + 1]` skips the first copy of a value, so triplets that use that value twice are lost. `a = {-1, -1, 2}` returns nothing instead of `{-1, -1, 2}`. Skip only repeats of the previous anchor: `if (i > 0 && a[i] == a[i - 1]) continue;`.",
+      "code": "if (i > 0 && a[i] == a[i - 1]) continue;",
+      "patterns": [
+        "two-pointers"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "duplicates"
+    },
+    {
+      "id": "bugs-014",
+      "type": "flash",
+      "q": "In a sorted array, keep each value at most twice in place and return the new length.",
+      "qcode": "int keepTwo(vector<int>& a) {\n    int w = 0;\n    for (int i = 0; i < (int)a.size(); i++) {\n        if (i < 2 || a[i] != a[i - 2]) a[w++] = a[i];\n    }\n    return w;\n}",
+      "a": "`a[i - 2]` may already have been overwritten by the write pointer, so the check reads shifted data. `a = {1, 1, 1, 2, 2}` returns 3 instead of 4. Compare with what was kept: `if (w < 2 || a[i] != a[w - 2])`.",
+      "code": "if (w < 2 || a[i] != a[w - 2]) a[w++] = a[i];",
+      "patterns": [
+        "two-pointers"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "duplicates"
+    },
+    {
+      "id": "bugs-015",
+      "type": "flash",
+      "q": "Return every distinct subset of a list that may contain repeated values.",
+      "qcode": "void go(const vector<int>& a, int start, vector<int>& cur, vector<vector<int>>& out) {\n    out.push_back(cur);\n    for (int i = start; i < (int)a.size(); i++) {\n        if (i > 0 && a[i] == a[i - 1]) continue;\n        cur.push_back(a[i]);\n        go(a, i + 1, cur, out);\n        cur.pop_back();\n    }\n}\nvector<vector<int>> subsetsDedup(vector<int> a) {\n    sort(a.begin(), a.end());\n    vector<vector<int>> out;\n    vector<int> cur;\n    go(a, 0, cur, out);\n    return out;\n}",
+      "a": "Duplicates should only be skipped among siblings at one depth, but `i > 0` also blocks taking a second copy deeper down. `a = {1, 1}` returns `{}, {1}` and misses `{1, 1}`. Use `if (i > start && a[i] == a[i - 1]) continue;`.",
+      "code": "if (i > start && a[i] == a[i - 1]) continue;",
+      "patterns": [
+        "backtracking"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "duplicates"
+    },
+    {
+      "id": "bugs-016",
+      "type": "flash",
+      "q": "Count the subarrays whose sum equals `k`; values may be negative.",
+      "qcode": "int countSumK(const vector<int>& a, int k) {\n    unordered_map<long long, int> seen;\n    long long pre = 0;\n    int cnt = 0;\n    for (int x : a) {\n        pre += x;\n        if (seen.count(pre - k)) cnt += seen[pre - k];\n        seen[pre]++;\n    }\n    return cnt;\n}",
+      "a": "The empty prefix is missing, so subarrays that start at index 0 are never counted. `a = {3}, k = 3` returns 0 instead of 1. Seed the map with sum 0 seen once.",
+      "code": "unordered_map<long long, int> seen{{0, 1}};",
+      "patterns": [
+        "prefix-sum"
+      ],
+      "skill": "edge",
+      "level": 1,
+      "bug": "wrong-init"
+    },
+    {
+      "id": "bugs-017",
+      "type": "flash",
+      "q": "Return the length of the longest subarray whose sum equals `k`; values may be negative.",
+      "qcode": "int longestSumK(const vector<int>& a, int k) {\n    unordered_map<long long, int> first{{0, -1}};\n    long long pre = 0;\n    int best = 0;\n    for (int i = 0; i < (int)a.size(); i++) {\n        pre += a[i];\n        if (first.count(pre - k)) best = max(best, i - first[pre - k]);\n        first[pre] = i;\n    }\n    return best;\n}",
+      "a": "A repeated prefix sum overwrites its earliest index, and the longest subarray needs the earliest one. `a = {1, -1, 1}, k = 1` returns 1 instead of 3. Store only the first occurrence with `first.emplace(pre, i);`.",
+      "code": "first.emplace(pre, i);",
+      "patterns": [
+        "prefix-sum"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "duplicates"
+    },
+    {
+      "id": "bugs-018",
+      "type": "flash",
+      "q": "Count the subarrays of an integer array whose sum is divisible by `k > 0`.",
+      "qcode": "int countDivisible(const vector<int>& a, int k) {\n    vector<int> seen(k, 0);\n    seen[0] = 1;\n    int pre = 0, cnt = 0;\n    for (int x : a) {\n        pre = (pre + x) % k;\n        cnt += seen[pre];\n        seen[pre]++;\n    }\n    return cnt;\n}",
+      "a": "In C++ `%` keeps the sign of the left operand, so prefix -1 lands on index -1 instead of matching prefix 2. `a = {2, -3}, k = 3` reads `seen[-1]` and misses the subarray `{-3}`. Normalize with `pre = ((pre + x) % k + k) % k;`.",
+      "code": "pre = ((pre + x) % k + k) % k;",
+      "patterns": [
+        "prefix-sum"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "signedness"
+    },
+    {
+      "id": "bugs-019",
+      "type": "flash",
+      "q": "For each element, return the next greater value to its right, or -1.",
+      "qcode": "vector<int> nextGreater(const vector<int>& a) {\n    vector<int> res(a.size(), -1), st;\n    for (int i = 0; i < (int)a.size(); i++) {\n        while (!st.empty() && a[st.back()] <= a[i]) {\n            res[st.back()] = a[i];\n            st.pop_back();\n        }\n        st.push_back(i);\n    }\n    return res;\n}",
+      "a": "`<=` pops on an equal value and records it as the answer. `a = {2, 2, 3}` returns `{2, 3, -1}` instead of `{3, 3, -1}`. Pop only on strict `<`.",
+      "code": "while (!st.empty() && a[st.back()] < a[i])",
+      "patterns": [
+        "monotonic-stack"
+      ],
+      "skill": "edge",
+      "level": 1,
+      "bug": "comparator"
+    },
+    {
+      "id": "bugs-020",
+      "type": "flash",
+      "q": "Return the sum of the minimum of every contiguous subarray.",
+      "qcode": "long long sumOfMins(const vector<int>& a) {\n    int n = a.size();\n    vector<int> left(n), right(n), st;\n    for (int i = 0; i < n; i++) {\n        while (!st.empty() && a[st.back()] > a[i]) st.pop_back();\n        left[i] = st.empty() ? -1 : st.back();\n        st.push_back(i);\n    }\n    st.clear();\n    for (int i = n - 1; i >= 0; i--) {\n        while (!st.empty() && a[st.back()] > a[i]) st.pop_back();\n        right[i] = st.empty() ? n : st.back();\n        st.push_back(i);\n    }\n    long long total = 0;\n    for (int i = 0; i < n; i++)\n        total += (long long)a[i] * (i - left[i]) * (right[i] - i);\n    return total;\n}",
+      "a": "Both passes stop at an equal value, so a subarray with a tied minimum belongs to no index. `a = {1, 1}` returns 2 instead of 3. Make the left pass pop on `>=` so each tie has exactly one owner.",
+      "code": "while (!st.empty() && a[st.back()] >= a[i]) st.pop_back();",
+      "patterns": [
+        "monotonic-stack"
+      ],
+      "skill": "edge",
+      "level": 3,
+      "bug": "duplicates"
+    },
+    {
+      "id": "bugs-021",
+      "type": "flash",
+      "q": "Return the largest rectangle area in a histogram.",
+      "qcode": "int largestRect(vector<int> h) {\n    vector<int> st;\n    int best = 0;\n    for (int i = 0; i < (int)h.size(); i++) {\n        while (!st.empty() && h[st.back()] >= h[i]) {\n            int height = h[st.back()];\n            st.pop_back();\n            int left = st.empty() ? -1 : st.back();\n            best = max(best, height * (i - left - 1));\n        }\n        st.push_back(i);\n    }\n    return best;\n}",
+      "a": "Bars still on the stack when the loop ends are never measured. `h = {1, 2, 3}` returns 0 instead of 4. Append a 0 bar before the loop so every bar gets popped.",
+      "code": "h.push_back(0);",
+      "patterns": [
+        "monotonic-stack"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "termination"
+    },
+    {
+      "id": "bugs-022",
+      "type": "flash",
+      "q": "Compute how much rain water is trapped between the bars.",
+      "qcode": "int trap(const vector<int>& h) {\n    vector<int> st;\n    int water = 0;\n    for (int i = 0; i < (int)h.size(); i++) {\n        while (!st.empty() && h[st.back()] < h[i]) {\n            int bottom = st.back();\n            st.pop_back();\n            int left = st.back();\n            int width = i - left - 1;\n            water += (min(h[left], h[i]) - h[bottom]) * width;\n        }\n        st.push_back(i);\n    }\n    return water;\n}",
+      "a": "After popping `bottom` the stack may be empty, so `st.back()` is undefined. `h = {1, 2}` reads an empty stack. Add `if (st.empty()) break;` right after the pop, since no left wall means no water.",
+      "code": "if (st.empty()) break;",
+      "patterns": [
+        "monotonic-stack"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "empty-input"
+    },
+    {
+      "id": "bugs-023",
+      "type": "flash",
+      "q": "Remove the `n`-th node from the end of a list, with `1 <= n <= length`.",
+      "qcode": "struct ListNode { int val; ListNode* next; };\nListNode* removeNth(ListNode* head, int n) {\n    ListNode* fast = head;\n    for (int i = 0; i < n; i++) fast = fast->next;\n    ListNode* slow = head;\n    while (fast->next) {\n        fast = fast->next;\n        slow = slow->next;\n    }\n    slow->next = slow->next->next;\n    return head;\n}",
+      "a": "When `n` equals the length the head is the target, `fast` ends up null and `fast->next` crashes. List `[1, 2]` with `n = 2` dereferences null. Return `head->next` when `fast` is null, or start both pointers from a dummy node.",
+      "code": "if (!fast) return head->next;",
+      "patterns": [
+        "linked-list",
+        "two-pointers"
+      ],
+      "skill": "edge",
+      "level": 1,
+      "bug": "null-deref"
+    },
+    {
+      "id": "bugs-024",
+      "type": "flash",
+      "q": "Return the middle node of a list; for even length return the second middle.",
+      "qcode": "struct ListNode { int val; ListNode* next; };\nListNode* middle(ListNode* head) {\n    ListNode* slow = head;\n    ListNode* fast = head;\n    while (fast->next) {\n        slow = slow->next;\n        fast = fast->next->next;\n    }\n    return slow;\n}",
+      "a": "On an even-length list `fast` jumps to null, and the next loop test dereferences it. List `[1, 2]` crashes on the second check. Test both: `while (fast && fast->next)`.",
+      "code": "while (fast && fast->next)",
+      "patterns": [
+        "linked-list",
+        "two-pointers"
+      ],
+      "skill": "edge",
+      "level": 1,
+      "bug": "null-deref"
+    },
+    {
+      "id": "bugs-025",
+      "type": "flash",
+      "q": "Return whether a singly linked list contains a cycle.",
+      "qcode": "struct ListNode { int val; ListNode* next; };\nbool hasCycle(ListNode* head) {\n    ListNode* slow = head;\n    ListNode* fast = head;\n    while (fast && fast->next && slow != fast) {\n        slow = slow->next;\n        fast = fast->next->next;\n    }\n    return fast && fast->next;\n}",
+      "a": "Both pointers start equal, so the loop body never runs and the result only says the list has two nodes. List `[1, 2]` with no cycle returns true. Start `fast` one step ahead, at `head->next` when `head` is not null.",
+      "code": "ListNode* fast = head ? head->next : nullptr;",
+      "patterns": [
+        "linked-list",
+        "two-pointers"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "wrong-init"
+    },
+    {
+      "id": "bugs-026",
+      "type": "flash",
+      "q": "Merge two sorted lists by relinking their nodes.",
+      "qcode": "struct ListNode { int val; ListNode* next; };\nListNode* mergeLists(ListNode* a, ListNode* b) {\n    ListNode dummy{0, nullptr};\n    ListNode* tail = &dummy;\n    while (a && b) {\n        if (a->val <= b->val) { tail->next = a; a = a->next; }\n        else { tail->next = b; b = b->next; }\n        tail = tail->next;\n    }\n    tail->next = a;\n    return dummy.next;\n}",
+      "a": "Only the rest of `a` is attached, so whatever remains of `b` is dropped. `a = []`, `b = [1]` returns an empty list. Attach whichever of `a` and `b` is still non-null.",
+      "code": "tail->next = a ? a : b;",
+      "patterns": [
+        "linked-list"
+      ],
+      "skill": "edge",
+      "level": 1,
+      "bug": "empty-input"
+    },
+    {
+      "id": "bugs-027",
+      "type": "flash",
+      "q": "Delete every node whose value equals `x`.",
+      "qcode": "struct ListNode { int val; ListNode* next; };\nListNode* removeAll(ListNode* head, int x) {\n    ListNode* cur = head;\n    while (cur && cur->next) {\n        if (cur->next->val == x) cur->next = cur->next->next;\n        else cur = cur->next;\n    }\n    return head;\n}",
+      "a": "The scan only inspects `cur->next`, so the head itself is never checked. List `[1, 2]` with `x = 1` stays `[1, 2]`. Start `cur` at a dummy node placed before the head and return `dummy.next`.",
+      "code": "ListNode dummy{0, head};\nListNode* cur = &dummy;\nreturn dummy.next;",
+      "patterns": [
+        "linked-list"
+      ],
+      "skill": "edge",
+      "level": 1,
+      "bug": "wrong-init"
+    },
+    {
+      "id": "bugs-028",
+      "type": "flash",
+      "q": "Return the node where two lists meet, or null if they never meet.",
+      "qcode": "struct ListNode { int val; ListNode* next; };\nListNode* meetNode(ListNode* a, ListNode* b) {\n    ListNode* p = a;\n    ListNode* q = b;\n    while (p != q) {\n        p = p->next ? p->next : b;\n        q = q->next ? q->next : a;\n    }\n    return p;\n}",
+      "a": "The pointers switch lists without ever stepping onto null, so disjoint lists never become equal. `a = [1]`, `b = [2]` loops forever. Let each pointer step onto null once before it switches lists.",
+      "code": "p = p ? p->next : b;\nq = q ? q->next : a;",
+      "patterns": [
+        "linked-list",
+        "two-pointers"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "termination"
+    },
+    {
+      "id": "bugs-029",
+      "type": "flash",
+      "q": "Implement an LRU cache with capacity `cap >= 1` and non-negative values. `get` returns -1 for a missing key.",
+      "qcode": "struct LRU {\n    int cap;\n    list<pair<int, int>> items;\n    unordered_map<int, list<pair<int, int>>::iterator> pos;\n    int get(int k) {\n        auto it = pos.find(k);\n        if (it == pos.end()) return -1;\n        items.splice(items.begin(), items, it->second);\n        return it->second->second;\n    }\n    void put(int k, int v) {\n        if (pos.count(k)) { get(k); items.front().second = v; return; }\n        if ((int)items.size() == cap) {\n            items.pop_back();\n            pos.erase(items.back().first);\n        }\n        items.push_front({k, v});\n        pos[k] = items.begin();\n    }\n};",
+      "a": "After `pop_back`, `items.back()` is a different entry, so the wrong key is erased and the evicted key keeps a dead iterator. With `cap = 2`, `put(1, 1), put(2, 2), put(3, 3), get(2)` returns -1 instead of 2. Erase from `pos` before `pop_back`.",
+      "code": "pos.erase(items.back().first);\nitems.pop_back();",
+      "patterns": [
+        "design",
+        "linked-list"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "iterator"
+    },
+    {
+      "id": "bugs-030",
+      "type": "flash",
+      "q": "Return the number of nodes on the shortest path from the root down to a leaf.",
+      "qcode": "struct TreeNode { int val; TreeNode* left; TreeNode* right; };\nint minDepth(TreeNode* root) {\n    if (!root) return 0;\n    return 1 + min(minDepth(root->left), minDepth(root->right));\n}",
+      "a": "A missing child returns depth 0, so `min` picks a path that ends at a node with one child, which is not a leaf. Root 1 with only left child 2 returns 1 instead of 2. When one child is null, recurse only into the other.",
+      "code": "if (!root->left) return 1 + minDepth(root->right);\nif (!root->right) return 1 + minDepth(root->left);",
+      "patterns": [
+        "tree-dfs"
+      ],
+      "skill": "edge",
+      "level": 1,
+      "bug": "empty-input"
+    },
+    {
+      "id": "bugs-031",
+      "type": "flash",
+      "q": "Return whether some root-to-leaf path sums to `target`.",
+      "qcode": "struct TreeNode { int val; TreeNode* left; TreeNode* right; };\nbool hasPathSum(TreeNode* root, int target) {\n    if (!root) return target == 0;\n    return hasPathSum(root->left, target - root->val) ||\n           hasPathSum(root->right, target - root->val);\n}",
+      "a": "Stopping at null accepts a path that ends at an inner node with one child. Root 1 with only left child 2 and `target = 1` returns true instead of false. Return false at null and compare the target at a real leaf.",
+      "code": "if (!root) return false;\nif (!root->left && !root->right) return target == root->val;",
+      "patterns": [
+        "tree-dfs"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "empty-input"
+    },
+    {
+      "id": "bugs-032",
+      "type": "flash",
+      "q": "Return the diameter of a binary tree in edges. The function is called once per tree on many trees.",
+      "qcode": "struct TreeNode { int val; TreeNode* left; TreeNode* right; };\nint best = 0;\nint height(TreeNode* n) {\n    if (!n) return 0;\n    int l = height(n->left), r = height(n->right);\n    best = max(best, l + r);\n    return 1 + max(l, r);\n}\nint diameter(TreeNode* root) {\n    height(root);\n    return best;\n}",
+      "a": "`best` is global and keeps the value from the previous tree. A 3-node chain followed by a single node returns 2 for the second tree instead of 0. Reset with `best = 0;` before calling `height`.",
+      "code": "best = 0;",
+      "patterns": [
+        "tree-dfs"
+      ],
+      "skill": "edge",
+      "level": 1,
+      "bug": "state-reset"
+    },
+    {
+      "id": "bugs-033",
+      "type": "flash",
+      "q": "Return the values of a binary tree grouped by level, top to bottom.",
+      "qcode": "struct TreeNode { int val; TreeNode* left; TreeNode* right; };\nvector<vector<int>> levels(TreeNode* root) {\n    vector<vector<int>> out;\n    queue<TreeNode*> q;\n    if (root) q.push(root);\n    while (!q.empty()) {\n        out.emplace_back();\n        for (int i = 0; i < (int)q.size(); i++) {\n            TreeNode* n = q.front(); q.pop();\n            out.back().push_back(n->val);\n            if (n->left) q.push(n->left);\n            if (n->right) q.push(n->right);\n        }\n    }\n    return out;\n}",
+      "a": "`q.size()` is read again on every pass while children are being pushed, so the level boundary moves. Root 1 with children 2 and 3 returns `{{1, 2}, {3}}` instead of `{{1}, {2, 3}}`. Freeze the size before the loop.",
+      "code": "for (int i = 0, sz = q.size(); i < sz; i++)",
+      "patterns": [
+        "tree-bfs"
+      ],
+      "skill": "edge",
+      "level": 1,
+      "bug": "termination"
+    },
+    {
+      "id": "bugs-034",
+      "type": "flash",
+      "q": "Return whether a binary tree is a valid BST with distinct values in `[-2^31, 2^31 - 1]`.",
+      "qcode": "struct TreeNode { int val; TreeNode* left; TreeNode* right; };\nbool check(TreeNode* n, int lo, int hi) {\n    if (!n) return true;\n    if (n->val < lo || n->val > hi) return false;\n    return check(n->left, lo, n->val - 1) && check(n->right, n->val + 1, hi);\n}\nbool isValidBST(TreeNode* root) {\n    return check(root, INT_MIN, INT_MAX);\n}",
+      "a": "`n->val + 1` overflows at `INT_MAX`, so the lower bound of the right subtree wraps to `INT_MIN`. Root `INT_MAX` with right child 5 returns true instead of false. Use `long long` bounds and add `1LL`, because `n->val + 1` alone is still computed in `int`.",
+      "code": "bool check(TreeNode* n, long long lo, long long hi)\nreturn check(n->left, lo, n->val - 1LL) && check(n->right, n->val + 1LL, hi);",
+      "patterns": [
+        "bst",
+        "tree-dfs"
+      ],
+      "skill": "edge",
+      "level": 3,
+      "bug": "overflow"
+    },
+    {
+      "id": "bugs-035",
+      "type": "flash",
+      "q": "Return whether a binary tree is a valid BST with values in `[-2^31, 2^31 - 1]`.",
+      "qcode": "struct TreeNode { int val; TreeNode* left; TreeNode* right; };\nbool check(TreeNode* n, int lo, int hi) {\n    if (!n) return true;\n    if (n->val <= lo || n->val >= hi) return false;\n    return check(n->left, lo, n->val) && check(n->right, n->val, hi);\n}\nbool isValidBST(TreeNode* root) {\n    return check(root, INT_MIN, INT_MAX);\n}",
+      "a": "The open bounds cannot express no limit in `int`, so a legal node equal to `INT_MAX` or `INT_MIN` is rejected. A single node 2147483647 returns false instead of true. Make the bounds `long long` and start from `LLONG_MIN` and `LLONG_MAX`.",
+      "code": "bool check(TreeNode* n, long long lo, long long hi)\nreturn check(root, LLONG_MIN, LLONG_MAX);",
+      "patterns": [
+        "bst",
+        "tree-dfs"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "wrong-init"
+    },
+    {
+      "id": "bugs-036",
+      "type": "flash",
+      "q": "Insert `x` into a BST through its root pointer.",
+      "qcode": "struct TreeNode { int val; TreeNode* left; TreeNode* right; };\nvoid insert(TreeNode* root, int x) {\n    if (!root) {\n        root = new TreeNode{x, nullptr, nullptr};\n        return;\n    }\n    if (x < root->val) insert(root->left, x);\n    else insert(root->right, x);\n}",
+      "a": "`root` is a copy of the caller's pointer, so the new node is assigned to a local and lost. Inserting 5 into an empty tree leaves the caller's root null. Take the pointer by reference: `TreeNode*& root`.",
+      "code": "void insert(TreeNode*& root, int x)",
+      "patterns": [
+        "bst"
+      ],
+      "skill": "edge",
+      "level": 1,
+      "bug": "reference"
+    },
+    {
+      "id": "bugs-037",
+      "type": "flash",
+      "q": "Return the `k`-th smallest value in a BST, with `k` counted from 1.",
+      "qcode": "struct TreeNode { int val; TreeNode* left; TreeNode* right; };\nvoid walk(TreeNode* n, int k, int& ans) {\n    if (!n) return;\n    walk(n->left, k, ans);\n    if (--k == 0) ans = n->val;\n    walk(n->right, k, ans);\n}\nint kthSmallest(TreeNode* root, int k) {\n    int ans = -1;\n    walk(root, k, ans);\n    return ans;\n}",
+      "a": "`k` is passed by value, so a visit in the left subtree does not reduce the caller's count. Root 2 with children 1 and 3 and `k = 1` returns 2 instead of 1. Share one counter with `int& k`.",
+      "code": "void walk(TreeNode* n, int& k, int& ans)",
+      "patterns": [
+        "bst",
+        "tree-dfs"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "reference"
+    },
+    {
+      "id": "bugs-038",
+      "type": "flash",
+      "q": "Return the sum of all left leaves in a binary tree.",
+      "qcode": "struct TreeNode { int val; TreeNode* left; TreeNode* right; };\nint sumLeftLeaves(TreeNode* n) {\n    if (!n) return 0;\n    int sum = 0;\n    if (!n->left->left && !n->left->right) sum += n->left->val;\n    else sum += sumLeftLeaves(n->left);\n    return sum + sumLeftLeaves(n->right);\n}",
+      "a": "`n->left` is dereferenced before anyone checks that it exists. A single node crashes. Guard with `n->left && ...`, and the `else` then handles the null child through the base case.",
+      "code": "if (n->left && !n->left->left && !n->left->right) sum += n->left->val;",
+      "patterns": [
+        "tree-dfs"
+      ],
+      "skill": "edge",
+      "level": 1,
+      "bug": "null-deref"
+    },
+    {
+      "id": "bugs-039",
+      "type": "flash",
+      "q": "Return the BFS edge distance from `s` to every node, or -1 if a node is unreachable.",
+      "qcode": "vector<int> bfsDist(const vector<vector<int>>& g, int s) {\n    vector<int> dist(g.size(), -1);\n    vector<char> seen(g.size(), 0);\n    queue<int> q;\n    dist[s] = 0;\n    q.push(s);\n    while (!q.empty()) {\n        int u = q.front(); q.pop();\n        seen[u] = 1;\n        for (int v : g[u]) {\n            if (!seen[v]) {\n                dist[v] = dist[u] + 1;\n                q.push(v);\n            }\n        }\n    }\n    return dist;\n}",
+      "a": "Nodes are marked when popped, so a node already in the queue can be pushed again and get a larger distance. `g = {{1, 2}, {2}, {}}, s = 0` gives `dist[2] = 2` instead of 1. Mark at push: set `seen[s]` before the loop and `seen[v]` inside the `if`, and drop `seen[u] = 1`.",
+      "code": "seen[s] = 1;\nseen[v] = 1;",
+      "patterns": [
+        "graph-traversal"
+      ],
+      "skill": "edge",
+      "level": 1,
+      "bug": "visited-timing"
+    },
+    {
+      "id": "bugs-040",
+      "type": "flash",
+      "q": "Return the shortest distances from `s` in a graph with non-negative edge weights.",
+      "qcode": "using P = pair<long long, int>;\nvector<long long> dijkstra(const vector<vector<pair<int, int>>>& g, int s) {\n    vector<long long> dist(g.size(), LLONG_MAX);\n    vector<char> done(g.size(), 0);\n    priority_queue<P, vector<P>, greater<P>> pq;\n    dist[s] = 0;\n    pq.push({0, s});\n    while (!pq.empty()) {\n        auto [d, u] = pq.top(); pq.pop();\n        for (auto [v, w] : g[u]) {\n            if (!done[v] && d + w < dist[v]) {\n                dist[v] = d + w;\n                done[v] = 1;\n                pq.push({dist[v], v});\n            }\n        }\n    }\n    return dist;\n}",
+      "a": "`done[v]` is set on the first relaxation, which freezes a tentative distance before a cheaper path can improve it. Edges `0->1` weight 10, `0->2` weight 1, `2->1` weight 1 give `dist[1] = 10` instead of 2. Finalize at pop: `if (done[u]) continue; done[u] = 1;`, and remove the line in the relax.",
+      "code": "if (done[u]) continue;\ndone[u] = 1;",
+      "patterns": [
+        "shortest-path"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "visited-timing"
+    },
+    {
+      "id": "bugs-041",
+      "type": "flash",
+      "q": "Count the nodes whose shortest distance from `s` is at most `limit`; weights are non-negative.",
+      "qcode": "using P = pair<long long, int>;\nint countWithin(const vector<vector<pair<int, int>>>& g, int s, long long limit) {\n    vector<long long> dist(g.size(), LLONG_MAX);\n    priority_queue<P, vector<P>, greater<P>> pq;\n    dist[s] = 0;\n    pq.push({0, s});\n    int cnt = 0;\n    while (!pq.empty()) {\n        auto [d, u] = pq.top(); pq.pop();\n        if (d > limit) break;\n        cnt++;\n        for (auto [v, w] : g[u]) {\n            if (d + w < dist[v]) {\n                dist[v] = d + w;\n                pq.push({dist[v], v});\n            }\n        }\n    }\n    return cnt;\n}",
+      "a": "A node improved twice has two heap entries, and the stale one is counted as well. Edges `0->1` weight 5, `0->2` weight 1, `2->1` weight 1 with `limit = 10` return 4 instead of 3. Skip stale entries right after the pop with `if (d > dist[u]) continue;`.",
+      "code": "if (d > dist[u]) continue;",
+      "patterns": [
+        "shortest-path"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "visited-timing"
+    },
+    {
+      "id": "bugs-042",
+      "type": "flash",
+      "q": "Return whether a directed graph contains a cycle.",
+      "qcode": "bool dfs(int u, const vector<vector<int>>& g, vector<char>& state) {\n    if (state[u]) return true;\n    state[u] = 1;\n    for (int v : g[u])\n        if (dfs(v, g, state)) return true;\n    return false;\n}\nbool hasCycle(const vector<vector<int>>& g) {\n    vector<char> state(g.size(), 0);\n    for (int u = 0; u < (int)g.size(); u++)\n        if (!state[u] && dfs(u, g, state)) return true;\n    return false;\n}",
+      "a": "A node stays marked after its DFS finishes, so reaching it again by a second path looks like a back edge. The diamond `g = {{1, 2}, {3}, {3}, {}}` returns true instead of false. Use three states and set `state[u] = 2` when the node finishes; only state 1 means a cycle.",
+      "code": "if (state[u] == 1) return true;\nif (state[u] == 2) return false;\nstate[u] = 2;",
+      "patterns": [
+        "graph-traversal"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "visited-timing"
+    },
+    {
+      "id": "bugs-043",
+      "type": "flash",
+      "q": "Deep-copy a connected undirected graph, starting from one node.",
+      "qcode": "struct Node { int val; vector<Node*> nbrs; };\nNode* cloneGraph(Node* n, unordered_map<Node*, Node*>& seen) {\n    if (seen.count(n)) return seen[n];\n    Node* copy = new Node{n->val, {}};\n    for (Node* m : n->nbrs) copy->nbrs.push_back(cloneGraph(m, seen));\n    seen[n] = copy;\n    return copy;\n}",
+      "a": "The clone is recorded only after its neighbours are visited, so a neighbour that points back recurses again. Two nodes linked to each other overflow the stack. Set `seen[n] = copy` before the loop.",
+      "code": "seen[n] = copy;\nfor (Node* m : n->nbrs) copy->nbrs.push_back(cloneGraph(m, seen));",
+      "patterns": [
+        "graph-traversal"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "visited-timing"
+    },
+    {
+      "id": "bugs-044",
+      "type": "flash",
+      "q": "Compute single-source shortest paths with a binary heap; weights are non-negative.",
+      "qcode": "using P = pair<long long, int>;\nvector<long long> shortest(const vector<vector<pair<int, int>>>& g, int s) {\n    vector<long long> dist(g.size(), LLONG_MAX);\n    priority_queue<P, vector<P>, greater<P>> pq;\n    dist[s] = 0;\n    pq.push({0, s});\n    while (!pq.empty()) {\n        const auto& [d, u] = pq.top();\n        pq.pop();\n        if (d > dist[u]) continue;\n        for (auto [v, w] : g[u]) {\n            if (d + w < dist[v]) {\n                dist[v] = d + w;\n                pq.push({dist[v], v});\n            }\n        }\n    }\n    return dist;\n}",
+      "a": "`d` and `u` are bound to the heap's top slot, which `pop` and later pushes overwrite or free. Edges `0->1` weight 1 and `0->2` weight 5 gave `dist[2] = 6` instead of 5 in a plain build, because the first push changed `d`. Copy the entry: `auto [d, u] = pq.top();`.",
+      "code": "auto [d, u] = pq.top();",
+      "patterns": [
+        "shortest-path",
+        "cpp"
+      ],
+      "skill": "edge",
+      "level": 3,
+      "bug": "reference"
+    },
+    {
+      "id": "bugs-045",
+      "type": "flash",
+      "q": "Return a topological order of `n` nodes, or an empty vector if none exists.",
+      "qcode": "vector<int> topoOrder(int n, const vector<pair<int, int>>& edges) {\n    vector<vector<int>> g(n);\n    vector<int> indeg(n, 0), order;\n    for (auto [u, v] : edges) { g[u].push_back(v); indeg[v]++; }\n    queue<int> q;\n    for (int i = 0; i < n; i++) if (indeg[i] == 0) q.push(i);\n    while (!q.empty()) {\n        int u = q.front(); q.pop();\n        order.push_back(u);\n        for (int v : g[u]) if (--indeg[v] == 0) q.push(v);\n    }\n    return order;\n}",
+      "a": "Nodes on a cycle never reach indegree 0, so the loop just stops and returns a partial order. `n = 3` with edges `1->2`, `2->1` returns `{0}` instead of `{}`. Return the order only if its size equals `n`.",
+      "code": "return (int)order.size() == n ? order : vector<int>{};",
+      "patterns": [
+        "topo-sort"
+      ],
+      "skill": "edge",
+      "level": 1,
+      "bug": "termination"
+    },
+    {
+      "id": "bugs-046",
+      "type": "flash",
+      "q": "Return whether `n` tasks can all finish given dependency edges `u -> v`.",
+      "qcode": "bool canFinish(int n, const vector<pair<int, int>>& edges) {\n    vector<set<int>> g(n);\n    vector<int> indeg(n, 0);\n    for (auto [u, v] : edges) {\n        g[u].insert(v);\n        indeg[v]++;\n    }\n    queue<int> q;\n    for (int i = 0; i < n; i++) if (indeg[i] == 0) q.push(i);\n    int done = 0;\n    while (!q.empty()) {\n        int u = q.front(); q.pop();\n        done++;\n        for (int v : g[u]) if (--indeg[v] == 0) q.push(v);\n    }\n    return done == n;\n}",
+      "a": "The `set` drops a repeated edge but `indeg` still counts it, so `v` never reaches 0. `n = 2` with the edge `0->1` listed twice returns false instead of true. Count only new edges: `if (g[u].insert(v).second) indeg[v]++;`.",
+      "code": "if (g[u].insert(v).second) indeg[v]++;",
+      "patterns": [
+        "topo-sort"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "duplicates"
+    },
+    {
+      "id": "bugs-047",
+      "type": "flash",
+      "q": "Implement union-find, where `connected` reports whether two elements share a set.",
+      "qcode": "struct DSU {\n    vector<int> p;\n    DSU(int n) : p(n) { iota(p.begin(), p.end(), 0); }\n    int find(int x) { return p[x] == x ? x : p[x] = find(p[x]); }\n    void unite(int a, int b) { p[a] = find(b); }\n    bool connected(int a, int b) { return find(a) == find(b); }\n};",
+      "a": "`unite` re-parents element `a` instead of its root, which cuts `a` away from its old set. `unite(0, 1)` then `unite(0, 2)` leaves `connected(1, 2)` false. Link the roots: `p[find(a)] = find(b);`.",
+      "code": "void unite(int a, int b) { p[find(a)] = find(b); }",
+      "patterns": [
+        "union-find"
+      ],
+      "skill": "edge",
+      "level": 1,
+      "bug": "reference"
+    },
+    {
+      "id": "bugs-048",
+      "type": "flash",
+      "q": "Count the connected components of `n` nodes given undirected edges.",
+      "qcode": "int components(int n, const vector<pair<int, int>>& edges) {\n    vector<int> p(n);\n    iota(p.begin(), p.end(), 0);\n    function<int(int)> find = [&](int x) {\n        return p[x] == x ? x : p[x] = find(p[x]);\n    };\n    for (auto [a, b] : edges) p[find(a)] = find(b);\n    set<int> roots(p.begin(), p.end());\n    return roots.size();\n}",
+      "a": "`p[i]` is only a parent, not necessarily the root, because compression happens only on nodes that `find` visited. `n = 4` with edges `(0, 1), (2, 3), (0, 2)` returns 2 instead of 1. Insert `find(i)` for every `i` instead.",
+      "code": "set<int> roots;\nfor (int i = 0; i < n; i++) roots.insert(find(i));",
+      "patterns": [
+        "union-find"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "reference"
+    },
+    {
+      "id": "bugs-049",
+      "type": "flash",
+      "q": "Implement union-find that stays fast on `2 * 10^5` elements and as many queries.",
+      "qcode": "struct DSU {\n    vector<int> p;\n    DSU(int n) : p(n) { iota(p.begin(), p.end(), 0); }\n    int find(int x) {\n        while (p[x] != x) x = p[x];\n        return x;\n    }\n    void unite(int a, int b) { p[find(a)] = find(b); }\n};",
+      "a": "Parents are never shortened and unions are not balanced, so a chain costs O(n) per `find`. Uniting `(i, i + 1)` for `n = 200000` and then calling `find(0)` `n` times does about 4 * 10^10 steps and times out. Halve the path while walking: `x = p[x] = p[p[x]]`.",
+      "code": "while (p[x] != x) x = p[x] = p[p[x]];",
+      "patterns": [
+        "union-find"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "termination"
+    },
+    {
+      "id": "bugs-050",
+      "type": "flash",
+      "q": "Return the cheapest price from `s` to `t` using at most `k + 1` flights, or -1.",
+      "qcode": "int cheapest(int n, const vector<array<int, 3>>& flights, int s, int t, int k) {\n    const int INF = 1000000000;\n    vector<int> dist(n, INF);\n    dist[s] = 0;\n    for (int i = 0; i <= k; i++) {\n        for (auto& [u, v, w] : flights)\n            if (dist[u] != INF && dist[u] + w < dist[v]) dist[v] = dist[u] + w;\n    }\n    return dist[t] == INF ? -1 : dist[t];\n}",
+      "a": "Relaxing in place lets one round chain several flights, so a round can use more than one hop. Flights `0->1` price 1, `1->2` price 1, `0->2` price 5 with `k = 0` return 2 instead of 5. Copy `dist` at the start of each round and read `prev[u]`.",
+      "code": "vector<int> prev = dist;\nif (prev[u] != INF && prev[u] + w < dist[v]) dist[v] = prev[u] + w;",
+      "patterns": [
+        "shortest-path"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "reference"
+    },
+    {
+      "id": "bugs-051",
+      "type": "flash",
+      "q": "Return whether word `w` can be traced through adjacent grid cells without reusing a cell.",
+      "qcode": "bool dfs(vector<string>& g, const string& w, int i, int r, int c) {\n    if (i == (int)w.size()) return true;\n    if (r < 0 || c < 0 || r >= (int)g.size() || c >= (int)g[0].size()) return false;\n    if (g[r][c] != w[i]) return false;\n    g[r][c] = '#';\n    return dfs(g, w, i + 1, r + 1, c) || dfs(g, w, i + 1, r - 1, c) ||\n           dfs(g, w, i + 1, r, c + 1) || dfs(g, w, i + 1, r, c - 1);\n}\nbool exists(vector<string> g, const string& w) {\n    for (int r = 0; r < (int)g.size(); r++)\n        for (int c = 0; c < (int)g[0].size(); c++)\n            if (dfs(g, w, 0, r, c)) return true;\n    return false;\n}",
+      "a": "The `#` mark is never undone, so a failed attempt keeps blocking cells that a later start needs. `g = {\"aa\", \"bz\"}, w = \"aab\"` returns false instead of true. Save the result of the recursive calls, restore `g[r][c] = w[i]`, then return.",
+      "code": "bool found = dfs(g, w, i + 1, r + 1, c) || dfs(g, w, i + 1, r - 1, c) ||\n             dfs(g, w, i + 1, r, c + 1) || dfs(g, w, i + 1, r, c - 1);\ng[r][c] = w[i];\nreturn found;",
+      "patterns": [
+        "backtracking",
+        "grid"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "state-reset"
+    },
+    {
+      "id": "bugs-052",
+      "type": "flash",
+      "q": "Count the ways to place `n` non-attacking queens on an `n` by `n` board.",
+      "qcode": "void place(int r, int n, vector<char>& col, vector<char>& d1, vector<char>& d2, int& cnt) {\n    if (r == n) { cnt++; return; }\n    for (int c = 0; c < n; c++) {\n        if (col[c] || d1[r + c] || d2[r - c]) continue;\n        col[c] = d1[r + c] = d2[r - c] = 1;\n        place(r + 1, n, col, d1, d2, cnt);\n        col[c] = d1[r + c] = d2[r - c] = 0;\n    }\n}\nint queens(int n) {\n    vector<char> col(n), d1(2 * n), d2(2 * n);\n    int cnt = 0;\n    place(0, n, col, d1, d2, cnt);\n    return cnt;\n}",
+      "a": "`r - c` is negative whenever `c > r`, so `d2` is indexed out of bounds. `n = 4` reads `d2[-1]` on the second column of the first row. Shift the index to `r - c + n`.",
+      "code": "if (col[c] || d1[r + c] || d2[r - c + n]) continue;\ncol[c] = d1[r + c] = d2[r - c + n] = 1;\ncol[c] = d1[r + c] = d2[r - c + n] = 0;",
+      "patterns": [
+        "backtracking"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "signedness"
+    },
+    {
+      "id": "bugs-053",
+      "type": "flash",
+      "q": "Solve 0/1 knapsack with a rolling previous row.",
+      "qcode": "int knapsack(const vector<int>& w, const vector<int>& v, int cap) {\n    vector<int> cur(cap + 1, 0);\n    for (size_t i = 0; i < w.size(); i++) {\n        vector<int>& prev = cur;\n        for (int c = w[i]; c <= cap; c++)\n            cur[c] = max(prev[c], prev[c - w[i]] + v[i]);\n    }\n    return cur[cap];\n}",
+      "a": "`prev` is a reference, so it is the same row as `cur` and an item can be taken twice. `w = {1}, v = {10}, cap = 2` returns 20 instead of 10. Take a real copy: `vector<int> prev = cur;`.",
+      "code": "vector<int> prev = cur;",
+      "patterns": [
+        "dp-knapsack",
+        "cpp"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "reference"
+    },
+    {
+      "id": "bugs-054",
+      "type": "flash",
+      "q": "Solve 0/1 knapsack with a one-dimensional table.",
+      "qcode": "int knapsack(const vector<int>& w, const vector<int>& v, int cap) {\n    vector<int> dp(cap + 1, 0);\n    for (size_t i = 0; i < w.size(); i++)\n        for (int c = w[i]; c <= cap; c++)\n            dp[c] = max(dp[c], dp[c - w[i]] + v[i]);\n    return dp[cap];\n}",
+      "a": "Going upward reads `dp[c - w[i]]` after this same item already updated it, which is the unbounded version. `w = {1}, v = {10}, cap = 2` returns 20 instead of 10. Iterate capacity downward.",
+      "code": "for (int c = cap; c >= w[i]; c--)",
+      "patterns": [
+        "dp-knapsack"
+      ],
+      "skill": "edge",
+      "level": 1,
+      "bug": "duplicates"
+    },
+    {
+      "id": "bugs-055",
+      "type": "flash",
+      "q": "Count the combinations of distinct coin values that sum to `amount`, where each coin may repeat and order does not matter.",
+      "qcode": "long long countWays(const vector<int>& coins, int amount) {\n    vector<long long> dp(amount + 1, 0);\n    dp[0] = 1;\n    for (int a = 1; a <= amount; a++)\n        for (int c : coins)\n            if (c <= a) dp[a] += dp[a - c];\n    return dp[amount];\n}",
+      "a": "With amounts on the outside, each order of the same coins is counted separately. `coins = {1, 2}, amount = 3` returns 3 instead of 2. Loop over coins on the outside and amounts on the inside.",
+      "code": "for (int c : coins)\n    for (int a = c; a <= amount; a++)\n        dp[a] += dp[a - c];",
+      "patterns": [
+        "dp-knapsack"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "duplicates"
+    },
+    {
+      "id": "bugs-056",
+      "type": "flash",
+      "q": "Return the fewest coins that sum to `amount`, or -1 if it cannot be done.",
+      "qcode": "int minCoins(const vector<int>& coins, int amount) {\n    vector<int> dp(amount + 1, INT_MAX);\n    dp[0] = 0;\n    for (int a = 1; a <= amount; a++)\n        for (int c : coins)\n            if (c <= a) dp[a] = min(dp[a], dp[a - c] + 1);\n    return dp[amount] == INT_MAX ? -1 : dp[amount];\n}",
+      "a": "`dp[a - c]` can still be `INT_MAX`, and adding 1 overflows to a negative count that `min` keeps. `coins = {2}, amount = 3` returns a negative number instead of -1. Skip unreachable states with `dp[a - c] != INT_MAX`.",
+      "code": "if (c <= a && dp[a - c] != INT_MAX) dp[a] = min(dp[a], dp[a - c] + 1);",
+      "patterns": [
+        "dp-knapsack"
+      ],
+      "skill": "edge",
+      "level": 1,
+      "bug": "overflow"
+    },
+    {
+      "id": "bugs-057",
+      "type": "flash",
+      "q": "Return the edit distance between two strings using insert, delete and replace.",
+      "qcode": "int editDistance(const string& a, const string& b) {\n    int m = a.size(), n = b.size();\n    vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));\n    for (int i = 1; i <= m; i++) dp[i][0] = i;\n    for (int i = 1; i <= m; i++)\n        for (int j = 1; j <= n; j++) {\n            if (a[i - 1] == b[j - 1]) dp[i][j] = dp[i - 1][j - 1];\n            else dp[i][j] = 1 + min({dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]});\n        }\n    return dp[m][n];\n}",
+      "a": "Only the first column is initialized, so turning an empty prefix into `b[0..j)` costs 0. `a = \"\", b = \"ab\"` returns 0 instead of 2. Add `for (int j = 1; j <= n; j++) dp[0][j] = j;`.",
+      "code": "for (int j = 1; j <= n; j++) dp[0][j] = j;",
+      "patterns": [
+        "dp-string"
+      ],
+      "skill": "edge",
+      "level": 1,
+      "bug": "wrong-init"
+    },
+    {
+      "id": "bugs-058",
+      "type": "flash",
+      "q": "Count the palindromic substrings of `s` with an interval table.",
+      "qcode": "int countPalindromes(const string& s) {\n    int n = s.size(), cnt = 0;\n    vector<vector<char>> dp(n, vector<char>(n, 0));\n    for (int i = 0; i < n; i++)\n        for (int j = i; j < n; j++) {\n            dp[i][j] = s[i] == s[j] && (j - i < 2 || dp[i + 1][j - 1]);\n            cnt += dp[i][j];\n        }\n    return cnt;\n}",
+      "a": "`dp[i][j]` depends on `dp[i + 1][j - 1]`, which a top-down `i` has not filled yet and reads as 0. `s = \"aba\"` returns 3 instead of 4. Run `i` from `n - 1` down to 0.",
+      "code": "for (int i = n - 1; i >= 0; i--)",
+      "patterns": [
+        "dp-interval",
+        "dp-string"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "wrong-init"
+    },
+    {
+      "id": "bugs-059",
+      "type": "flash",
+      "q": "Sink an island of `1` cells to `0` from a starting cell.",
+      "qcode": "void sink(vector<string>& g, int r, int c) {\n    if (g[r][c] != '1' || r < 0 || c < 0 ||\n        r >= (int)g.size() || c >= (int)g[0].size()) return;\n    g[r][c] = '0';\n    sink(g, r + 1, c);\n    sink(g, r - 1, c);\n    sink(g, r, c + 1);\n    sink(g, r, c - 1);\n}",
+      "a": "The cell is read before the bounds are checked, and `||` evaluates left to right. `g = {\"1\"}` from `(0, 0)` reads `g[1]` on the first recursive call. Put all four bounds tests before `g[r][c]`.",
+      "code": "if (r < 0 || c < 0 || r >= (int)g.size() || c >= (int)g[0].size() ||\n    g[r][c] != '1') return;",
+      "patterns": [
+        "grid",
+        "graph-traversal"
+      ],
+      "skill": "edge",
+      "level": 1,
+      "bug": "off-by-one"
+    },
+    {
+      "id": "bugs-060",
+      "type": "flash",
+      "q": "Return the `k`-th smallest element using a heap of at most `k` items, with `1 <= k <= a.size()`.",
+      "qcode": "int kthSmallest(const vector<int>& a, int k) {\n    priority_queue<int, vector<int>, greater<int>> pq;\n    for (int x : a) {\n        pq.push(x);\n        if ((int)pq.size() > k) pq.pop();\n    }\n    return pq.top();\n}",
+      "a": "A min-heap pops the smallest, so it keeps the `k` largest and returns the `k`-th largest. `a = {1, 2, 3}, k = 1` returns 3 instead of 1. Use a max-heap: `priority_queue<int> pq;`.",
+      "code": "priority_queue<int> pq;",
+      "patterns": [
+        "heap"
+      ],
+      "skill": "edge",
+      "level": 1,
+      "bug": "comparator"
+    },
+    {
+      "id": "bugs-061",
+      "type": "flash",
+      "q": "Merge `k` sorted lists with a heap of list heads.",
+      "qcode": "struct ListNode { int val; ListNode* next; };\nstruct Cmp {\n    bool operator()(ListNode* a, ListNode* b) const { return a->val < b->val; }\n};\nListNode* mergeK(const vector<ListNode*>& lists) {\n    priority_queue<ListNode*, vector<ListNode*>, Cmp> pq;\n    for (ListNode* l : lists) if (l) pq.push(l);\n    ListNode dummy{0, nullptr};\n    ListNode* tail = &dummy;\n    while (!pq.empty()) {\n        ListNode* n = pq.top(); pq.pop();\n        tail->next = n;\n        tail = n;\n        if (n->next) pq.push(n->next);\n    }\n    return dummy.next;\n}",
+      "a": "`priority_queue` pops the element that compares greatest, so `<` yields the largest head first. Lists `[1, 2]` and `[3]` return `[3, 1, 2]` instead of `[1, 2, 3]`. Flip it to `a->val > b->val` for a min-heap.",
+      "code": "return a->val > b->val;",
+      "patterns": [
+        "heap",
+        "linked-list"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "comparator"
+    },
+    {
+      "id": "bugs-062",
+      "type": "flash",
+      "q": "Sort players by score, highest first.",
+      "qcode": "struct Player { string name; int score; };\nvoid rankPlayers(vector<Player>& p) {\n    sort(p.begin(), p.end(), [](const Player& a, const Player& b) {\n        return a.score >= b.score;\n    });\n}",
+      "a": "`sort` requires a strict weak ordering, and `>=` claims two equal items each come first. 100 players with the same score is undefined behaviour and can read past the end of the array. Use strict `a.score > b.score`.",
+      "code": "return a.score > b.score;",
+      "patterns": [
+        "sorting",
+        "cpp"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "comparator"
+    },
+    {
+      "id": "bugs-063",
+      "type": "flash",
+      "q": "Return the fewest rooms needed for half-open meetings `[start, end)`.",
+      "qcode": "int minRooms(const vector<pair<int, int>>& meetings) {\n    vector<pair<int, int>> ev;\n    for (auto [s, e] : meetings) {\n        ev.push_back({s, 1});\n        ev.push_back({e, -1});\n    }\n    sort(ev.begin(), ev.end(), [](auto& a, auto& b) { return a.first < b.first; });\n    int cur = 0, best = 0;\n    for (auto [t, d] : ev) {\n        cur += d;\n        best = max(best, cur);\n    }\n    return best;\n}",
+      "a": "The comparator ignores `d`, so at equal times a start can run before an end. `{{2, 3}, {1, 2}}` returns 2 instead of 1. Use plain `sort(ev.begin(), ev.end());`, which puts -1 before +1 at the same time.",
+      "code": "sort(ev.begin(), ev.end());",
+      "patterns": [
+        "sweep-line",
+        "sorting"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "comparator"
+    },
+    {
+      "id": "bugs-064",
+      "type": "flash",
+      "q": "Remove all even values from `a` in place.",
+      "qcode": "void removeEvens(vector<int>& a) {\n    for (auto it = a.begin(); it != a.end(); ++it) {\n        if (*it % 2 == 0) a.erase(it);\n    }\n}",
+      "a": "`erase` invalidates `it` and shifts the next element into its slot, which `++it` then skips. `a = {2, 4}` leaves `{4}` instead of `{}`. Use `it = a.erase(it)` and advance only when nothing was erased.",
+      "code": "for (auto it = a.begin(); it != a.end();) {\n    if (*it % 2 == 0) it = a.erase(it);\n    else ++it;\n}",
+      "patterns": [
+        "cpp"
+      ],
+      "skill": "edge",
+      "level": 1,
+      "bug": "iterator"
+    },
+    {
+      "id": "bugs-065",
+      "type": "flash",
+      "q": "Return `start >= 1` followed by its repeated halvings, ending at 1.",
+      "qcode": "vector<int> halves(int start) {\n    vector<int> out{start};\n    for (int x : out) {\n        if (x > 1) out.push_back(x / 2);\n    }\n    return out;\n}",
+      "a": "`push_back` inside a range-for invalidates its hidden iterators, and `end()` was fixed before the loop started. `start = 8` returns `{8, 4}` instead of `{8, 4, 2, 1}`. Loop by index and re-read `out.size()`.",
+      "code": "for (size_t i = 0; i < out.size(); i++) {\n    int x = out[i];\n    if (x > 1) out.push_back(x / 2);\n}",
+      "patterns": [
+        "cpp"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "iterator"
+    },
+    {
+      "id": "bugs-066",
+      "type": "flash",
+      "q": "Sort the values and drop duplicates.",
+      "qcode": "vector<int> sortedUnique(vector<int> a) {\n    sort(a.begin(), a.end());\n    auto last = unique(a.begin(), a.end());\n    a.erase(last);\n    return a;\n}",
+      "a": "`erase` with one iterator removes a single element, not the tail, and `unique` may return `end()`. `a = {1, 1, 1}` returns `{1, 1}` instead of `{1}`. Erase the range: `a.erase(last, a.end());`.",
+      "code": "a.erase(last, a.end());",
+      "patterns": [
+        "sorting",
+        "cpp"
+      ],
+      "skill": "edge",
+      "level": 1,
+      "bug": "iterator"
+    },
+    {
+      "id": "bugs-067",
+      "type": "flash",
+      "q": "Return whether any two adjacent elements are equal.",
+      "qcode": "bool hasAdjacentEqual(const vector<int>& a) {\n    for (size_t i = 0; i < a.size() - 1; i++) {\n        if (a[i] == a[i + 1]) return true;\n    }\n    return false;\n}",
+      "a": "`a.size()` is unsigned, so `a.size() - 1` wraps to a huge value on an empty vector. `a = {}` reads out of bounds instead of returning false. Move the arithmetic to the safe side: `i + 1 < a.size()`.",
+      "code": "for (size_t i = 0; i + 1 < a.size(); i++)",
+      "patterns": [
+        "cpp"
+      ],
+      "skill": "edge",
+      "level": 1,
+      "bug": "signedness"
+    },
+    {
+      "id": "bugs-068",
+      "type": "flash",
+      "q": "Return the leftmost index where the sum to its left equals the sum to its right, or -1.",
+      "qcode": "int pivotIndex(const vector<int>& a) {\n    long long total = accumulate(a.begin(), a.end(), 0);\n    long long left = 0;\n    for (int i = 0; i < (int)a.size(); i++) {\n        if (left == total - left - a[i]) return i;\n        left += a[i];\n    }\n    return -1;\n}",
+      "a": "`accumulate` takes its working type from the initial value, so `0` sums in `int` even though `total` is `long long`. `a = {2000000000, 2000000000, 2000000000}` overflows and returns -1 instead of 1. Pass `0LL`.",
+      "code": "long long total = accumulate(a.begin(), a.end(), 0LL);",
+      "patterns": [
+        "prefix-sum",
+        "cpp"
+      ],
+      "skill": "edge",
+      "level": 1,
+      "bug": "overflow"
+    },
+    {
+      "id": "bugs-069",
+      "type": "flash",
+      "q": "Return whether `s` can be split into words from `dict`.",
+      "qcode": "bool wordBreak(const string& s, const unordered_set<string>& dict) {\n    int n = s.size();\n    vector<char> dp(n + 1, 0);\n    dp[0] = 1;\n    for (int i = 1; i <= n; i++)\n        for (int j = 0; j < i; j++)\n            if (dp[j] && dict.count(s.substr(j, i))) { dp[i] = 1; break; }\n    return dp[n];\n}",
+      "a": "The second argument of `substr` is a length, not an end index, so the piece is too long. `s = \"abc\"` with `dict = {\"a\", \"b\", \"c\"}` returns false instead of true. Write `s.substr(j, i - j)`.",
+      "code": "if (dp[j] && dict.count(s.substr(j, i - j))) { dp[i] = 1; break; }",
+      "patterns": [
+        "dp-string"
+      ],
+      "skill": "edge",
+      "level": 1,
+      "bug": "off-by-one"
+    },
+    {
+      "id": "bugs-070",
+      "type": "flash",
+      "q": "Return the longest palindromic substring of `s`.",
+      "qcode": "string longestPal(const string& s) {\n    int start = 0, bestLen = 0;\n    for (int c = 0; c < (int)s.size(); c++) {\n        for (int gap = 0; gap < 2; gap++) {\n            int l = c, r = c + gap;\n            while (l >= 0 && r < (int)s.size() && s[l] == s[r]) { l--; r++; }\n            if (r - l + 1 > bestLen) { bestLen = r - l + 1; start = l; }\n        }\n    }\n    return s.substr(start, bestLen);\n}",
+      "a": "When the loop stops, `l` and `r` sit one step outside the palindrome, so its length is `r - l - 1` and it starts at `l + 1`. `s = \"a\"` gets `start = -1`, and `substr` throws `out_of_range`. Record `bestLen = r - l - 1` and `start = l + 1`.",
+      "code": "if (r - l - 1 > bestLen) { bestLen = r - l - 1; start = l + 1; }",
+      "patterns": [
+        "two-pointers"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "off-by-one"
+    },
+    {
+      "id": "bugs-071",
+      "type": "flash",
+      "q": "Return indices `{i, j}` with `i < j` and `a[i] + a[j] == target`, or `{}` if there are none.",
+      "qcode": "vector<int> twoSum(const vector<int>& a, int target) {\n    unordered_map<int, int> pos;\n    for (int i = 0; i < (int)a.size(); i++) {\n        if (pos[target - a[i]]) return {pos[target - a[i]], i};\n        pos[a[i]] = i;\n    }\n    return {};\n}",
+      "a": "`pos[key]` inserts a default 0 on a miss, and a real partner at index 0 also reads as false. `a = {3, 4}, target = 7` returns `{}` instead of `{0, 1}`. Look up with `find` so a stored 0 and a missing key stay different.",
+      "code": "auto it = pos.find(target - a[i]);\nif (it != pos.end()) return {it->second, i};",
+      "patterns": [
+        "arrays-hashing"
+      ],
+      "skill": "edge",
+      "level": 1,
+      "bug": "wrong-init"
+    },
+    {
+      "id": "bugs-072",
+      "type": "flash",
+      "q": "Support prefix queries and a word count on a map-based trie.",
+      "qcode": "struct Trie {\n    map<char, Trie*> kids;\n    bool end = false;\n};\nbool hasPrefix(Trie* t, const string& p) {\n    for (char c : p) {\n        if (!t->kids[c]) return false;\n        t = t->kids[c];\n    }\n    return true;\n}\nint countWords(Trie* t) {\n    int n = t->end;\n    for (auto& [c, kid] : t->kids) n += countWords(kid);\n    return n;\n}",
+      "a": "`t->kids[c]` inserts a null child on every failed lookup, and `countWords` later follows it. With only `\"a\"` stored, `hasPrefix(root, \"b\")` then `countWords(root)` crashes. Use `find` in `hasPrefix` so a query never changes the trie.",
+      "code": "auto it = t->kids.find(c);\nif (it == t->kids.end()) return false;\nt = it->second;",
+      "patterns": [
+        "trie",
+        "cpp"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "null-deref"
+    },
+    {
+      "id": "bugs-073",
+      "type": "flash",
+      "q": "Sum the integers on each line of text and return one total per line.",
+      "qcode": "vector<int> lineSums(const vector<string>& lines) {\n    vector<int> out;\n    stringstream ss;\n    for (const string& line : lines) {\n        ss.str(line);\n        int x, sum = 0;\n        while (ss >> x) sum += x;\n        out.push_back(sum);\n    }\n    return out;\n}",
+      "a": "Reading to the end sets the stream's fail and eof flags, and `str()` does not clear them. `lines = {\"1 2\", \"3\"}` returns `{3, 0}` instead of `{3, 3}`. Call `ss.clear();` for every line.",
+      "code": "ss.clear();",
+      "patterns": [
+        "cpp"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "state-reset"
+    },
+    {
+      "id": "bugs-074",
+      "type": "flash",
+      "q": "Return the largest sum of non-adjacent elements from a list of non-negative values.",
+      "qcode": "int rob(const vector<int>& a) {\n    int n = a.size();\n    if (n == 0) return 0;\n    vector<int> dp(n);\n    dp[0] = a[0];\n    dp[1] = max(a[0], a[1]);\n    for (int i = 2; i < n; i++)\n        dp[i] = max(dp[i - 1], dp[i - 2] + a[i]);\n    return dp[n - 1];\n}",
+      "a": "The base case touches index 1, which does not exist for a single element. `a = {7}` reads `a[1]` and writes `dp[1]`. Add `if (n == 1) return a[0];`.",
+      "code": "if (n == 1) return a[0];",
+      "patterns": [
+        "dp-linear"
+      ],
+      "skill": "edge",
+      "level": 1,
+      "bug": "empty-input"
+    },
+    {
+      "id": "bugs-075",
+      "type": "flash",
+      "q": "Return whether two strings are at most one insert, delete or replace apart.",
+      "qcode": "bool oneEdit(const string& a, const string& b) {\n    if (a.size() - b.size() > 1) return false;\n    size_t i = 0, j = 0;\n    bool used = false;\n    while (i < a.size() && j < b.size()) {\n        if (a[i] == b[j]) { i++; j++; continue; }\n        if (used) return false;\n        used = true;\n        if (a.size() > b.size()) i++;\n        else if (a.size() < b.size()) j++;\n        else { i++; j++; }\n    }\n    return true;\n}",
+      "a": "`size()` is unsigned, so when `a` is shorter the difference wraps to a huge value instead of going negative. `a = \"a\", b = \"ab\"` returns false instead of true. Subtract the smaller size from the larger one.",
+      "code": "if (max(a.size(), b.size()) - min(a.size(), b.size()) > 1) return false;",
+      "patterns": [
+        "cpp"
+      ],
+      "skill": "edge",
+      "level": 2,
+      "bug": "signedness"
+    }
+  ]
+}

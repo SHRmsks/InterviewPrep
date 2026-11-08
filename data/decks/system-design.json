@@ -1,0 +1,611 @@
+{
+  "deck": "system-design",
+  "title": "System design",
+  "cards": [
+    {
+      "id": "system-design-001",
+      "type": "flash",
+      "q": "How do you turn 1 million requests a day into requests per second in your head?",
+      "a": "A day is about 86,400 seconds, so round it to 100,000. That gives roughly 10 requests per second on average, before any peak factor.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "system-design-002",
+      "type": "flash",
+      "q": "Ten million users each upload 1 MB a day. What is the rough storage per year?",
+      "a": "That is 10 TB a day, so about 3.6 PB a year. Multiply by the replication factor for raw capacity.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-003",
+      "type": "flash",
+      "q": "A service sends 1 MB responses at 1,000 requests per second. What bandwidth does it need?",
+      "a": "1 GB per second, which is 8 Gbps. Remember to convert bytes to bits, because links are rated in bits.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-004",
+      "type": "flash",
+      "q": "Roughly how long do a main memory read, an SSD read and a disk seek take?",
+      "a": "About 100 ns, 100 microseconds and 10 ms. Each step is 100 to 1,000 times slower than the last, which is why caching in memory pays off.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "system-design-005",
+      "type": "flash",
+      "q": "Roughly how does a round trip inside a datacenter compare with one across an ocean?",
+      "a": "About 0.5 ms inside a datacenter and about 100 ms across an ocean. The long trip is limited by the speed of light in fibre, so faster servers do not help.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "system-design-006",
+      "type": "flash",
+      "q": "Why does a page making 10 sequential cross-region calls feel slow however fast your servers are?",
+      "a": "Each call costs a round trip of around 100 ms, so the page spends about a second on the network alone. Batch the calls, run them in parallel, or move the data closer.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-007",
+      "type": "flash",
+      "q": "How does cache-aside work, and what is its weakness?",
+      "a": "The app checks the cache, and on a miss it loads from the database and fills the cache. Writes go to the database and invalidate the key. The weakness is that a race or failed invalidation can leave stale data.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "system-design-008",
+      "type": "flash",
+      "q": "How do write-through, write-back and write-around caching differ?",
+      "a": "Write-through writes to cache and database together, so writes are slower but consistent. Write-back writes to cache and flushes later, which is fast but risks loss. Write-around writes only to the database, so rarely read data never fills the cache.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-009",
+      "type": "flash",
+      "q": "Why delete a cache key on write rather than update it?",
+      "a": "Two concurrent writers can update the cache in a different order from the database, which leaves a wrong value until it expires. Deleting makes the next read load the current value.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-010",
+      "type": "flash",
+      "q": "How do LRU and LFU eviction differ in their failure modes?",
+      "a": "LRU evicts what was used longest ago, so it adapts quickly but one large scan can flush hot keys. LFU evicts what is used least often, so it protects steady hot keys but old favourites can linger after they go cold.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-011",
+      "type": "flash",
+      "q": "How can one popular key expiring overload a database?",
+      "a": "Every request that misses goes to the database for the same value at once, which is a cache stampede. A per-key lock lets one request refresh while the others wait or use the stale value.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-012",
+      "type": "flash",
+      "q": "Why add random jitter to cache TTLs?",
+      "a": "Keys loaded together, such as after a deploy, otherwise expire together and cause a wave of misses. Random offsets spread the expiry out.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-013",
+      "type": "flash",
+      "q": "How do repeated requests for keys that do not exist get past a cache, and what stops them?",
+      "a": "With nothing to cache, every request reaches the database. Cache the negative result briefly, or check a Bloom filter of existing keys first.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-014",
+      "type": "flash",
+      "q": "How does a token bucket allow bursts while capping the average rate?",
+      "a": "Tokens refill at a fixed rate up to the bucket's capacity, and each request spends one. A full bucket allows a burst up to its capacity, but the long-run rate cannot exceed the refill rate.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "system-design-015",
+      "type": "flash",
+      "q": "How does a leaky bucket differ from a token bucket?",
+      "a": "A leaky bucket queues requests and drains them at a constant rate, which smooths traffic. A token bucket lets a saved-up burst through at once.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-016",
+      "type": "flash",
+      "q": "What is the weakness of a fixed-window rate limiter?",
+      "a": "A client can spend its full quota at the end of one window and again at the start of the next. That allows twice the limit in a short span.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "system-design-017",
+      "type": "flash",
+      "q": "What do sliding-log and sliding-counter rate limiters trade off?",
+      "a": "A sliding log stores a timestamp per request, which is exact but uses memory. A sliding counter weights the previous window's count by its overlap, which is cheap but approximate.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-018",
+      "type": "flash",
+      "q": "How do you enforce one rate limit across many servers?",
+      "a": "Keep the counters in a shared store such as Redis and update them atomically, so every server sees the same count. The cost is a network hop per request.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-019",
+      "type": "flash",
+      "q": "What do you gain by putting a queue between two services?",
+      "a": "The producer does not wait for the consumer, the consumer can be slow or down for a while, and bursts are absorbed. The cost is added latency and more moving parts.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "system-design-020",
+      "type": "flash",
+      "q": "How does a log-based broker such as Kafka differ from a traditional work queue?",
+      "a": "A work queue removes a message once a worker acknowledges it. A log keeps messages for a retention period and each consumer group tracks its own offset, so consumers can replay and read independently.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-021",
+      "type": "flash",
+      "q": "Where does Kafka guarantee ordering?",
+      "a": "Only within a partition. Giving related messages the same key sends them to the same partition, which gives per-key ordering.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-022",
+      "type": "flash",
+      "q": "Why does a queue consumer need a dead-letter queue?",
+      "a": "A poison message that always fails would otherwise be retried forever, wasting work or blocking the queue. After a set number of attempts it is moved aside for inspection.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-023",
+      "type": "flash",
+      "q": "What decides whether a consumer gets at-most-once or at-least-once delivery?",
+      "a": "When it acknowledges. Acknowledge before processing and a crash loses the message. Acknowledge after processing and a crash causes redelivery, so duplicates are possible.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "system-design-024",
+      "type": "flash",
+      "q": "Why is exactly-once delivery not achievable over an unreliable network, and what is used instead?",
+      "a": "If an acknowledgement is lost, the sender cannot tell whether the message was processed, so it must risk a loss or a duplicate. Systems use at-least-once delivery with idempotent processing to get an exactly-once effect.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-025",
+      "type": "flash",
+      "q": "How does an idempotency key stop a retry from charging a card twice?",
+      "a": "The client sends the same unique key with each attempt at one operation. The server stores the key with the result, so a repeat returns the saved result instead of charging again.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "system-design-026",
+      "type": "flash",
+      "q": "How do you make a message consumer safe against duplicates?",
+      "a": "Record each processed message ID in the same transaction as the side effect, or write with an upsert keyed on a natural ID. A redelivered message then changes nothing.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-027",
+      "type": "flash",
+      "q": "How does requiring a majority vote prevent split brain?",
+      "a": "Split brain is two nodes both acting as leader after a partition. Any two majorities of a group overlap, so at most one side of a partition can elect a leader.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-028",
+      "type": "flash",
+      "q": "Why is a lease not enough to guarantee a single leader, and what fixes it?",
+      "a": "A leader can pause, for example in a long GC, wake after its lease expired, and keep writing. Each lease comes with an increasing fencing token, and storage rejects writes with an older token.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 3
+    },
+    {
+      "id": "system-design-029",
+      "type": "flash",
+      "q": "Why does R + W > N give reads that see the latest write?",
+      "a": "Any set of R replicas must overlap any set of W replicas in at least one node. The read therefore reaches a copy of the latest write, and version numbers identify it.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-030",
+      "type": "flash",
+      "q": "Why do consensus groups use an odd size such as 3 or 5?",
+      "a": "A majority of 5 is 3, so it survives 2 failures. A group of 6 needs 4, so it also survives only 2 and costs more.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "system-design-031",
+      "type": "flash",
+      "q": "How does Raft elect a leader?",
+      "a": "A follower that stops hearing heartbeats waits a randomised timeout, then becomes a candidate in a new term and requests votes. Each node votes once per term, and a majority wins. The random timeouts make split votes rare.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-032",
+      "type": "flash",
+      "q": "When is a Raft log entry committed?",
+      "a": "When the leader has stored an entry from its current term on a majority of servers. A future leader needs votes from a majority, and voters reject candidates with older logs, so it must hold that entry.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-033",
+      "type": "flash",
+      "q": "How does a stale Raft leader find out it has been replaced?",
+      "a": "Every message carries a term number. When it sees a term higher than its own, it steps down to follower.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 3
+    },
+    {
+      "id": "system-design-034",
+      "type": "flash",
+      "q": "How does linearizability differ from eventual consistency?",
+      "a": "Under linearizability, each operation appears to happen at a single instant, so reads always see the latest completed write. Under eventual consistency, replicas converge if writes stop, but reads may be stale until then.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-035",
+      "type": "flash",
+      "q": "What do read-your-writes and monotonic reads each promise?",
+      "a": "Read-your-writes means a user always sees their own updates. Monotonic reads means a user never sees data go backwards by hitting a staler replica on a later read.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-036",
+      "type": "flash",
+      "q": "Why is last-write-wins by wall-clock timestamp risky?",
+      "a": "Clocks on different machines drift, so a later write can carry an earlier timestamp. That write is then silently discarded.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-037",
+      "type": "flash",
+      "q": "Why is cursor pagination better than offset pagination for deep pages?",
+      "a": "`OFFSET` makes the database read and discard every skipped row, and inserts shift pages so items repeat or vanish. A cursor such as `WHERE id > last_id LIMIT n` seeks through an index, so cost stays flat. You lose the ability to jump to page N.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-038",
+      "type": "flash",
+      "q": "How do fan-out on write and fan-out on read differ for a news feed?",
+      "a": "Fan-out on write pushes each post into every follower's feed at post time, so reads are fast but writes are heavy. Fan-out on read assembles the feed at read time, so writes are cheap but reads are slow.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "system-design-039",
+      "type": "flash",
+      "q": "How do you handle a user with 100 million followers in a fan-out on write feed?",
+      "a": "Skip the push for such accounts. Most posts are fanned out on write, and celebrity posts are merged in at read time.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-040",
+      "type": "flash",
+      "q": "Why keep images in object storage rather than in the database?",
+      "a": "Large blobs bloat the database, its backups and its buffer cache. Object storage is cheap, durable and scales well, so the database keeps only metadata and the object key.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "system-design-041",
+      "type": "flash",
+      "q": "Why let clients upload through a pre-signed URL?",
+      "a": "The client sends bytes straight to object storage, so app servers do not carry the upload traffic. The URL is short-lived and scoped to one object, so no storage credentials are exposed.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-042",
+      "type": "flash",
+      "q": "Why does a search engine use an inverted index instead of scanning documents?",
+      "a": "It maps each term to the list of documents containing it. A query reads only the lists for its terms and intersects them, so cost follows the matches rather than the corpus size.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "system-design-043",
+      "type": "flash",
+      "q": "Why does a search index usually lag behind the primary database?",
+      "a": "It is a derived copy, updated asynchronously from a change stream or queue, so recent writes take time to appear. In exchange, it can be rebuilt from the source at any time.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-044",
+      "type": "flash",
+      "q": "What are the four golden signals of monitoring?",
+      "a": "Latency, traffic, errors and saturation.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "system-design-045",
+      "type": "flash",
+      "q": "Why watch p99 latency rather than the average?",
+      "a": "An average hides a slow tail. A page that fans out to many backends hits some backend's tail on most requests, so the tail is what users feel.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "system-design-046",
+      "type": "flash",
+      "q": "Why should latency of failed requests be tracked separately from successful ones?",
+      "a": "Fast failures pull the numbers down, so a service returning instant errors can look healthy. Mixed together, the figure describes neither case.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-047",
+      "type": "flash",
+      "q": "Why shed load during overload instead of queuing every request?",
+      "a": "Queued requests can time out before they are served, so the server wastes work on replies nobody reads. Rejecting some early keeps the rest fast.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-048",
+      "type": "flash",
+      "q": "Why does a stalled reader of a TCP stream eventually block the writer?",
+      "a": "The reader's receive buffer fills and its advertised window drops to zero. The sender's buffer then fills and `write` blocks, which is backpressure built into the protocol.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 3
+    },
+    {
+      "id": "system-design-049",
+      "type": "flash",
+      "q": "A service handles 100 requests per second at 200 ms each. How many are in flight on average?",
+      "a": "20, by Little's Law: items in the system equal arrival rate times time in the system. It also shows that slower responses mean more concurrent requests.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-050",
+      "type": "flash",
+      "q": "Why does latency shoot up as utilisation nears 100 percent?",
+      "a": "Arrivals are bursty, and with little spare capacity each burst queues behind the last. Waiting time grows non-linearly, so latency explodes before the server is fully busy.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-051",
+      "type": "flash",
+      "q": "What does a circuit breaker do, and why?",
+      "a": "After too many failures it opens and fails calls immediately instead of waiting on a sick dependency. That frees the caller's threads and gives the dependency room to recover.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "system-design-052",
+      "type": "flash",
+      "q": "What is the half-open state of a circuit breaker for?",
+      "a": "After a cool-down, the breaker lets a few trial requests through. Success closes it and failure opens it again, so it recovers without flooding the dependency.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    },
+    {
+      "id": "system-design-053",
+      "type": "flash",
+      "q": "Why must every remote call have a timeout?",
+      "a": "Without one, a stuck dependency ties up the caller's threads or connections until the caller stalls too. One slow service then spreads into a cascading failure.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "system-design-054",
+      "type": "flash",
+      "q": "Why add jitter to exponential backoff?",
+      "a": "Clients that failed together would otherwise retry together, hitting the recovering service in synchronised waves. Random delays spread the load over time.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 1
+    },
+    {
+      "id": "system-design-055",
+      "type": "flash",
+      "q": "How can retries make an outage worse?",
+      "a": "Each layer's retries multiply load on a service that is already struggling. Three layers that each try three times turn one request into 27 attempts at the bottom.",
+      "patterns": [
+        "system-design"
+      ],
+      "skill": "explain",
+      "level": 2
+    }
+  ]
+}

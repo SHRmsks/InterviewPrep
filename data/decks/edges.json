@@ -1,0 +1,484 @@
+{
+  "deck": "edges",
+  "title": "Edge cases",
+  "cards": [
+    {
+      "id": "edges-001",
+      "type": "flash",
+      "q": "Find the first index with `a[i] >= x` in a sorted array.",
+      "a": "`x` larger than every element, where the answer is `a.size()` and `a[mid]` must not be read there; a run of equal values, where stopping at the first hit returns a middle copy; `lo + hi` overflowing on ranges near `INT_MAX`.",
+      "patterns": [
+        "binary-search"
+      ],
+      "skill": "edge",
+      "level": 1
+    },
+    {
+      "id": "edges-002",
+      "type": "flash",
+      "q": "Binary search on the answer for the smallest feasible value.",
+      "a": "A lower bound below a hard minimum, such as a capacity under the heaviest item, because the feasibility check may still pass; no feasible value at all, which needs a separate check; overflow in `mid` or in the running total inside the check.",
+      "patterns": [
+        "binary-search-answer"
+      ],
+      "skill": "edge",
+      "level": 2
+    },
+    {
+      "id": "edges-003",
+      "type": "flash",
+      "q": "Search a rotated sorted array.",
+      "a": "Two elements left, where `lo == mid` requires `a[lo] <= a[mid]`; duplicates such as `{1, 0, 1, 1, 1}`, where `a[lo] == a[mid] == a[hi]` hides the sorted side and forces a linear shrink.",
+      "patterns": [
+        "binary-search"
+      ],
+      "skill": "edge",
+      "level": 2
+    },
+    {
+      "id": "edges-004",
+      "type": "flash",
+      "q": "Find all unique triplets that sum to zero.",
+      "a": "Anchor dedupe against `a[i + 1]`, which loses `{-1, -1, 2}`, so compare with `a[i - 1]`; all zeros such as `{0, 0, 0, 0}`, which must give one triplet; repeats on the inner pointers after a match; `int` overflow when values approach the limits.",
+      "patterns": [
+        "two-pointers"
+      ],
+      "skill": "edge",
+      "level": 2
+    },
+    {
+      "id": "edges-005",
+      "type": "flash",
+      "q": "Sort an array of 0s, 1s and 2s in one pass with three pointers.",
+      "a": "A value swapped in from `hi` is unseen, so `i` must stay put; stopping at `i < hi`, which leaves the last element unchecked in `{1, 0}`; an unsigned `hi` wrapping below 0 on an all-2s array.",
+      "patterns": [
+        "two-pointers"
+      ],
+      "skill": "edge",
+      "level": 2
+    },
+    {
+      "id": "edges-006",
+      "type": "flash",
+      "q": "Find the longest substring without repeated characters.",
+      "a": "`abba`, where a last-seen index behind the window moves the left edge backwards unless you take `max`; updating `best` only on a repeat, which misses a window that reaches the end, as in `abc`; characters outside `a-z` when counting in an array of 26.",
+      "patterns": [
+        "sliding-window"
+      ],
+      "skill": "edge",
+      "level": 2
+    },
+    {
+      "id": "edges-007",
+      "type": "flash",
+      "q": "Find the minimum window of `s` containing all of `t`.",
+      "a": "Repeated characters in `t`, where `aa` needs two copies, so a set is not enough; no valid window, which must not return `INT_MAX` or a leftover substring; measuring the window after the shrink instead of before it.",
+      "patterns": [
+        "sliding-window"
+      ],
+      "skill": "edge",
+      "level": 2
+    },
+    {
+      "id": "edges-008",
+      "type": "flash",
+      "q": "Find the longest subarray with sum at most `k` using a sliding window.",
+      "a": "Negative values, where adding an element can lower the sum, so shrinking is invalid and you need prefix sums; `k < 0` with non-negative values, where `while (sum > k)` runs `lo` past `hi` and off the array.",
+      "patterns": [
+        "sliding-window",
+        "prefix-sum"
+      ],
+      "skill": "edge",
+      "level": 2
+    },
+    {
+      "id": "edges-009",
+      "type": "flash",
+      "q": "Count subarrays with sum `k`.",
+      "a": "Subarrays starting at index 0, which need the map seeded with `{0: 1}`; negative values and zeros, which rule out a sliding window; `k = 0`, where inserting the current prefix before the lookup counts an empty subarray; prefix overflow in `int`.",
+      "patterns": [
+        "prefix-sum"
+      ],
+      "skill": "edge",
+      "level": 1
+    },
+    {
+      "id": "edges-010",
+      "type": "flash",
+      "q": "Count subarrays with sum divisible by `k`.",
+      "a": "Negative prefixes, because `%` keeps the sign in C++ and -1 must become `k - 1`; the seed for remainder 0; a prefix that is never reduced, which can overflow `int`.",
+      "patterns": [
+        "prefix-sum"
+      ],
+      "skill": "edge",
+      "level": 2
+    },
+    {
+      "id": "edges-011",
+      "type": "flash",
+      "q": "Find the next greater element in a circular array.",
+      "a": "One pass misses answers that wrap around, so scan `2n` positions with `i % n`; equal values, where `<=` treats a tie as greater; an all-equal array, which must give -1 everywhere.",
+      "patterns": [
+        "monotonic-stack"
+      ],
+      "skill": "edge",
+      "level": 2
+    },
+    {
+      "id": "edges-012",
+      "type": "flash",
+      "q": "Find the largest rectangle in a histogram with a stack.",
+      "a": "Increasing heights, where bars stay on the stack unless a final 0 sentinel flushes them; an empty stack after a pop, where the width is `i`, not `i - top - 1`; area overflow in `int` for large heights.",
+      "patterns": [
+        "monotonic-stack"
+      ],
+      "skill": "edge",
+      "level": 2
+    },
+    {
+      "id": "edges-013",
+      "type": "flash",
+      "q": "Remove the `n`-th node from the end of a list.",
+      "a": "`n` equal to the length, which removes the head and needs a dummy; a one-node list, where the result is null; looping until `fast` is null instead of `fast->next`, which leaves `slow` on the target rather than before it.",
+      "patterns": [
+        "linked-list",
+        "two-pointers"
+      ],
+      "skill": "edge",
+      "level": 1
+    },
+    {
+      "id": "edges-014",
+      "type": "flash",
+      "q": "Reverse a sublist between positions `m` and `n`.",
+      "a": "`m = 1`, where the head changes, so start from a dummy; not linking the old first node to the node after `n`, which cuts the list; `n` at the tail, where that next node is null.",
+      "patterns": [
+        "linked-list"
+      ],
+      "skill": "edge",
+      "level": 2
+    },
+    {
+      "id": "edges-015",
+      "type": "flash",
+      "q": "Find the node where a list's cycle begins.",
+      "a": "No cycle, so test both `fast` and `fast->next` before stepping; testing `slow == fast` before the first move, which is true at once; starting `fast` one step ahead, which breaks the reset-to-head distance argument.",
+      "patterns": [
+        "linked-list",
+        "two-pointers"
+      ],
+      "skill": "edge",
+      "level": 2
+    },
+    {
+      "id": "edges-016",
+      "type": "flash",
+      "q": "Validate a binary search tree.",
+      "a": "A deep node that breaks an ancestor's bound while passing its parent's check; node values equal to `INT_MIN` or `INT_MAX`, which need `long long` or null bounds; duplicates, which strict comparisons must reject.",
+      "patterns": [
+        "bst",
+        "tree-dfs"
+      ],
+      "skill": "edge",
+      "level": 1
+    },
+    {
+      "id": "edges-017",
+      "type": "flash",
+      "q": "Find the maximum path sum in a binary tree.",
+      "a": "All-negative trees, where the answer is the largest node and not 0; clamping a child's gain at 0 while still counting the node itself; returning a forked path to the parent, which may extend only one side.",
+      "patterns": [
+        "dp-tree",
+        "tree-dfs"
+      ],
+      "skill": "edge",
+      "level": 2
+    },
+    {
+      "id": "edges-018",
+      "type": "flash",
+      "q": "Find the lowest common ancestor in a binary tree.",
+      "a": "One target being an ancestor of the other, which the recursion must return at once; a target missing from the tree, which the usual version still reports as found; repeated values, so compare pointers instead of values.",
+      "patterns": [
+        "tree-dfs"
+      ],
+      "skill": "edge",
+      "level": 2
+    },
+    {
+      "id": "edges-019",
+      "type": "flash",
+      "q": "Serialize and deserialize a binary tree.",
+      "a": "Missing null markers, which lose the shape; negative or multi-digit values, which break character-by-character parsing; a read index passed by value, which repeats tokens.",
+      "patterns": [
+        "tree-dfs",
+        "design"
+      ],
+      "skill": "edge",
+      "level": 2
+    },
+    {
+      "id": "edges-020",
+      "type": "flash",
+      "q": "Find a BFS shortest path in a grid.",
+      "a": "Marking cells at pop, which queues them repeatedly and can blow up time and memory; start equal to target, which must return 0; a blocked start or target; swapped `m` and `n` on non-square grids.",
+      "patterns": [
+        "grid",
+        "graph-traversal"
+      ],
+      "skill": "edge",
+      "level": 1
+    },
+    {
+      "id": "edges-021",
+      "type": "flash",
+      "q": "Run Dijkstra's algorithm with a heap.",
+      "a": "Marking a node done when first relaxed instead of when popped; stale heap entries, which need `if (d > dist[u]) continue;` before expanding or counting; `int` distances overflowing on long paths; negative edges, which the algorithm cannot handle.",
+      "patterns": [
+        "shortest-path"
+      ],
+      "skill": "edge",
+      "level": 2
+    },
+    {
+      "id": "edges-022",
+      "type": "flash",
+      "q": "Run a topological sort with Kahn's algorithm.",
+      "a": "A cycle, where the output is shorter than `n` and that must be checked; repeated edges when adjacency is a set but indegree counts every copy; nodes that appear in no edge, which are lost if the node list is built from the edges.",
+      "patterns": [
+        "topo-sort"
+      ],
+      "skill": "edge",
+      "level": 1
+    },
+    {
+      "id": "edges-023",
+      "type": "flash",
+      "q": "Flood fill a region with a new color.",
+      "a": "New color equal to the old color, where the recolor no longer marks cells and the recursion never ends; reading `g[r][c]` before the bounds check; recursion depth on a large uniform grid.",
+      "patterns": [
+        "grid",
+        "graph-traversal"
+      ],
+      "skill": "edge",
+      "level": 1
+    },
+    {
+      "id": "edges-024",
+      "type": "flash",
+      "q": "Implement union-find with a component count.",
+      "a": "Uniting two elements already in one set, which must not decrement the count; linking elements instead of their roots; reading `p[i]` instead of `find(i)` at the end; deep recursion in `find` without union by size.",
+      "patterns": [
+        "union-find"
+      ],
+      "skill": "edge",
+      "level": 2
+    },
+    {
+      "id": "edges-025",
+      "type": "flash",
+      "q": "Solve 0/1 knapsack on a one-dimensional table.",
+      "a": "An upward capacity loop, which reuses an item; `dp` filled with 0 when the weight must be met exactly, which needs a negative sentinel with `dp[0] = 0`; value totals overflowing `int`.",
+      "patterns": [
+        "dp-knapsack"
+      ],
+      "skill": "edge",
+      "level": 1
+    },
+    {
+      "id": "edges-026",
+      "type": "flash",
+      "q": "Find the fewest coins that make an amount.",
+      "a": "Unreachable states at `INT_MAX`, where `+ 1` overflows to a negative count; amount 0, which must return 0; coins larger than the amount, which give a negative index; greedy choice, which fails on `{1, 3, 4}` for amount 6.",
+      "patterns": [
+        "dp-knapsack"
+      ],
+      "skill": "edge",
+      "level": 1
+    },
+    {
+      "id": "edges-027",
+      "type": "flash",
+      "q": "Find the longest increasing subsequence with binary search.",
+      "a": "Equal values, where `upper_bound` allows ties and strict increase needs `lower_bound`; reading `tails` as the subsequence, which it is not.",
+      "patterns": [
+        "dp-linear",
+        "binary-search"
+      ],
+      "skill": "edge",
+      "level": 2
+    },
+    {
+      "id": "edges-028",
+      "type": "flash",
+      "q": "Count the ways to decode a digit string with `1 = A` through `26 = Z`.",
+      "a": "A leading `0`, which gives 0 ways; `10` and `20`, where the 0 only works with the digit before it; `30` or `00`, which make the whole answer 0; `27`, which is only one way.",
+      "patterns": [
+        "dp-linear"
+      ],
+      "skill": "edge",
+      "level": 2
+    },
+    {
+      "id": "edges-029",
+      "type": "flash",
+      "q": "Find the maximum product subarray.",
+      "a": "A negative value swaps the largest and smallest products, so track both; updating `lo` from the already updated `hi`; a 0, which resets the run; a single negative element, which is its own answer.",
+      "patterns": [
+        "dp-linear"
+      ],
+      "skill": "edge",
+      "level": 2
+    },
+    {
+      "id": "edges-030",
+      "type": "flash",
+      "q": "Parse a signed integer from a string.",
+      "a": "`-2147483648`, which overflows if you build the positive value in `int`; overflow that must be caught before `res * 10`; a sign with no digits after it; leading spaces and a stop at the first non-digit.",
+      "patterns": [
+        "simulation"
+      ],
+      "skill": "edge",
+      "level": 2
+    },
+    {
+      "id": "edges-031",
+      "type": "flash",
+      "q": "Reverse the digits of an integer.",
+      "a": "A reversed value above `INT_MAX`, such as from `1534236469`; `abs(INT_MIN)`, which overflows; negative values, where `%` gives a negative digit; trailing zeros, which must vanish.",
+      "patterns": [
+        "math"
+      ],
+      "skill": "edge",
+      "level": 1
+    },
+    {
+      "id": "edges-032",
+      "type": "flash",
+      "q": "Split a string on a delimiter.",
+      "a": "`substr(pos, n)` takes a length, not an end index; `find` returning `npos` for the last token; consecutive or trailing delimiters, which produce empty tokens.",
+      "patterns": [
+        "cpp"
+      ],
+      "skill": "edge",
+      "level": 1
+    },
+    {
+      "id": "edges-033",
+      "type": "flash",
+      "q": "Merge overlapping intervals.",
+      "a": "A contained interval such as `[1, 10], [2, 3]`, where the end must be the `max` of both; unsorted input; touching intervals `[1, 2], [2, 3]`, which need a decision on `<` or `<=`.",
+      "patterns": [
+        "intervals",
+        "sorting"
+      ],
+      "skill": "edge",
+      "level": 1
+    },
+    {
+      "id": "edges-034",
+      "type": "flash",
+      "q": "Find the minimum number of meeting rooms.",
+      "a": "A meeting that ends exactly when another starts, where ends must sort before starts for half-open times; comparing a new meeting with the last one added instead of the earliest end; input not sorted by start in the heap version.",
+      "patterns": [
+        "intervals",
+        "heap",
+        "sweep-line"
+      ],
+      "skill": "edge",
+      "level": 2
+    },
+    {
+      "id": "edges-035",
+      "type": "flash",
+      "q": "Rotate an array right by `k` steps.",
+      "a": "`k >= n`, which needs `k %= n`; an empty array, where `k %= n` divides by zero.",
+      "patterns": [
+        "two-pointers"
+      ],
+      "skill": "edge",
+      "level": 1
+    },
+    {
+      "id": "edges-036",
+      "type": "flash",
+      "q": "Compute `x` to the power `n` by squaring.",
+      "a": "`n = INT_MIN`, where `-n` overflows, so widen to `long long`; `n = 0`, which gives 1 even for `x = 0`; under a modulus, the product of two residues overflowing `int`.",
+      "patterns": [
+        "math"
+      ],
+      "skill": "edge",
+      "level": 2
+    },
+    {
+      "id": "edges-037",
+      "type": "flash",
+      "q": "Print a matrix in spiral order.",
+      "a": "A single remaining row or column, which the backward passes visit twice without `top <= bot` and `left <= right` checks; non-square matrices; an empty matrix with `g[0].size()`.",
+      "patterns": [
+        "grid",
+        "simulation"
+      ],
+      "skill": "edge",
+      "level": 2
+    },
+    {
+      "id": "edges-038",
+      "type": "flash",
+      "q": "Implement an LRU cache.",
+      "a": "`put` on an existing key, which must update and refresh without evicting; popping the list before reading the key to erase from the map; `get`, which must also refresh recency; capacity 1.",
+      "patterns": [
+        "design",
+        "linked-list"
+      ],
+      "skill": "edge",
+      "level": 2
+    },
+    {
+      "id": "edges-039",
+      "type": "flash",
+      "q": "Implement a stack with constant-time minimum.",
+      "a": "Repeated minimums, so the min stack must push on `<=`, or popping one copy loses the others; `pop` or `top` on an empty stack; differences overflowing `int` in the single-stack trick.",
+      "patterns": [
+        "stack",
+        "design"
+      ],
+      "skill": "edge",
+      "level": 2
+    },
+    {
+      "id": "edges-040",
+      "type": "flash",
+      "q": "Find two indices that sum to a target with a hash map.",
+      "a": "An element paired with itself, so look up before inserting; repeated values such as `{3, 3}`; a stored index 0 read through `operator[]` as false.",
+      "patterns": [
+        "arrays-hashing"
+      ],
+      "skill": "edge",
+      "level": 1
+    },
+    {
+      "id": "edges-041",
+      "type": "flash",
+      "q": "Sort with a custom comparator.",
+      "a": "`<=` or `>=`, which break strict weak ordering and make `sort` undefined; ties that need a secondary key, since `sort` is not stable; a comparator written as `a - b < 0`, which can overflow.",
+      "patterns": [
+        "sorting",
+        "cpp"
+      ],
+      "skill": "edge",
+      "level": 2
+    },
+    {
+      "id": "edges-042",
+      "type": "flash",
+      "q": "Count set bits by shifting an integer.",
+      "a": "Negative input, where `>>` on a signed value keeps the sign, so `while (x)` never ends and you need `unsigned`; `1 << 31`, which is negative as an `int`; `1 << 40`, which is undefined and needs `1LL`.",
+      "patterns": [
+        "bit-manipulation"
+      ],
+      "skill": "edge",
+      "level": 2
+    }
+  ]
+}

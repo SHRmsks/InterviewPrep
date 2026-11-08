@@ -1,0 +1,5 @@
+.build/
+.tools/
+build/
+dist/
+data/raw/

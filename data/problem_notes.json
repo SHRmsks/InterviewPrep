@@ -1,0 +1,3653 @@
+{
+  "1": {
+    "title": "Two Sum",
+    "patterns": [
+      "arrays-hashing"
+    ],
+    "idea": "While scanning, look up target minus the current value in a map of values already seen, so each pair is found at its second element.",
+    "pitfall": "Inserting the current value before the lookup, which can pair an element with itself.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "2": {
+    "title": "Add Two Numbers",
+    "patterns": [
+      "linked-list",
+      "math"
+    ],
+    "idea": "Digits come least significant first, so walk both lists together as in column addition, with a dummy head and a carry.",
+    "pitfall": "Ending the loop when both lists run out while a carry of 1 is still pending.",
+    "time": "O(max(m, n)), m, n = list lengths",
+    "space": "O(max(m, n)) for the result"
+  },
+  "3": {
+    "title": "Longest Substring Without Repeating Characters",
+    "patterns": [
+      "sliding-window"
+    ],
+    "idea": "Keep a window with no repeats and store each character's last index, so a repeat lets the left edge jump just past its previous position.",
+    "pitfall": "Moving left to a stale index that lies before the window; take the max so left never goes backward.",
+    "time": "O(n)",
+    "space": "O(min(n, A)), A = alphabet size"
+  },
+  "4": {
+    "title": "Median of Two Sorted Arrays",
+    "patterns": [
+      "binary-search"
+    ],
+    "idea": "Binary search a cut in the shorter array, which fixes the cut in the other because the left side must hold half of all elements; it is right when both left maxima are <= both right minima.",
+    "pitfall": "Searching the longer array, which pushes the derived cut out of bounds.",
+    "time": "O(log min(m, n)), m, n = array lengths",
+    "space": "O(1)"
+  },
+  "5": {
+    "title": "Longest Palindromic Substring",
+    "patterns": [
+      "two-pointers",
+      "dp-string"
+    ],
+    "idea": "Every palindrome has a center, so expand around all 2n - 1 centers, letters and gaps, keeping the longest; Manacher's algorithm reaches O(n).",
+    "pitfall": "Expanding only around letters, which misses even-length palindromes.",
+    "time": "O(n^2)",
+    "space": "O(1)"
+  },
+  "6": {
+    "title": "Zigzag Conversion",
+    "patterns": [
+      "simulation"
+    ],
+    "idea": "Walk the string appending to the current row, flipping direction at the top and bottom rows.",
+    "pitfall": "Not returning early for numRows == 1, where the direction flip indexes out of range.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "7": {
+    "title": "Reverse Integer",
+    "patterns": [
+      "math"
+    ],
+    "idea": "Pop digits with % 10 and push them onto the result, testing before each push whether it would leave the 32-bit range.",
+    "pitfall": "Checking for overflow after multiplying by 10, when the signed overflow has already happened.",
+    "time": "O(log |x|)",
+    "space": "O(1)"
+  },
+  "8": {
+    "title": "String to Integer (atoi)",
+    "patterns": [
+      "simulation"
+    ],
+    "idea": "Treat it as strict stages: skip spaces, read one optional sign, read digits, and clamp before a new digit would overflow.",
+    "pitfall": "Checking for overflow only after multiplying, when int has already overflowed.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "9": {
+    "title": "Palindrome Number",
+    "patterns": [
+      "math"
+    ],
+    "idea": "Reverse only the lower half of the digits and compare it with the upper half, which avoids overflow entirely.",
+    "pitfall": "Not rejecting negatives and positive numbers ending in 0 first.",
+    "time": "O(log x)",
+    "space": "O(1)"
+  },
+  "10": {
+    "title": "Regular Expression Matching",
+    "patterns": [
+      "dp-string"
+    ],
+    "idea": "dp[i][j] matches prefixes, and 'x*' either drops both pattern characters (zero copies) or consumes one text character if x matches and stays on the star.",
+    "pitfall": "Not seeding dp[0][j] for patterns like a*b* that can match an empty string.",
+    "time": "O(mn), m = text length, n = pattern length",
+    "space": "O(mn)"
+  },
+  "11": {
+    "title": "Container With Most Water",
+    "patterns": [
+      "two-pointers"
+    ],
+    "idea": "Start with the widest pair and always move the shorter wall, because any container that keeps the shorter wall is narrower and no taller.",
+    "pitfall": "Moving the taller wall, which can skip the optimal pair.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "12": {
+    "title": "Integer to Roman",
+    "patterns": [
+      "greedy"
+    ],
+    "idea": "List values in descending order, including subtractive ones like 900 and 4, and repeatedly take the largest that fits.",
+    "pitfall": "Omitting subtractive values from the table, which produces IIII instead of IV.",
+    "time": "O(1), num is below 4000",
+    "space": "O(1)"
+  },
+  "13": {
+    "title": "Roman to Integer",
+    "patterns": [
+      "math"
+    ],
+    "idea": "Add each symbol's value, except subtract it when the next symbol is larger, which covers every subtractive pair.",
+    "pitfall": "Comparing with the next symbol on the last character without a bounds check.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "14": {
+    "title": "Longest Common Prefix",
+    "patterns": [
+      "arrays-hashing"
+    ],
+    "idea": "Compare characters column by column against the first string and stop at the first mismatch or the end of any string.",
+    "pitfall": "Indexing past the end of a shorter string.",
+    "time": "O(S), S = total characters",
+    "space": "O(1)"
+  },
+  "15": {
+    "title": "3Sum",
+    "patterns": [
+      "two-pointers",
+      "sorting"
+    ],
+    "idea": "Sort, fix the smallest element of the triple, and the remaining pair is a sorted two-sum solved by pointers closing from both ends.",
+    "pitfall": "Skipping duplicates only for the fixed element and not for the two pointers after a hit, which repeats triplets.",
+    "time": "O(n^2)",
+    "space": "O(1) besides sorting and the output"
+  },
+  "16": {
+    "title": "3Sum Closest",
+    "patterns": [
+      "two-pointers",
+      "sorting"
+    ],
+    "idea": "Sort, fix one value, and close two pointers based on whether the sum is below or above target, tracking the smallest gap.",
+    "pitfall": "Seeding the best sum with INT_MAX, so the gap computation overflows; seed from the first triple.",
+    "time": "O(n^2)",
+    "space": "O(1) besides sorting"
+  },
+  "17": {
+    "title": "Letter Combinations of a Phone Number",
+    "patterns": [
+      "backtracking"
+    ],
+    "idea": "Each digit is a level of a decision tree that branches on its letters, and every full-depth path is one combination.",
+    "pitfall": "Returning a list holding one empty string for empty input instead of an empty list.",
+    "time": "O(n 4^n), n = digits",
+    "space": "O(n)"
+  },
+  "18": {
+    "title": "4Sum",
+    "patterns": [
+      "two-pointers",
+      "sorting"
+    ],
+    "idea": "Sort, fix two values with nested loops, then close two pointers on the rest, which is 3Sum with one more fixed layer.",
+    "pitfall": "Summing four values near 1e9 in int, which overflows; use long long.",
+    "time": "O(n^3)",
+    "space": "O(1) besides sorting and the output"
+  },
+  "19": {
+    "title": "Remove Nth Node From End of List",
+    "patterns": [
+      "linked-list",
+      "two-pointers"
+    ],
+    "idea": "Advance a lead pointer n nodes, then move both until lead reaches the end, leaving the trailing pointer just before the target.",
+    "pitfall": "Omitting a dummy head, which breaks removal of the first node.",
+    "time": "O(L), L = list length",
+    "space": "O(1)"
+  },
+  "20": {
+    "title": "Valid Parentheses",
+    "patterns": [
+      "stack"
+    ],
+    "idea": "A closer must match the most recent unmatched opener, so push openers and check the top at each closer.",
+    "pitfall": "Reading the top at a closer without checking that the stack is non-empty.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "21": {
+    "title": "Merge Two Sorted Lists",
+    "patterns": [
+      "linked-list"
+    ],
+    "idea": "With a dummy head, keep splicing on the smaller front node, and when one list ends attach the other whole.",
+    "pitfall": "Forgetting to attach the leftover list.",
+    "time": "O(m + n), m, n = list lengths",
+    "space": "O(1)"
+  },
+  "22": {
+    "title": "Generate Parentheses",
+    "patterns": [
+      "backtracking"
+    ],
+    "idea": "Build left to right, adding '(' while opens remain and ')' only while closes are fewer than opens, so every partial string is a valid prefix.",
+    "pitfall": "Allowing a ')' when closes equal opens, which creates invalid prefixes.",
+    "time": "O(4^n / sqrt(n))",
+    "space": "O(n)"
+  },
+  "23": {
+    "title": "Merge k Sorted Lists",
+    "patterns": [
+      "heap",
+      "linked-list"
+    ],
+    "idea": "A min-heap of each list's current head always yields the next smallest node.",
+    "pitfall": "Pushing null heads, which crashes the comparator.",
+    "time": "O(N log k), N = total nodes, k = lists",
+    "space": "O(k)"
+  },
+  "24": {
+    "title": "Swap Nodes in Pairs",
+    "patterns": [
+      "linked-list"
+    ],
+    "idea": "With a dummy before the head, rewire the three pointers around each pair, then step two nodes.",
+    "pitfall": "Not relinking the previous pair's tail to the new front of the current pair.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "25": {
+    "title": "Reverse Nodes in k-Group",
+    "patterns": [
+      "linked-list"
+    ],
+    "idea": "Confirm k nodes remain, reverse exactly those in place, link the previous group's tail to the new head, and continue from the old head, which is now the group's tail.",
+    "pitfall": "Reversing the short final group instead of checking for k nodes before touching any pointer.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "26": {
+    "title": "Remove Duplicates from Sorted Array",
+    "patterns": [
+      "two-pointers"
+    ],
+    "idea": "Duplicates sit next to each other, so a write pointer keeps a value only when it differs from the last kept value.",
+    "pitfall": "Returning the write pointer's last index instead of the count of kept values.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "27": {
+    "title": "Remove Element",
+    "patterns": [
+      "two-pointers"
+    ],
+    "idea": "A write pointer copies every value that stays, so the kept prefix grows in one pass.",
+    "pitfall": "Erasing from the vector in a loop, which is O(n^2) and shifts elements under the index.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "28": {
+    "title": "Find the Index of the First Occurrence in a String",
+    "patterns": [
+      "string-matching"
+    ],
+    "idea": "KMP's failure table says how far the pattern can fall back after a mismatch, so the text pointer never moves backward.",
+    "pitfall": "Using an if instead of a while for the fallback when building the table.",
+    "time": "O(n + m), n = haystack, m = needle",
+    "space": "O(m)"
+  },
+  "29": {
+    "title": "Divide Two Integers",
+    "patterns": [
+      "bit-manipulation",
+      "math"
+    ],
+    "idea": "Long division in binary: subtract the largest shifted divisor that fits and add the matching power of two to the quotient.",
+    "pitfall": "Negating INT_MIN, which overflows; work in long long and clamp the result.",
+    "time": "O(log |dividend|)",
+    "space": "O(1)"
+  },
+  "30": {
+    "title": "Substring with Concatenation of All Words",
+    "patterns": [
+      "sliding-window",
+      "arrays-hashing"
+    ],
+    "idea": "All words share length L, so run a word-sized sliding window from each of the L offsets with a word-count map.",
+    "pitfall": "Not sliding left when a word's count exceeds its quota.",
+    "time": "O(n L), n = |s|, L = word length",
+    "space": "O(m L), m = words"
+  },
+  "31": {
+    "title": "Next Permutation",
+    "patterns": [
+      "two-pointers"
+    ],
+    "idea": "Find the rightmost ascent i, swap nums[i] with the smallest larger value to its right, then reverse the suffix, which was descending.",
+    "pitfall": "Using strict comparisons in the scans, which picks the wrong pivot or swap target on duplicates.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "32": {
+    "title": "Longest Valid Parentheses",
+    "patterns": [
+      "stack",
+      "dp-string"
+    ],
+    "idea": "Keep indices of unmatched characters on a stack with a base at -1, so after each match the distance to the new top is a valid length.",
+    "pitfall": "Not pushing the current ')' as a new base when the stack empties.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "33": {
+    "title": "Search in Rotated Sorted Array",
+    "patterns": [
+      "binary-search"
+    ],
+    "idea": "Around any midpoint one half is sorted, so check whether the target falls inside that half's value range to decide which half to keep.",
+    "pitfall": "Using nums[lo] < nums[mid] to find the sorted half, which misjudges it when lo == mid; it must be <=.",
+    "time": "O(log n)",
+    "space": "O(1)"
+  },
+  "34": {
+    "title": "Find First and Last Position of Element in Sorted Array",
+    "patterns": [
+      "binary-search"
+    ],
+    "idea": "Run two boundary searches, for the first index with value >= target and the first index with value > target, and the range lies between them.",
+    "pitfall": "Using the first result without checking it is in bounds and equals target.",
+    "time": "O(log n)",
+    "space": "O(1)"
+  },
+  "35": {
+    "title": "Search Insert Position",
+    "patterns": [
+      "binary-search"
+    ],
+    "idea": "The answer is the lower bound, meaning the first index whose value is at least the target.",
+    "pitfall": "Searching with hi = n - 1 in a lower-bound loop, so a target above all values can't return n.",
+    "time": "O(log n)",
+    "space": "O(1)"
+  },
+  "36": {
+    "title": "Valid Sudoku",
+    "patterns": [
+      "arrays-hashing"
+    ],
+    "idea": "One pass with seen-sets for each row, column and box is enough, where the box index is r / 3 * 3 + c / 3.",
+    "pitfall": "Trying to solve the board, when only the filled cells need checking.",
+    "time": "O(1), fixed 9 x 9 board",
+    "space": "O(1)"
+  },
+  "37": {
+    "title": "Sudoku Solver",
+    "patterns": [
+      "backtracking"
+    ],
+    "idea": "Fill empty cells in order, trying only digits allowed by row, column and box masks, and undo on a dead end.",
+    "pitfall": "Not returning right after a success, so the unwinding loops erase the solved board.",
+    "time": "O(9^E), E = empty cells",
+    "space": "O(E)"
+  },
+  "38": {
+    "title": "Count and Say",
+    "patterns": [
+      "simulation"
+    ],
+    "idea": "Build each term by run-length encoding the previous one as count then digit.",
+    "pitfall": "Forgetting to write the last run after the scan ends.",
+    "time": "O(n L), L = max term length",
+    "space": "O(L)"
+  },
+  "39": {
+    "title": "Combination Sum",
+    "patterns": [
+      "backtracking"
+    ],
+    "idea": "Recurse with a start index that never moves backward, staying on the same index to allow reuse, so each multiset is built in one order only.",
+    "pitfall": "Restarting each level from index 0, which emits the same combination in several orders.",
+    "time": "O(n^(T/m)), n = candidates, T = target, m = min candidate",
+    "space": "O(T/m)"
+  },
+  "40": {
+    "title": "Combination Sum II",
+    "patterns": [
+      "backtracking"
+    ],
+    "idea": "Sort, then allow each distinct value once as the next pick at a given recursion level, so equal combinations can't come from different copies.",
+    "pitfall": "Skipping on i > 0 instead of i > start, which also rejects valid repeats at deeper levels.",
+    "time": "O(n 2^n)",
+    "space": "O(n)"
+  },
+  "41": {
+    "title": "First Missing Positive",
+    "patterns": [
+      "arrays-hashing"
+    ],
+    "idea": "The answer lies in 1 to n + 1, so use the array as its own table: swap each value v into index v - 1, and the first mismatch reveals the answer.",
+    "pitfall": "Swapping without checking nums[v - 1] != v, which loops forever on duplicates.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "42": {
+    "title": "Trapping Rain Water",
+    "patterns": [
+      "two-pointers",
+      "monotonic-stack"
+    ],
+    "idea": "Water over a bar is min(best left, best right) minus its height, and with pointers at both ends the side with the smaller max already knows its water level.",
+    "pitfall": "Advancing the side with the larger max, whose level still depends on walls not seen yet.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "43": {
+    "title": "Multiply Strings",
+    "patterns": [
+      "math"
+    ],
+    "idea": "Schoolbook multiplication: digits i and j contribute to positions i + j and i + j + 1 of a result array of size m + n.",
+    "pitfall": "Not stripping leading zeros, so zero times anything comes out as a row of zeros.",
+    "time": "O(mn), m, n = digit counts",
+    "space": "O(m + n)"
+  },
+  "44": {
+    "title": "Wildcard Matching",
+    "patterns": [
+      "dp-string",
+      "greedy"
+    ],
+    "idea": "Over prefixes, '*' either matches nothing (dp[i][j - 1]) or takes one more text character (dp[i - 1][j]); a greedy scan that retries only from the last star also works.",
+    "pitfall": "Not carrying dp[0][j] = true through leading stars.",
+    "time": "O(mn), m = text length, n = pattern length",
+    "space": "O(n)"
+  },
+  "45": {
+    "title": "Jump Game II",
+    "patterns": [
+      "greedy"
+    ],
+    "idea": "Think BFS by levels: indices reachable in j jumps form a range, and the next range ends at the farthest reach from this one.",
+    "pitfall": "Looping through the last index, which counts an extra jump; stop at n - 2.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "46": {
+    "title": "Permutations",
+    "patterns": [
+      "backtracking"
+    ],
+    "idea": "Build the permutation one slot at a time from unused values and undo each choice; swapping in place removes the need for a used array.",
+    "pitfall": "Not clearing the used flag after the recursive call returns.",
+    "time": "O(n n!)",
+    "space": "O(n)"
+  },
+  "47": {
+    "title": "Permutations II",
+    "patterns": [
+      "backtracking"
+    ],
+    "idea": "Sort and skip a value equal to its left neighbor when that neighbor is unused at this point, so equal values are always placed left to right.",
+    "pitfall": "Skipping on equality alone without the used check, which drops valid permutations.",
+    "time": "O(n n!)",
+    "space": "O(n)"
+  },
+  "48": {
+    "title": "Rotate Image",
+    "patterns": [
+      "simulation"
+    ],
+    "idea": "A clockwise quarter turn equals a transpose followed by reversing each row, and both steps work in place.",
+    "pitfall": "Looping over the full matrix during the transpose, which swaps each pair twice; start j at i + 1.",
+    "time": "O(n^2)",
+    "space": "O(1)"
+  },
+  "49": {
+    "title": "Group Anagrams",
+    "patterns": [
+      "arrays-hashing"
+    ],
+    "idea": "Anagrams share one canonical form, either the sorted word or its letter-count vector, so that form works as the hash key for the group.",
+    "pitfall": "Joining letter counts into a key without separators, so different count vectors can produce the same string.",
+    "time": "O(n k log k), n = words, k = max word length",
+    "space": "O(n k)"
+  },
+  "50": {
+    "title": "Pow(x, n)",
+    "patterns": [
+      "math"
+    ],
+    "idea": "Square the base while halving the exponent, multiplying into the result whenever the low bit is set.",
+    "pitfall": "Negating n in int, where INT_MIN overflows; widen to long long first.",
+    "time": "O(log |n|)",
+    "space": "O(1)"
+  },
+  "51": {
+    "title": "N-Queens",
+    "patterns": [
+      "backtracking"
+    ],
+    "idea": "Place one queen per row, with O(1) conflict checks from sets of used columns and diagonals, where r + c and r - c identify the diagonals.",
+    "pitfall": "Indexing a diagonal array with r - c without adding n - 1, which goes negative.",
+    "time": "O(n!)",
+    "space": "O(n)"
+  },
+  "53": {
+    "title": "Maximum Subarray",
+    "patterns": [
+      "dp-linear"
+    ],
+    "idea": "Kadane's rule: the best sum ending here is the current value alone or appended to the best sum ending one step back, so a negative running sum gets dropped.",
+    "pitfall": "Starting the best at 0, which returns 0 on an all-negative array.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "54": {
+    "title": "Spiral Matrix",
+    "patterns": [
+      "simulation"
+    ],
+    "idea": "Keep four boundaries and peel one layer at a time (right, down, left, up), tightening a boundary after each side.",
+    "pitfall": "Not rechecking top <= bottom and left <= right before the last two sides, which revisits a lone middle row or column.",
+    "time": "O(mn)",
+    "space": "O(1) besides the output"
+  },
+  "55": {
+    "title": "Jump Game",
+    "patterns": [
+      "greedy"
+    ],
+    "idea": "Sweep left to right keeping the farthest reachable index, and fail only on reaching an index beyond it.",
+    "pitfall": "Updating the reach from an unreachable index, by not checking i > reach first.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "56": {
+    "title": "Merge Intervals",
+    "patterns": [
+      "intervals",
+      "sorting"
+    ],
+    "idea": "After sorting by start, an interval can only overlap the last merged one, so either extend that one's end or open a new interval.",
+    "pitfall": "Setting the end to the new interval's end rather than the max, which shrinks a range that contains the new one.",
+    "time": "O(n log n)",
+    "space": "O(n)"
+  },
+  "57": {
+    "title": "Insert Interval",
+    "patterns": [
+      "intervals"
+    ],
+    "idea": "The input is already sorted, so copy everything ending before the new interval, absorb everything overlapping into it, then copy the rest.",
+    "pitfall": "Using strict comparisons for overlap, which leaves intervals that only touch at an endpoint unmerged.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "60": {
+    "title": "Permutation Sequence",
+    "patterns": [
+      "math"
+    ],
+    "idea": "Use the factorial number system: with k zero-based, k / (n - 1)! picks the first digit from the remaining list, and the remainder repeats.",
+    "pitfall": "Not converting k to zero-based.",
+    "time": "O(n^2)",
+    "space": "O(n)"
+  },
+  "61": {
+    "title": "Rotate List",
+    "patterns": [
+      "linked-list"
+    ],
+    "idea": "Close the list into a ring, then cut it so the new head sits n - k % n steps from the old head.",
+    "pitfall": "Not reducing k modulo the length first.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "62": {
+    "title": "Unique Paths",
+    "patterns": [
+      "dp-grid",
+      "math"
+    ],
+    "idea": "Each cell's count is the sum from above and from the left; equivalently, choose which m - 1 of the m + n - 2 moves go down.",
+    "pitfall": "Computing the binomial through full factorials, which overflow; multiply and divide step by step.",
+    "time": "O(mn)",
+    "space": "O(min(m, n))"
+  },
+  "63": {
+    "title": "Unique Paths II",
+    "patterns": [
+      "dp-grid"
+    ],
+    "idea": "Count paths as in the obstacle-free grid, except that obstacle cells hold 0.",
+    "pitfall": "Filling the first row or column with 1s past an obstacle.",
+    "time": "O(mn)",
+    "space": "O(n)"
+  },
+  "64": {
+    "title": "Minimum Path Sum",
+    "patterns": [
+      "dp-grid"
+    ],
+    "idea": "Each cell's best cost is its value plus the cheaper of the cells above and to the left.",
+    "pitfall": "Not filling the first row and column as running sums.",
+    "time": "O(mn)",
+    "space": "O(n)"
+  },
+  "66": {
+    "title": "Plus One",
+    "patterns": [
+      "math"
+    ],
+    "idea": "From the last digit, a digit below 9 is incremented and you stop, while a 9 becomes 0 and the carry moves left.",
+    "pitfall": "Not adding a new leading 1 when every digit was 9.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "67": {
+    "title": "Add Binary",
+    "patterns": [
+      "math"
+    ],
+    "idea": "Walk both strings from the end with a carry, writing sum % 2 and keeping sum / 2, then reverse the result.",
+    "pitfall": "Ending when both strings run out while the carry is still 1.",
+    "time": "O(max(m, n)), m, n = string lengths",
+    "space": "O(max(m, n))"
+  },
+  "68": {
+    "title": "Text Justification",
+    "patterns": [
+      "simulation",
+      "greedy"
+    ],
+    "idea": "Pack words greedily into a line, then share spaces evenly with extras going to the leftmost gaps, and left-align the last line and one-word lines.",
+    "pitfall": "Dividing spaces by gaps on a one-word line, where the gap count is zero.",
+    "time": "O(L W), L = output lines, W = maxWidth",
+    "space": "O(L W)"
+  },
+  "69": {
+    "title": "Sqrt(x)",
+    "patterns": [
+      "binary-search-answer"
+    ],
+    "idea": "Squares grow with the root, so binary search the largest integer whose square is at most x.",
+    "pitfall": "Computing mid * mid in int, which overflows; use long long or compare mid with x / mid.",
+    "time": "O(log x)",
+    "space": "O(1)"
+  },
+  "70": {
+    "title": "Climbing Stairs",
+    "patterns": [
+      "dp-linear"
+    ],
+    "idea": "The last move is one or two steps, so ways(n) = ways(n - 1) + ways(n - 2), which is Fibonacci and needs two variables.",
+    "pitfall": "Plain recursion without memoization, which is exponential.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "71": {
+    "title": "Simplify Path",
+    "patterns": [
+      "stack"
+    ],
+    "idea": "Split on '/', then '..' pops, '.' and empty parts do nothing, and any other name pushes.",
+    "pitfall": "Treating '...' as special, when it is an ordinary directory name.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "72": {
+    "title": "Edit Distance",
+    "patterns": [
+      "dp-string"
+    ],
+    "idea": "Over prefixes, equal last characters cost nothing extra, otherwise take 1 plus the min of insert (left), delete (up) and replace (diagonal).",
+    "pitfall": "Leaving base cases at 0, when dp[i][0] must be i and dp[0][j] must be j.",
+    "time": "O(mn), m, n = string lengths",
+    "space": "O(min(m, n))"
+  },
+  "73": {
+    "title": "Set Matrix Zeroes",
+    "patterns": [
+      "simulation"
+    ],
+    "idea": "Use the first row and column as markers for what to clear, with separate flags recording whether those two lines contain a zero themselves.",
+    "pitfall": "Clearing the first row or column before the inner cells, which destroys the markers.",
+    "time": "O(mn)",
+    "space": "O(1)"
+  },
+  "74": {
+    "title": "Search a 2D Matrix",
+    "patterns": [
+      "binary-search"
+    ],
+    "idea": "The rows read as one sorted list, so binary search an index k in 0 to mn - 1 mapped to row k / n and column k % n.",
+    "pitfall": "Dividing by the row count instead of the column count.",
+    "time": "O(log(mn))",
+    "space": "O(1)"
+  },
+  "75": {
+    "title": "Sort Colors",
+    "patterns": [
+      "two-pointers"
+    ],
+    "idea": "Dutch national flag: three pointers split the array into 0s, 1s, unknowns and 2s, swapping 0s left and 2s right.",
+    "pitfall": "Advancing mid after swapping with high, when the value swapped in hasn't been checked.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "76": {
+    "title": "Minimum Window Substring",
+    "patterns": [
+      "sliding-window"
+    ],
+    "idea": "Extend right until every required count is met, then shrink left while still valid, and a single counter of missing characters makes the validity check O(1).",
+    "pitfall": "Changing the missing counter for surplus copies of a character instead of only when a count crosses its required value.",
+    "time": "O(|s| + |t|)",
+    "space": "O(A), A = alphabet size"
+  },
+  "77": {
+    "title": "Combinations",
+    "patterns": [
+      "backtracking"
+    ],
+    "idea": "Choose values in increasing order from a start, pruning a branch when too few numbers remain to reach size k.",
+    "pitfall": "Restarting each level at 1, which produces the same set in many orders.",
+    "time": "O(k C(n, k))",
+    "space": "O(k)"
+  },
+  "78": {
+    "title": "Subsets",
+    "patterns": [
+      "backtracking"
+    ],
+    "idea": "Every node of a start-index recursion is a distinct subset, so record the path on entry; equivalently, each bitmask from 0 to 2^n - 1 is one subset.",
+    "pitfall": "Recursing on start + 1 rather than i + 1 inside the loop, which creates duplicates.",
+    "time": "O(n 2^n)",
+    "space": "O(n)"
+  },
+  "79": {
+    "title": "Word Search",
+    "patterns": [
+      "backtracking",
+      "grid"
+    ],
+    "idea": "DFS from every cell, marking cells on the current path in place so none is reused, and restore them on the way back.",
+    "pitfall": "Not restoring the cell after the recursive call, which blocks it for later paths.",
+    "time": "O(mn 3^L), L = word length",
+    "space": "O(L)"
+  },
+  "80": {
+    "title": "Remove Duplicates from Sorted Array II",
+    "patterns": [
+      "two-pointers"
+    ],
+    "idea": "Keep a value only if it differs from the element two slots behind the write pointer, which caps each value at two copies.",
+    "pitfall": "Comparing against nums[i - 2] on the read side, which may have been overwritten.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "81": {
+    "title": "Search in Rotated Sorted Array II",
+    "patterns": [
+      "binary-search"
+    ],
+    "idea": "Search as in the distinct case, except when nums[lo], nums[mid] and nums[hi] are equal you can't tell which half is sorted, so shrink both ends.",
+    "pitfall": "Omitting that equal case, which can discard the half holding the target.",
+    "time": "O(n) worst case, O(log n) with few duplicates",
+    "space": "O(1)"
+  },
+  "82": {
+    "title": "Remove Duplicates from Sorted List II",
+    "patterns": [
+      "linked-list"
+    ],
+    "idea": "With a dummy head, when a run of equal values starts, skip the whole run by relinking prev->next past it.",
+    "pitfall": "Advancing prev right after removing a run, which can keep the next duplicate.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "84": {
+    "title": "Largest Rectangle in Histogram",
+    "patterns": [
+      "monotonic-stack"
+    ],
+    "idea": "Keep indices with increasing heights, and when a shorter bar arrives, each popped bar's rectangle spans from the new stack top to the current index.",
+    "pitfall": "Not flushing with a final height-0 sentinel, which leaves bars unprocessed on the stack.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "85": {
+    "title": "Maximal Rectangle",
+    "patterns": [
+      "monotonic-stack",
+      "dp-grid"
+    ],
+    "idea": "Treat each row as the base of a histogram of consecutive 1s above it, and run the largest-rectangle stack on every row.",
+    "pitfall": "Not resetting a column's height to 0 when the current cell is 0.",
+    "time": "O(mn)",
+    "space": "O(n)"
+  },
+  "86": {
+    "title": "Partition List",
+    "patterns": [
+      "linked-list"
+    ],
+    "idea": "Build two lists, values below x and the rest, preserving order, then join them.",
+    "pitfall": "Not nulling the second list's tail, which leaves a cycle.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "88": {
+    "title": "Merge Sorted Array",
+    "patterns": [
+      "two-pointers"
+    ],
+    "idea": "Fill from the back, where the free space is, placing the larger of the two current tails.",
+    "pitfall": "Stopping when nums1 runs out, which leaves remaining nums2 values uncopied.",
+    "time": "O(m + n)",
+    "space": "O(1)"
+  },
+  "90": {
+    "title": "Subsets II",
+    "patterns": [
+      "backtracking"
+    ],
+    "idea": "Sort, then at each recursion level skip a value equal to the previous one in that loop, so each multiset is built once.",
+    "pitfall": "Skipping on i > 0 rather than i > start, which drops valid repeats.",
+    "time": "O(n 2^n)",
+    "space": "O(n)"
+  },
+  "91": {
+    "title": "Decode Ways",
+    "patterns": [
+      "dp-string"
+    ],
+    "idea": "dp[i] adds the ways with a last one-digit code (if not 0) and the ways with a last two-digit code (if within 10 to 26).",
+    "pitfall": "Treating 0 as a letter on its own, when it must pair with a preceding 1 or 2.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "92": {
+    "title": "Reverse Linked List II",
+    "patterns": [
+      "linked-list"
+    ],
+    "idea": "Stop just before the range and repeatedly move the node after the range's tail to the front of the range.",
+    "pitfall": "Omitting a dummy head, which fails when the range starts at the first node.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "94": {
+    "title": "Binary Tree Inorder Traversal",
+    "patterns": [
+      "tree-dfs",
+      "stack"
+    ],
+    "idea": "Iteratively, push nodes while going left, pop one to visit, then move to its right child.",
+    "pitfall": "Looping only while the stack is non-empty, which ignores a non-null current node.",
+    "time": "O(n)",
+    "space": "O(h), h = tree height"
+  },
+  "98": {
+    "title": "Validate Binary Search Tree",
+    "patterns": [
+      "bst",
+      "tree-dfs"
+    ],
+    "idea": "Every node must lie inside an open range inherited from its ancestors, which narrows at each step; an inorder walk that stays strictly increasing is equivalent.",
+    "pitfall": "Comparing a node only with its direct children, which misses a deep node that violates a higher ancestor.",
+    "time": "O(n)",
+    "space": "O(h), h = tree height"
+  },
+  "99": {
+    "title": "Recover Binary Search Tree",
+    "patterns": [
+      "bst",
+      "tree-dfs"
+    ],
+    "idea": "Inorder of a BST is sorted, so two swapped nodes cause one or two inversions, and the culprits are the first inversion's left node and the last inversion's right node.",
+    "pitfall": "Stopping at the first inversion, which fails when swapped nodes aren't adjacent in inorder.",
+    "time": "O(n)",
+    "space": "O(h), h = tree height"
+  },
+  "100": {
+    "title": "Same Tree",
+    "patterns": [
+      "tree-dfs"
+    ],
+    "idea": "Two trees match when their roots match and both child pairs match, so recurse on both in lockstep.",
+    "pitfall": "Reading values before handling the case where one node is null.",
+    "time": "O(n)",
+    "space": "O(h), h = tree height"
+  },
+  "101": {
+    "title": "Symmetric Tree",
+    "patterns": [
+      "tree-dfs"
+    ],
+    "idea": "Compare the two subtrees as mirrors, matching left's left against right's right and left's right against right's left.",
+    "pitfall": "Comparing inorder traversals, which can match on asymmetric shapes.",
+    "time": "O(n)",
+    "space": "O(h), h = tree height"
+  },
+  "102": {
+    "title": "Binary Tree Level Order Traversal",
+    "patterns": [
+      "tree-bfs"
+    ],
+    "idea": "Capture the queue's size at the start of each round, so exactly one level is processed per round.",
+    "pitfall": "Using the live queue size as the loop bound, which grows as children are pushed.",
+    "time": "O(n)",
+    "space": "O(w), w = max level width"
+  },
+  "103": {
+    "title": "Binary Tree Zigzag Level Order Traversal",
+    "patterns": [
+      "tree-bfs"
+    ],
+    "idea": "Run normal level-order BFS and place each level's values front-to-back or back-to-front by a flag.",
+    "pitfall": "Reversing child push order in the queue, which scrambles deeper levels.",
+    "time": "O(n)",
+    "space": "O(w), w = max level width"
+  },
+  "104": {
+    "title": "Maximum Depth of Binary Tree",
+    "patterns": [
+      "tree-dfs"
+    ],
+    "idea": "A node's depth is 1 plus the larger depth of its children, with 0 for null.",
+    "pitfall": "Counting edges rather than nodes, which comes out one short.",
+    "time": "O(n)",
+    "space": "O(h), h = tree height"
+  },
+  "105": {
+    "title": "Construct Binary Tree from Preorder and Inorder Traversal",
+    "patterns": [
+      "tree-dfs",
+      "divide-and-conquer"
+    ],
+    "idea": "The next preorder value is the current root, and its position in inorder gives the sizes of the left and right subtrees.",
+    "pitfall": "Scanning inorder for every root instead of using a value-to-index map, which costs O(n^2) on skewed trees.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "108": {
+    "title": "Convert Sorted Array to Binary Search Tree",
+    "patterns": [
+      "bst",
+      "divide-and-conquer"
+    ],
+    "idea": "The middle element as root splits the rest evenly, and recursing on each side keeps the tree height-balanced.",
+    "pitfall": "Copying subarrays instead of passing index bounds.",
+    "time": "O(n)",
+    "space": "O(log n)"
+  },
+  "110": {
+    "title": "Balanced Binary Tree",
+    "patterns": [
+      "tree-dfs"
+    ],
+    "idea": "Return heights from a post-order walk, using -1 as a flag once any subtree is unbalanced.",
+    "pitfall": "Calling a separate height function at each node, which costs O(n^2) on skewed trees.",
+    "time": "O(n)",
+    "space": "O(h), h = tree height"
+  },
+  "114": {
+    "title": "Flatten Binary Tree to Linked List",
+    "patterns": [
+      "tree-dfs"
+    ],
+    "idea": "For each node with a left child, attach its right subtree to the left subtree's rightmost node, then move the left subtree to the right.",
+    "pitfall": "Leaving left pointers set after moving subtrees.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "115": {
+    "title": "Distinct Subsequences",
+    "patterns": [
+      "dp-string"
+    ],
+    "idea": "dp[i][j] counts ways to form t's prefix j from s's prefix i: always skip s[i - 1], and on a match also add dp[i - 1][j - 1].",
+    "pitfall": "In a 1D table, iterating j upward, which uses one character of s twice.",
+    "time": "O(mn), m = |s|, n = |t|",
+    "space": "O(n)"
+  },
+  "118": {
+    "title": "Pascal's Triangle",
+    "patterns": [
+      "dp-linear"
+    ],
+    "idea": "Each row starts and ends with 1, and every inner value is the sum of the two values above it.",
+    "pitfall": "Reading index j from the previous row at the right edge, where it doesn't exist; set both edges to 1 first.",
+    "time": "O(n^2), n = rows",
+    "space": "O(n^2)"
+  },
+  "120": {
+    "title": "Triangle",
+    "patterns": [
+      "dp-grid"
+    ],
+    "idea": "Work bottom-up, since each cell's best is its value plus the smaller of the two cells below.",
+    "pitfall": "Picking the smaller child top-down, which greedily misses the best path.",
+    "time": "O(n^2), n = rows",
+    "space": "O(n)"
+  },
+  "121": {
+    "title": "Best Time to Buy and Sell Stock",
+    "patterns": [
+      "greedy"
+    ],
+    "idea": "Track the minimum price so far, because the best sale on any day is that day's price minus this minimum.",
+    "pitfall": "Taking global max minus global min, which ignores that the buy must come first.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "122": {
+    "title": "Best Time to Buy and Sell Stock II",
+    "patterns": [
+      "greedy"
+    ],
+    "idea": "Any holding period splits into day-to-day steps, so the max profit is the sum of all positive steps.",
+    "pitfall": "Picking valley and peak pairs explicitly, which invites off-by-one errors at the array ends.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "124": {
+    "title": "Binary Tree Maximum Path Sum",
+    "patterns": [
+      "dp-tree",
+      "tree-dfs"
+    ],
+    "idea": "A path bending at a node can use both child gains but only one arm can continue to the parent, so update the answer with both and return the better arm, clamping negative gains to 0.",
+    "pitfall": "Returning left + right + node to the parent, which describes a path that forks.",
+    "time": "O(n)",
+    "space": "O(h), h = tree height"
+  },
+  "125": {
+    "title": "Valid Palindrome",
+    "patterns": [
+      "two-pointers"
+    ],
+    "idea": "Move pointers inward from both ends, skipping non-alphanumerics and comparing lowercase forms.",
+    "pitfall": "Skipping without checking i < j, which runs off the string on punctuation-only input.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "127": {
+    "title": "Word Ladder",
+    "patterns": [
+      "graph-traversal",
+      "shortest-path"
+    ],
+    "idea": "Words are nodes and one-letter changes are edges, so BFS layers give the shortest sequence, and erasing a word from the set when queued marks it visited.",
+    "pitfall": "Comparing every pair of words to find neighbors, which is too slow; try all 26 letters at each position.",
+    "time": "O(n L^2), n = words, L = word length",
+    "space": "O(n L)"
+  },
+  "128": {
+    "title": "Longest Consecutive Sequence",
+    "patterns": [
+      "arrays-hashing"
+    ],
+    "idea": "Put all values in a hash set and start counting only from a value whose predecessor is absent, so each run is walked once from its left end.",
+    "pitfall": "Walking forward from every value instead of only from run starts, which degrades to O(n^2).",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "130": {
+    "title": "Surrounded Regions",
+    "patterns": [
+      "grid"
+    ],
+    "idea": "Only regions touching the border survive, so mark those from the border inward, then flip every unmarked O and restore the marks.",
+    "pitfall": "Flood-filling from interior cells, which needs a rollback when a region reaches the border.",
+    "time": "O(mn)",
+    "space": "O(mn)"
+  },
+  "131": {
+    "title": "Palindrome Partitioning",
+    "patterns": [
+      "backtracking",
+      "dp-string"
+    ],
+    "idea": "From each start, try every end that forms a palindrome and recurse on the rest, with a precomputed palindrome table to avoid rescanning.",
+    "pitfall": "Forgetting to pop the last piece after the recursive call.",
+    "time": "O(n 2^n)",
+    "space": "O(n^2)"
+  },
+  "133": {
+    "title": "Clone Graph",
+    "patterns": [
+      "graph-traversal"
+    ],
+    "idea": "Map each original node to its clone before visiting neighbors, so cycles resolve through the map instead of recursing forever.",
+    "pitfall": "Inserting into the map only after processing the neighbors, which never terminates on a cycle.",
+    "time": "O(V + E)",
+    "space": "O(V)"
+  },
+  "134": {
+    "title": "Gas Station",
+    "patterns": [
+      "greedy"
+    ],
+    "idea": "If total gas covers total cost a start exists, and when the tank goes negative, no station in that stretch can be the start, so restart after it.",
+    "pitfall": "Returning the last restart without checking the overall total.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "135": {
+    "title": "Candy",
+    "patterns": [
+      "greedy"
+    ],
+    "idea": "Satisfy each side separately: a left-to-right pass handles rising neighbors, and a right-to-left pass handles falling ones, using max to keep the first pass's result.",
+    "pitfall": "Overwriting in the second pass without max, which breaks the left constraint.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "136": {
+    "title": "Single Number",
+    "patterns": [
+      "bit-manipulation"
+    ],
+    "idea": "XOR cancels equal pairs and leaves 0 unchanged, so the XOR of all values is the lone one.",
+    "pitfall": "Using a hash set, which passes tests but misses the O(1) space goal.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "137": {
+    "title": "Single Number II",
+    "patterns": [
+      "bit-manipulation"
+    ],
+    "idea": "Count each bit position modulo 3, so triples vanish and the single value's bits remain; two masks, ones and twos, do this in one pass.",
+    "pitfall": "Rebuilding the result with a signed shift into bit 31, which needs unsigned arithmetic.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "138": {
+    "title": "Copy List with Random Pointer",
+    "patterns": [
+      "linked-list",
+      "arrays-hashing"
+    ],
+    "idea": "Insert each copy right after its original, so a copy's random is original.random.next, then split the two lists.",
+    "pitfall": "Reading random->next when random is null.",
+    "time": "O(n)",
+    "space": "O(1) besides the copies"
+  },
+  "139": {
+    "title": "Word Break",
+    "patterns": [
+      "dp-string"
+    ],
+    "idea": "dp[i] is true when some dictionary word ends at i and dp is true at that word's start.",
+    "pitfall": "Greedily matching the longest word, which can block a valid split.",
+    "time": "O(n L^2), L = max word length",
+    "space": "O(n + D), D = total dictionary chars"
+  },
+  "141": {
+    "title": "Linked List Cycle",
+    "patterns": [
+      "linked-list",
+      "two-pointers"
+    ],
+    "idea": "Run slow and fast pointers, because inside a cycle fast closes the gap by one node per step, so they must meet.",
+    "pitfall": "Checking only fast and not fast->next, which dereferences null.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "142": {
+    "title": "Linked List Cycle II",
+    "patterns": [
+      "linked-list",
+      "two-pointers"
+    ],
+    "idea": "After slow and fast meet, one pointer from the head and one from the meeting point, both at speed one, meet at the cycle's entry.",
+    "pitfall": "Starting fast at head->next while slow starts at head, which breaks the distance proof.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "143": {
+    "title": "Reorder List",
+    "patterns": [
+      "linked-list",
+      "two-pointers"
+    ],
+    "idea": "Split at the middle, reverse the second half, then weave the two lists together.",
+    "pitfall": "Not ending the first half with null, which leaves a cycle.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "146": {
+    "title": "LRU Cache",
+    "patterns": [
+      "design",
+      "linked-list"
+    ],
+    "idea": "A hash map finds a node in O(1) inside a doubly linked list kept in recency order, so a hit splices to the front and eviction drops the back.",
+    "pitfall": "Evicting the list tail without erasing its key from the map, which leaves a dangling entry.",
+    "time": "O(1) per operation",
+    "space": "O(capacity)"
+  },
+  "148": {
+    "title": "Sort List",
+    "patterns": [
+      "linked-list",
+      "divide-and-conquer"
+    ],
+    "idea": "Merge sort fits lists: split at the middle with slow and fast pointers, sort each half, and merge by relinking nodes.",
+    "pitfall": "Not cutting the link at the middle, so the recursion never shrinks.",
+    "time": "O(n log n)",
+    "space": "O(log n)"
+  },
+  "150": {
+    "title": "Evaluate Reverse Polish Notation",
+    "patterns": [
+      "stack"
+    ],
+    "idea": "Push numbers, and an operator pops two and pushes its result.",
+    "pitfall": "Swapping operands for - and /, when the first popped value is the right operand.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "151": {
+    "title": "Reverse Words in a String",
+    "patterns": [
+      "two-pointers"
+    ],
+    "idea": "Reverse the whole string, then reverse each word, using a write pointer to compact spaces in place.",
+    "pitfall": "Leaving leading, trailing or doubled spaces in the output.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "152": {
+    "title": "Maximum Product Subarray",
+    "patterns": [
+      "dp-linear"
+    ],
+    "idea": "Track both the max and min product ending here, because a negative value swaps them.",
+    "pitfall": "Overwriting the max before using it to compute the new min.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "153": {
+    "title": "Find Minimum in Rotated Sorted Array",
+    "patterns": [
+      "binary-search"
+    ],
+    "idea": "Compare mid with the right end: if nums[mid] > nums[hi] the minimum is right of mid, otherwise it is at mid or to its left.",
+    "pitfall": "Setting hi = mid - 1 in the else branch, which can step past the minimum.",
+    "time": "O(log n)",
+    "space": "O(1)"
+  },
+  "155": {
+    "title": "Min Stack",
+    "patterns": [
+      "stack",
+      "design"
+    ],
+    "idea": "Store with each value the minimum at that depth, so a pop restores the old minimum automatically.",
+    "pitfall": "With a separate min stack, pushing only on strictly smaller values, which loses duplicates of the minimum.",
+    "time": "O(1) per operation",
+    "space": "O(n)"
+  },
+  "160": {
+    "title": "Intersection of Two Linked Lists",
+    "patterns": [
+      "linked-list",
+      "two-pointers"
+    ],
+    "idea": "Walk both pointers and switch each to the other list's head at its end, so both travel the same total distance and meet at the junction or at null.",
+    "pitfall": "Comparing values instead of node addresses.",
+    "time": "O(m + n), m, n = list lengths",
+    "space": "O(1)"
+  },
+  "162": {
+    "title": "Find Peak Element",
+    "patterns": [
+      "binary-search"
+    ],
+    "idea": "If nums[mid] < nums[mid + 1] the slope climbs, so a peak must exist to the right; otherwise one exists at mid or to the left.",
+    "pitfall": "Looping on lo <= hi, which reads mid + 1 past the end; use lo < hi.",
+    "time": "O(log n)",
+    "space": "O(1)"
+  },
+  "166": {
+    "title": "Fraction to Recurring Decimal",
+    "patterns": [
+      "arrays-hashing",
+      "math"
+    ],
+    "idea": "Run long division and map each remainder to its output position, so a repeated remainder marks where the cycle starts.",
+    "pitfall": "Taking abs of INT_MIN in int; convert to long long first.",
+    "time": "O(d), d = digits produced, at most |denominator|",
+    "space": "O(d)"
+  },
+  "167": {
+    "title": "Two Sum II - Input Array Is Sorted",
+    "patterns": [
+      "two-pointers"
+    ],
+    "idea": "In sorted order, a sum that is too small means raise the left pointer and too big means lower the right, and no valid pair is ever skipped.",
+    "pitfall": "Returning 0-based indices when the result is 1-based.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "169": {
+    "title": "Majority Element",
+    "patterns": [
+      "arrays-hashing"
+    ],
+    "idea": "Boyer-Moore voting cancels pairs of different values, and a value holding more than half the array survives as the last candidate.",
+    "pitfall": "Testing count == 0 after the vote rather than before it, which skips adopting the new candidate.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "174": {
+    "title": "Dungeon Game",
+    "patterns": [
+      "dp-grid"
+    ],
+    "idea": "Work backward from the goal: dp[i][j], the minimum health needed on entering a cell, is max(1, min(right, down) - value).",
+    "pitfall": "Running the DP forward, which can't balance current health against the lowest point later.",
+    "time": "O(mn)",
+    "space": "O(n)"
+  },
+  "179": {
+    "title": "Largest Number",
+    "patterns": [
+      "sorting",
+      "greedy"
+    ],
+    "idea": "Order a before b when a + b > b + a as strings, a comparator that yields the largest concatenation.",
+    "pitfall": "Not collapsing an all-zero result to a single 0.",
+    "time": "O(n log n)",
+    "space": "O(n)"
+  },
+  "189": {
+    "title": "Rotate Array",
+    "patterns": [
+      "two-pointers"
+    ],
+    "idea": "Reverse the whole array, then reverse the first k and the remaining n - k, which moves every element k places in O(1) space.",
+    "pitfall": "Not reducing k modulo n first.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "191": {
+    "title": "Number of 1 Bits",
+    "patterns": [
+      "bit-manipulation"
+    ],
+    "idea": "n & (n - 1) clears the lowest set bit, so the loop runs once per set bit.",
+    "pitfall": "Right-shifting a negative signed value, which never reaches 0; use unsigned.",
+    "time": "O(1), 32 bits",
+    "space": "O(1)"
+  },
+  "198": {
+    "title": "House Robber",
+    "patterns": [
+      "dp-linear"
+    ],
+    "idea": "At each house choose the better of skipping it (best so far) or robbing it (best up to two houses back plus its value), which needs only two variables.",
+    "pitfall": "Assuming alternate houses are optimal, when the best plan may skip two in a row.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "199": {
+    "title": "Binary Tree Right Side View",
+    "patterns": [
+      "tree-bfs",
+      "tree-dfs"
+    ],
+    "idea": "The visible node on each level is the last one in level order; a DFS that visits right first and records the first node per depth gives the same result.",
+    "pitfall": "Following only right children, which misses levels whose visible node sits in a left subtree.",
+    "time": "O(n)",
+    "space": "O(w), w = max level width"
+  },
+  "200": {
+    "title": "Number of Islands",
+    "patterns": [
+      "grid",
+      "union-find"
+    ],
+    "idea": "Each unvisited land cell starts a flood fill that consumes its whole island, so the number of fills is the answer.",
+    "pitfall": "Marking a cell as visited when it is popped rather than when it is pushed, which queues cells many times.",
+    "time": "O(mn)",
+    "space": "O(mn)"
+  },
+  "202": {
+    "title": "Happy Number",
+    "patterns": [
+      "two-pointers",
+      "math"
+    ],
+    "idea": "Digit-square sums fall into a small range quickly, so the sequence either hits 1 or cycles, which a set or Floyd's slow and fast pointers detects.",
+    "pitfall": "Looping until 1 with no cycle check, which never ends on unhappy numbers.",
+    "time": "O(log n)",
+    "space": "O(1)"
+  },
+  "204": {
+    "title": "Count Primes",
+    "patterns": [
+      "math"
+    ],
+    "idea": "Sieve of Eratosthenes: for each prime p up to sqrt(n), cross off multiples starting at p * p.",
+    "pitfall": "Counting n itself, when the range stops below n.",
+    "time": "O(n log log n)",
+    "space": "O(n)"
+  },
+  "205": {
+    "title": "Isomorphic Strings",
+    "patterns": [
+      "arrays-hashing"
+    ],
+    "idea": "The mapping must be one-to-one, so check both directions, or compare where each character of the pair was last seen.",
+    "pitfall": "Checking only s to t, which lets two letters map to the same one.",
+    "time": "O(n)",
+    "space": "O(1), fixed alphabet"
+  },
+  "206": {
+    "title": "Reverse Linked List",
+    "patterns": [
+      "linked-list"
+    ],
+    "idea": "Walk with prev and curr, turning each next pointer backward, and prev ends as the new head.",
+    "pitfall": "Overwriting curr->next before saving it, which loses the rest of the list.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "207": {
+    "title": "Course Schedule",
+    "patterns": [
+      "topo-sort"
+    ],
+    "idea": "The schedule is feasible exactly when the prerequisite graph is acyclic, which Kahn's algorithm tests by peeling zero-indegree nodes until none remain.",
+    "pitfall": "Using one visited flag in DFS, which reports shared prerequisites as cycles; it needs three states.",
+    "time": "O(V + E), V = courses, E = prerequisites",
+    "space": "O(V + E)"
+  },
+  "208": {
+    "title": "Implement Trie (Prefix Tree)",
+    "patterns": [
+      "trie",
+      "design"
+    ],
+    "idea": "Each node holds child links by letter plus an end-of-word flag, so word search and prefix search walk the same path and differ only in checking the flag.",
+    "pitfall": "Forgetting the flag check in search, so a stored prefix counts as a word.",
+    "time": "O(L) per operation, L = word length",
+    "space": "O(T A), T = total inserted chars, A = alphabet size"
+  },
+  "209": {
+    "title": "Minimum Size Subarray Sum",
+    "patterns": [
+      "sliding-window"
+    ],
+    "idea": "With positive values the sum grows with right and falls with left, so shrink left as long as the sum still meets the target.",
+    "pitfall": "Shrinking with an if instead of a while, which misses shorter windows.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "210": {
+    "title": "Course Schedule II",
+    "patterns": [
+      "topo-sort"
+    ],
+    "idea": "Kahn's removal order is itself a valid schedule, and removing fewer nodes than there are courses means a cycle exists.",
+    "pitfall": "Reversing the pair: [a, b] means an edge from b to a, because b comes first.",
+    "time": "O(V + E), V = courses, E = prerequisites",
+    "space": "O(V + E)"
+  },
+  "212": {
+    "title": "Word Search II",
+    "patterns": [
+      "trie",
+      "backtracking"
+    ],
+    "idea": "Put the words in a trie and DFS the board while walking it, so one search covers every word sharing a prefix and dead prefixes stop at once.",
+    "pitfall": "Not clearing a found word from its trie node, which reports it again from another path.",
+    "time": "O(mn 3^L), L = max word length",
+    "space": "O(T), T = total chars in the words"
+  },
+  "213": {
+    "title": "House Robber II",
+    "patterns": [
+      "dp-linear"
+    ],
+    "idea": "The first and last houses can't both be robbed, so take the best of the linear solve on [0, n - 2] and on [1, n - 1].",
+    "pitfall": "Not handling n = 1, where both ranges are empty.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "214": {
+    "title": "Shortest Palindrome",
+    "patterns": [
+      "string-matching"
+    ],
+    "idea": "The answer only adds the reverse of what follows the longest palindromic prefix, and the KMP table of s + '#' + reverse(s) gives that prefix.",
+    "pitfall": "Omitting the separator, so the table can report a match longer than s.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "215": {
+    "title": "Kth Largest Element in an Array",
+    "patterns": [
+      "heap",
+      "sorting"
+    ],
+    "idea": "Keep a min-heap of the k largest values seen, so its top is the answer; quickselect reaches O(n) on average.",
+    "pitfall": "Capping a max-heap at size k, which evicts the wrong end; the smallest must be the one dropped.",
+    "time": "O(n log k)",
+    "space": "O(k)"
+  },
+  "217": {
+    "title": "Contains Duplicate",
+    "patterns": [
+      "arrays-hashing"
+    ],
+    "idea": "Insert values into a hash set and stop at the first value already present.",
+    "pitfall": "Inserting before the membership check, which makes every value look like a duplicate.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "219": {
+    "title": "Contains Duplicate II",
+    "patterns": [
+      "arrays-hashing",
+      "sliding-window"
+    ],
+    "idea": "Keep each value's latest index in a map and test the gap at each repeat; a hash set of the last k values works the same way.",
+    "pitfall": "Keeping an older index when the gap is too large, when only the most recent index can still qualify.",
+    "time": "O(n)",
+    "space": "O(min(n, k))"
+  },
+  "221": {
+    "title": "Maximal Square",
+    "patterns": [
+      "dp-grid"
+    ],
+    "idea": "The largest square with its bottom-right corner here is 1 plus the min of the squares at left, above and diagonal.",
+    "pitfall": "Returning the side length instead of the area.",
+    "time": "O(mn)",
+    "space": "O(n)"
+  },
+  "224": {
+    "title": "Basic Calculator",
+    "patterns": [
+      "stack",
+      "math"
+    ],
+    "idea": "Keep a running result and sign, so at '(' you push both and reset, and at ')' you pop them and fold the inner result in.",
+    "pitfall": "Applying the sign before the whole multi-digit number has been read.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "226": {
+    "title": "Invert Binary Tree",
+    "patterns": [
+      "tree-dfs"
+    ],
+    "idea": "Swap each node's children and recurse into both, in any order, as long as every node is visited.",
+    "pitfall": "Assigning left = invert(right) before saving the old left, which loses that subtree.",
+    "time": "O(n)",
+    "space": "O(h), h = tree height"
+  },
+  "229": {
+    "title": "Majority Element II",
+    "patterns": [
+      "arrays-hashing"
+    ],
+    "idea": "At most two values can exceed n / 3, so run Boyer-Moore with two candidates, then count to confirm them.",
+    "pitfall": "Skipping the final count, when candidates are not guaranteed to be real.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "230": {
+    "title": "Kth Smallest Element in a BST",
+    "patterns": [
+      "bst",
+      "tree-dfs"
+    ],
+    "idea": "Inorder traversal of a BST is sorted, so stop at the kth visited node.",
+    "pitfall": "Collecting the whole traversal instead of stopping at k.",
+    "time": "O(h + k), h = tree height",
+    "space": "O(h)"
+  },
+  "231": {
+    "title": "Power of Two",
+    "patterns": [
+      "bit-manipulation"
+    ],
+    "idea": "A power of two has exactly one set bit, and n & (n - 1) clears the lowest set bit, so the result must be 0.",
+    "pitfall": "Forgetting the n > 0 check, so 0 is reported as a power of two.",
+    "time": "O(1)",
+    "space": "O(1)"
+  },
+  "232": {
+    "title": "Implement Queue using Stacks",
+    "patterns": [
+      "stack",
+      "design"
+    ],
+    "idea": "Push to an input stack, and when the output stack is empty pour everything into it, which reverses the order once.",
+    "pitfall": "Pouring while the output stack still holds items, which scrambles the order.",
+    "time": "O(1) amortized per operation",
+    "space": "O(n)"
+  },
+  "234": {
+    "title": "Palindrome Linked List",
+    "patterns": [
+      "linked-list",
+      "two-pointers"
+    ],
+    "idea": "Find the middle with slow and fast pointers, reverse the second half, then compare the halves node by node.",
+    "pitfall": "Mishandling odd length; compare only as long as the reversed half has nodes.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "235": {
+    "title": "Lowest Common Ancestor of a Binary Search Tree",
+    "patterns": [
+      "bst"
+    ],
+    "idea": "From the root, go left if both targets are smaller and right if both are larger, and otherwise the current node splits them and is the LCA.",
+    "pitfall": "Using the general binary tree LCA, which ignores the ordering and costs O(n).",
+    "time": "O(h), h = tree height",
+    "space": "O(1)"
+  },
+  "236": {
+    "title": "Lowest Common Ancestor of a Binary Tree",
+    "patterns": [
+      "tree-dfs"
+    ],
+    "idea": "Return p, q or null from each subtree: the first node that receives non-null from both sides is the LCA, otherwise pass the single non-null result up.",
+    "pitfall": "Dropping the early return at p or q, which breaks the case where one target is an ancestor of the other.",
+    "time": "O(n)",
+    "space": "O(h), h = tree height"
+  },
+  "237": {
+    "title": "Delete Node in a Linked List",
+    "patterns": [
+      "linked-list"
+    ],
+    "idea": "You can't reach the previous node, so copy the next node's value here and unlink the next node.",
+    "pitfall": "Searching for the previous node when no head is available.",
+    "time": "O(1)",
+    "space": "O(1)"
+  },
+  "238": {
+    "title": "Product of Array Except Self",
+    "patterns": [
+      "prefix-sum"
+    ],
+    "idea": "Each answer is the product of everything to the left times everything to the right, so fill left products into the output and then sweep back with a running right product.",
+    "pitfall": "Updating the running product before applying it, which multiplies an element into its own answer.",
+    "time": "O(n)",
+    "space": "O(1) besides the output"
+  },
+  "239": {
+    "title": "Sliding Window Maximum",
+    "patterns": [
+      "monotonic-queue"
+    ],
+    "idea": "Keep a deque of indices with decreasing values: a new value evicts smaller ones from the back because they can never be the max again, and the front is the window max.",
+    "pitfall": "Forgetting to pop the front index once it leaves the window.",
+    "time": "O(n)",
+    "space": "O(k)"
+  },
+  "240": {
+    "title": "Search a 2D Matrix II",
+    "patterns": [
+      "two-pointers"
+    ],
+    "idea": "Start at the top-right corner, where a value too large rules out its column and a value too small rules out its row.",
+    "pitfall": "Starting at the top-left, where both moves increase the value and nothing can be ruled out.",
+    "time": "O(m + n)",
+    "space": "O(1)"
+  },
+  "242": {
+    "title": "Valid Anagram",
+    "patterns": [
+      "arrays-hashing"
+    ],
+    "idea": "Two strings are anagrams exactly when their letter counts match, so add for one string, subtract for the other, and check all zero.",
+    "pitfall": "Skipping the length check when the loop walks only one string, so extra letters in the other go unnoticed.",
+    "time": "O(n)",
+    "space": "O(1), 26 letters"
+  },
+  "253": {
+    "title": "Meeting Rooms II",
+    "patterns": [
+      "sweep-line",
+      "heap"
+    ],
+    "idea": "The room count is the peak number of simultaneous meetings, found by sweeping sorted start and end times or by a min-heap of end times.",
+    "pitfall": "Counting a meeting that starts exactly when another ends as overlap; process the end first.",
+    "time": "O(n log n)",
+    "space": "O(n)"
+  },
+  "268": {
+    "title": "Missing Number",
+    "patterns": [
+      "bit-manipulation",
+      "math"
+    ],
+    "idea": "XOR all indices 0 to n with all values, so every present number cancels and the missing one stays; the sum formula works too.",
+    "pitfall": "Leaving n out of the XOR, since array indices stop at n - 1.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "269": {
+    "title": "Alien Dictionary",
+    "patterns": [
+      "topo-sort"
+    ],
+    "idea": "Only the first differing letter of each adjacent word pair gives an ordering edge, then a topological sort of the letters gives the alphabet.",
+    "pitfall": "Missing the invalid case where a word is directly followed by its own proper prefix.",
+    "time": "O(C), C = total letters across words",
+    "space": "O(A + E), A = distinct letters, E = ordering edges"
+  },
+  "274": {
+    "title": "H-Index",
+    "patterns": [
+      "sorting"
+    ],
+    "idea": "Cap citations at n and count them in buckets, then scan h down from n for the first h with at least h papers at or above it.",
+    "pitfall": "Indexing a bucket by a raw citation count above n.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "278": {
+    "title": "First Bad Version",
+    "patterns": [
+      "binary-search"
+    ],
+    "idea": "Versions flip from good to bad once, so this is finding the first true of a monotonic predicate.",
+    "pitfall": "Computing (lo + hi) / 2, which overflows near INT_MAX; use lo + (hi - lo) / 2.",
+    "time": "O(log n)",
+    "space": "O(1)"
+  },
+  "279": {
+    "title": "Perfect Squares",
+    "patterns": [
+      "dp-knapsack",
+      "math"
+    ],
+    "idea": "dp[i] is 1 + min dp[i - s] over squares s, an unbounded knapsack.",
+    "pitfall": "Greedily taking the largest square, which gives 9 + 1 + 1 + 1 for 12 instead of 4 + 4 + 4.",
+    "time": "O(n sqrt(n))",
+    "space": "O(n)"
+  },
+  "282": {
+    "title": "Expression Add Operators",
+    "patterns": [
+      "backtracking"
+    ],
+    "idea": "Try every number prefix with each operator, tracking the running value and the last operand, so * can undo that operand and multiply it.",
+    "pitfall": "Allowing multi-digit operands with a leading zero.",
+    "time": "O(n 4^n)",
+    "space": "O(n)"
+  },
+  "283": {
+    "title": "Move Zeroes",
+    "patterns": [
+      "two-pointers"
+    ],
+    "idea": "A write pointer marks where the next nonzero goes, and swapping nonzeros into it keeps their order while zeros drift back.",
+    "pitfall": "Swapping with the far end, which breaks the order of nonzero values.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "287": {
+    "title": "Find the Duplicate Number",
+    "patterns": [
+      "two-pointers",
+      "binary-search-answer"
+    ],
+    "idea": "Read i to nums[i] as a linked list, where the duplicate is the entry to its cycle, which Floyd's two-phase walk finds without changing the array.",
+    "pitfall": "Keeping fast at two steps in the second phase, when both pointers must move one step.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "295": {
+    "title": "Find Median from Data Stream",
+    "patterns": [
+      "heap",
+      "design"
+    ],
+    "idea": "Keep the lower half in a max-heap and the upper half in a min-heap with sizes within one, so the median sits at the tops.",
+    "pitfall": "Pushing a value straight into one heap without routing through the other, which breaks the order between halves.",
+    "time": "O(log n) per add, O(1) per median",
+    "space": "O(n)"
+  },
+  "297": {
+    "title": "Serialize and Deserialize Binary Tree",
+    "patterns": [
+      "tree-dfs",
+      "design"
+    ],
+    "idea": "A preorder walk with explicit null markers fully fixes the tree's shape, so the reader can rebuild it by consuming tokens in the same order.",
+    "pitfall": "Dropping null markers, which makes one traversal ambiguous.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "300": {
+    "title": "Longest Increasing Subsequence",
+    "patterns": [
+      "dp-linear",
+      "binary-search"
+    ],
+    "idea": "Keep tails[k], the smallest tail of any increasing subsequence of length k + 1; each value replaces the first tail >= it, and the array's size is the answer.",
+    "pitfall": "Using upper_bound, which treats equal values as increasing.",
+    "time": "O(n log n)",
+    "space": "O(n)"
+  },
+  "303": {
+    "title": "Range Sum Query - Immutable",
+    "patterns": [
+      "prefix-sum"
+    ],
+    "idea": "Precompute prefix sums with a leading zero, so any range sum is a single subtraction.",
+    "pitfall": "Off by one, since the sum of l to r is p[r + 1] - p[l].",
+    "time": "O(n) to build, O(1) per query",
+    "space": "O(n)"
+  },
+  "304": {
+    "title": "Range Sum Query 2D - Immutable",
+    "patterns": [
+      "prefix-sum"
+    ],
+    "idea": "Store each prefix rectangle's sum, so a query is inclusion-exclusion on four corners.",
+    "pitfall": "Not padding with an extra row and column, which adds edge cases at index 0.",
+    "time": "O(mn) to build, O(1) per query",
+    "space": "O(mn)"
+  },
+  "309": {
+    "title": "Best Time to Buy and Sell Stock with Cooldown",
+    "patterns": [
+      "dp-state-machine"
+    ],
+    "idea": "Track three states per day, holding, just sold and resting, where a sale must pass through rest before the next buy.",
+    "pitfall": "Buying from yesterday's just-sold state, which skips the cooldown.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "310": {
+    "title": "Minimum Height Trees",
+    "patterns": [
+      "topo-sort",
+      "graph-traversal"
+    ],
+    "idea": "Peel leaves in rounds, as the last one or two nodes are the tree's centers and the only possible roots of minimum height.",
+    "pitfall": "Not special-casing n = 1, where the single node has degree 0 and no leaf round runs.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "312": {
+    "title": "Burst Balloons",
+    "patterns": [
+      "dp-interval"
+    ],
+    "idea": "Think of the last balloon burst in a range, whose neighbors are the fixed range borders, so the left and right parts become independent.",
+    "pitfall": "Not padding the array with a 1 on each side.",
+    "time": "O(n^3)",
+    "space": "O(n^2)"
+  },
+  "315": {
+    "title": "Count of Smaller Numbers After Self",
+    "patterns": [
+      "divide-and-conquer",
+      "range-query"
+    ],
+    "idea": "Merge sort pairs of value and index, because when a left element is placed, the right elements already taken are exactly the smaller ones after it; a Fenwick tree over ranks also works.",
+    "pitfall": "Merge-sorting values alone, which loses the original index the count belongs to.",
+    "time": "O(n log n)",
+    "space": "O(n)"
+  },
+  "316": {
+    "title": "Remove Duplicate Letters",
+    "patterns": [
+      "monotonic-stack",
+      "greedy"
+    ],
+    "idea": "Keep the result as an increasing stack, and before pushing an unused letter, pop larger tops that still occur later.",
+    "pitfall": "Updating a letter's remaining count only when it's pushed, rather than for every scanned character.",
+    "time": "O(n)",
+    "space": "O(1), 26 letters"
+  },
+  "322": {
+    "title": "Coin Change",
+    "patterns": [
+      "dp-knapsack"
+    ],
+    "idea": "dp[a], the fewest coins for amount a, is 1 + min dp[a - c] over coins c, an unbounded knapsack where taking the largest coin first can fail.",
+    "pitfall": "Using INT_MAX as unreachable, so adding 1 overflows; use amount + 1.",
+    "time": "O(n A), n = coins, A = amount",
+    "space": "O(A)"
+  },
+  "328": {
+    "title": "Odd Even Linked List",
+    "patterns": [
+      "linked-list"
+    ],
+    "idea": "Thread nodes at odd and even positions into two chains in place, then link the odd tail to the even head.",
+    "pitfall": "Splitting by node value when the rule is about position.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "329": {
+    "title": "Longest Increasing Path in a Matrix",
+    "patterns": [
+      "dp-grid",
+      "grid"
+    ],
+    "idea": "Strictly increasing moves can't cycle, so the grid is a DAG and a memoized DFS computes each cell's best path once.",
+    "pitfall": "Omitting the memo, which makes the DFS exponential.",
+    "time": "O(mn)",
+    "space": "O(mn)"
+  },
+  "332": {
+    "title": "Reconstruct Itinerary",
+    "patterns": [
+      "graph-traversal"
+    ],
+    "idea": "Using every ticket once is an Eulerian path, so run Hierholzer's DFS taking the smallest unused edge first, add an airport on exit, and reverse at the end.",
+    "pitfall": "Adding airports on entry rather than exit, which puts dead-end branches in the middle.",
+    "time": "O(E log E), E = tickets",
+    "space": "O(E)"
+  },
+  "347": {
+    "title": "Top K Frequent Elements",
+    "patterns": [
+      "heap",
+      "arrays-hashing"
+    ],
+    "idea": "Count frequencies, then bucket values by count so reading from the highest bucket down gives the top k in linear time; a size-k min-heap is the O(n log k) option.",
+    "pitfall": "Allocating only n buckets, when a value can occur n times and the index must reach n.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "354": {
+    "title": "Russian Doll Envelopes",
+    "patterns": [
+      "dp-linear",
+      "binary-search"
+    ],
+    "idea": "Sort by width ascending and height descending, then take the LIS of heights, because the descending tie-break stops equal widths from nesting.",
+    "pitfall": "Sorting equal widths by height ascending, which lets same-width envelopes chain.",
+    "time": "O(n log n)",
+    "space": "O(n)"
+  },
+  "368": {
+    "title": "Largest Divisible Subset",
+    "patterns": [
+      "dp-linear",
+      "sorting"
+    ],
+    "idea": "After sorting, divisibility chains are transitive, so this is LIS with \"divides\" as the link, with parent pointers to rebuild the set.",
+    "pitfall": "Storing only lengths, so the subset can't be reconstructed.",
+    "time": "O(n^2)",
+    "space": "O(n)"
+  },
+  "371": {
+    "title": "Sum of Two Integers",
+    "patterns": [
+      "bit-manipulation"
+    ],
+    "idea": "XOR adds without carries and AND shifted left gives the carries, so loop until no carry remains.",
+    "pitfall": "Left-shifting a negative signed int, which needs a cast to unsigned.",
+    "time": "O(1), 32 bits",
+    "space": "O(1)"
+  },
+  "373": {
+    "title": "Find K Pairs with Smallest Sums",
+    "patterns": [
+      "heap"
+    ],
+    "idea": "Each nums1[i] with nums2 forms a sorted list of pairs, so seed a min-heap with (i, 0) and each pop pushes (i, j + 1), as in merging k lists.",
+    "pitfall": "Pushing all pairs up front, which costs O(mn).",
+    "time": "O(k log min(k, m)), m = |nums1|",
+    "space": "O(min(k, m))"
+  },
+  "377": {
+    "title": "Combination Sum IV",
+    "patterns": [
+      "dp-knapsack"
+    ],
+    "idea": "Order matters, so loop target amounts on the outside and numbers on the inside, with dp[t] summing dp[t - x].",
+    "pitfall": "Using int, when intermediate counts can overflow even though the answer fits; use unsigned long long.",
+    "time": "O(n T), T = target",
+    "space": "O(T)"
+  },
+  "380": {
+    "title": "Insert Delete GetRandom O(1)",
+    "patterns": [
+      "design",
+      "arrays-hashing"
+    ],
+    "idea": "An array gives uniform random picks and a map gives value-to-index, and deleting swaps the target with the last element so the pop is O(1).",
+    "pitfall": "Erasing the map entry before fixing the moved element's index, which leaves a stale entry when the target is last.",
+    "time": "O(1) average per operation",
+    "space": "O(n)"
+  },
+  "392": {
+    "title": "Is Subsequence",
+    "patterns": [
+      "two-pointers"
+    ],
+    "idea": "Scan t once and advance a pointer in s on each match, so s is a subsequence if its pointer reaches the end.",
+    "pitfall": "Moving the t pointer only on a match, which stalls the scan.",
+    "time": "O(|t|)",
+    "space": "O(1)"
+  },
+  "394": {
+    "title": "Decode String",
+    "patterns": [
+      "stack"
+    ],
+    "idea": "At '[' push the current string and repeat count and reset both, and at ']' pop and append the inner string that many times to the saved string.",
+    "pitfall": "Reading only one digit of the count, when counts can have several.",
+    "time": "O(L), L = decoded length",
+    "space": "O(L)"
+  },
+  "399": {
+    "title": "Evaluate Division",
+    "patterns": [
+      "union-find",
+      "graph-traversal"
+    ],
+    "idea": "An equation a / b = k is a weighted edge, so a query is the product along a path, and weighted union-find stores each variable's ratio to its root to answer that directly.",
+    "pitfall": "Returning 1.0 for x / x when x never appeared; an unknown variable must give -1.",
+    "time": "O((E + Q) α(V)), E = equations, Q = queries, V = variables",
+    "space": "O(V)"
+  },
+  "400": {
+    "title": "Nth Digit",
+    "patterns": [
+      "math"
+    ],
+    "idea": "Skip whole blocks of same-length numbers (9 one-digit, 90 two-digit, and so on) until n falls in one, then index the exact number and digit.",
+    "pitfall": "Computing the block size 9 * 10^k * d in int, which overflows.",
+    "time": "O(log n)",
+    "space": "O(1)"
+  },
+  "402": {
+    "title": "Remove K Digits",
+    "patterns": [
+      "monotonic-stack",
+      "greedy"
+    ],
+    "idea": "Scanning left to right, a smaller digit should displace larger digits before it while removals remain, because earlier positions dominate.",
+    "pitfall": "Skipping the final cleanup: trim leftover removals from the tail, strip leading zeros, and return \"0\" if empty.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "407": {
+    "title": "Trapping Rain Water II",
+    "patterns": [
+      "heap",
+      "grid"
+    ],
+    "idea": "Treat the border as a wall and grow inward from its lowest cell with a min-heap, where the popped height is the water level for unvisited neighbors.",
+    "pitfall": "Pushing a neighbor's raw height rather than max(height, current level).",
+    "time": "O(mn log(mn))",
+    "space": "O(mn)"
+  },
+  "410": {
+    "title": "Split Array Largest Sum",
+    "patterns": [
+      "binary-search-answer"
+    ],
+    "idea": "Binary search the cap on a part's sum, since filling each part greedily up to the cap gives the fewest parts possible, which must be at most k.",
+    "pitfall": "Starting the low bound below max(nums), so a single element exceeds the cap and the count is wrong.",
+    "time": "O(n log S), S = sum of nums",
+    "space": "O(1)"
+  },
+  "416": {
+    "title": "Partition Equal Subset Sum",
+    "patterns": [
+      "dp-knapsack"
+    ],
+    "idea": "Reaching half the total is a 0/1 knapsack, and in C++ a bitset shift updates all reachable sums at once.",
+    "pitfall": "Looping sums upward in the 1D table, which reuses an item within its own round.",
+    "time": "O(n S), S = half the total",
+    "space": "O(S)"
+  },
+  "417": {
+    "title": "Pacific Atlantic Water Flow",
+    "patterns": [
+      "grid"
+    ],
+    "idea": "Reverse the flow: search uphill from each ocean's border cells, and the answer is the cells reached from both.",
+    "pitfall": "Searching from every cell toward the oceans, which is quadratic in cells.",
+    "time": "O(mn)",
+    "space": "O(mn)"
+  },
+  "421": {
+    "title": "Maximum XOR of Two Numbers in an Array",
+    "patterns": [
+      "trie",
+      "bit-manipulation"
+    ],
+    "idea": "Insert numbers into a binary trie from the high bit, and for each number walk it preferring the opposite bit at each level.",
+    "pitfall": "Building the trie from low bits, when high bits decide the XOR.",
+    "time": "O(n B), B = bits per number",
+    "space": "O(n B)"
+  },
+  "424": {
+    "title": "Longest Repeating Character Replacement",
+    "patterns": [
+      "sliding-window"
+    ],
+    "idea": "A window is fixable when its length minus its top letter count is at most k, so grow right and slide left by one when that fails.",
+    "pitfall": "Measuring the window as right - left instead of right - left + 1, which allows one replacement too many.",
+    "time": "O(n)",
+    "space": "O(1), 26 letters"
+  },
+  "435": {
+    "title": "Non-overlapping Intervals",
+    "patterns": [
+      "intervals",
+      "greedy"
+    ],
+    "idea": "Sort by end and keep every interval starting at or after the last kept end, since the earliest finish leaves the most room, and all others are removed.",
+    "pitfall": "Sorting by start and keeping the current interval on overlap, rather than the one that ends first.",
+    "time": "O(n log n)",
+    "space": "O(1) besides sorting"
+  },
+  "437": {
+    "title": "Path Sum III",
+    "patterns": [
+      "prefix-sum",
+      "tree-dfs"
+    ],
+    "idea": "Use prefix sums along the root path, since a downward path ending here has the target sum when prefix minus target was seen higher up.",
+    "pitfall": "Not decrementing the prefix count on backtrack, which leaks counts into sibling subtrees.",
+    "time": "O(n)",
+    "space": "O(h), h = tree height"
+  },
+  "438": {
+    "title": "Find All Anagrams in a String",
+    "patterns": [
+      "sliding-window"
+    ],
+    "idea": "Slide a window of |p| over s while tracking how many letters have matching counts, so each step is O(1).",
+    "pitfall": "Only checking after a removal, which misses the first full window at index 0.",
+    "time": "O(n), n = |s|",
+    "space": "O(1), 26 letters"
+  },
+  "442": {
+    "title": "Find All Duplicates in an Array",
+    "patterns": [
+      "arrays-hashing"
+    ],
+    "idea": "Use each |value| as an index and flip that slot's sign, so a slot already negative means the value is a repeat.",
+    "pitfall": "Forgetting abs when reading a value that was already negated.",
+    "time": "O(n)",
+    "space": "O(1) besides the output"
+  },
+  "443": {
+    "title": "String Compression",
+    "patterns": [
+      "two-pointers"
+    ],
+    "idea": "A read pointer scans runs and a write pointer emits the letter plus count digits, and it never passes the read pointer because digits take no more room than the run.",
+    "pitfall": "Writing the count as one character, when a run of 12 needs two digits.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "448": {
+    "title": "Find All Numbers Disappeared in an Array",
+    "patterns": [
+      "arrays-hashing"
+    ],
+    "idea": "Values are in 1 to n, so use each value as an index and negate that slot, and slots left positive are the missing numbers.",
+    "pitfall": "Using a value as an index without taking abs, after an earlier step negated it.",
+    "time": "O(n)",
+    "space": "O(1) besides the output"
+  },
+  "450": {
+    "title": "Delete Node in a BST",
+    "patterns": [
+      "bst"
+    ],
+    "idea": "A node with at most one child is replaced by that child, and with two children you copy its inorder successor's value and delete that successor from the right subtree.",
+    "pitfall": "Not assigning the recursive result back to root->left or root->right.",
+    "time": "O(h), h = tree height",
+    "space": "O(h)"
+  },
+  "451": {
+    "title": "Sort Characters By Frequency",
+    "patterns": [
+      "arrays-hashing",
+      "sorting"
+    ],
+    "idea": "Count characters, bucket or sort letters by count, and write each letter count times.",
+    "pitfall": "Sorting the string by count alone, which interleaves different letters with equal counts.",
+    "time": "O(n + A log A), A = distinct characters",
+    "space": "O(n)"
+  },
+  "459": {
+    "title": "Repeated Substring Pattern",
+    "patterns": [
+      "string-matching"
+    ],
+    "idea": "s is periodic exactly when it occurs inside s + s with the first and last characters removed; the KMP table gives the period n - fail[n - 1] too.",
+    "pitfall": "Searching the full s + s, which always matches at offset 0.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "460": {
+    "title": "LFU Cache",
+    "patterns": [
+      "design",
+      "linked-list"
+    ],
+    "idea": "Keep one recency-ordered list per frequency, a key-to-iterator map and minFreq, so a hit moves a node up one list and a new key resets minFreq to 1.",
+    "pitfall": "Not raising minFreq when a hit empties the list at the current minimum.",
+    "time": "O(1) per operation",
+    "space": "O(capacity)"
+  },
+  "486": {
+    "title": "Predict the Winner",
+    "patterns": [
+      "dp-interval"
+    ],
+    "idea": "dp[l][r] is the best score lead for the player to move, found by taking an end and subtracting the opponent's best lead on the rest.",
+    "pitfall": "Testing lead > 0, when a tie also counts as a win for player 1.",
+    "time": "O(n^2)",
+    "space": "O(n)"
+  },
+  "493": {
+    "title": "Reverse Pairs",
+    "patterns": [
+      "divide-and-conquer"
+    ],
+    "idea": "During merge sort both halves are sorted, so a two-pointer pass counts cross pairs before merging.",
+    "pitfall": "Computing 2 * nums[j] in int, which overflows.",
+    "time": "O(n log n)",
+    "space": "O(n)"
+  },
+  "494": {
+    "title": "Target Sum",
+    "patterns": [
+      "dp-knapsack"
+    ],
+    "idea": "If P is the plus set, sum(P) = (total + target) / 2, so count subsets with that sum using 0/1 knapsack.",
+    "pitfall": "Not rejecting an odd total + target or |target| > total before sizing the table.",
+    "time": "O(n S), S = subset sum sought",
+    "space": "O(S)"
+  },
+  "496": {
+    "title": "Next Greater Element I",
+    "patterns": [
+      "monotonic-stack",
+      "arrays-hashing"
+    ],
+    "idea": "Scan nums2 with a decreasing stack to map each value to its next greater value, then answer each query from the map.",
+    "pitfall": "Searching forward from each query value, which is O(mn).",
+    "time": "O(m + n), m, n = array lengths",
+    "space": "O(n)"
+  },
+  "498": {
+    "title": "Diagonal Traverse",
+    "patterns": [
+      "simulation"
+    ],
+    "idea": "Cells on one diagonal share r + c, and that sum's parity sets the travel direction.",
+    "pitfall": "Checking edges in the wrong order at corners; test the right edge before the top, and the bottom before the left.",
+    "time": "O(mn)",
+    "space": "O(1) besides the output"
+  },
+  "503": {
+    "title": "Next Greater Element II",
+    "patterns": [
+      "monotonic-stack"
+    ],
+    "idea": "Run indices through two passes (i % n) with a decreasing stack of unresolved indices, so wrap-around answers are found.",
+    "pitfall": "Making a single pass, which misses answers that wrap to the front.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "516": {
+    "title": "Longest Palindromic Subsequence",
+    "patterns": [
+      "dp-interval",
+      "dp-string"
+    ],
+    "idea": "Over ranges, equal ends add 2 to the inner range, otherwise take the better of dropping either end.",
+    "pitfall": "Iterating l upward, when inner ranges must be ready first.",
+    "time": "O(n^2)",
+    "space": "O(n)"
+  },
+  "518": {
+    "title": "Coin Change II",
+    "patterns": [
+      "dp-knapsack"
+    ],
+    "idea": "Count with unbounded knapsack, looping coins on the outside so each multiset is counted in a single order.",
+    "pitfall": "Looping amounts on the outside, which counts permutations instead.",
+    "time": "O(n A), n = coins, A = amount",
+    "space": "O(A)"
+  },
+  "525": {
+    "title": "Contiguous Array",
+    "patterns": [
+      "prefix-sum",
+      "arrays-hashing"
+    ],
+    "idea": "Count 0 as -1, so a balanced subarray is one between two equal prefix sums, and storing each prefix's first index maximizes the length.",
+    "pitfall": "Overwriting the stored index on a repeated prefix, which shortens the answer.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "528": {
+    "title": "Random Pick with Weight",
+    "patterns": [
+      "prefix-sum",
+      "binary-search"
+    ],
+    "idea": "Prefix sums give each index a slice of 1 to total proportional to its weight, so draw a random number and binary search its slice.",
+    "pitfall": "Drawing from 0 to total inclusive, which biases the ends; use 1 to total with lower_bound.",
+    "time": "O(n) to build, O(log n) per pick",
+    "space": "O(n)"
+  },
+  "540": {
+    "title": "Single Element in a Sorted Array",
+    "patterns": [
+      "binary-search"
+    ],
+    "idea": "Pairs start at even indices before the single element and at odd indices after it, so force mid to be even and compare it with mid + 1.",
+    "pitfall": "Not normalizing mid to even, so the comparison sends the search the wrong way.",
+    "time": "O(log n)",
+    "space": "O(1)"
+  },
+  "542": {
+    "title": "01 Matrix",
+    "patterns": [
+      "grid"
+    ],
+    "idea": "Run one multi-source BFS outward from every 0 rather than a search from each 1, so each cell is set once.",
+    "pitfall": "Searching from each 1 separately, which costs O((mn)^2).",
+    "time": "O(mn)",
+    "space": "O(mn)"
+  },
+  "543": {
+    "title": "Diameter of Binary Tree",
+    "patterns": [
+      "dp-tree",
+      "tree-dfs"
+    ],
+    "idea": "The longest path bending at a node is left height plus right height, so track the max of that while computing heights.",
+    "pitfall": "Assuming the longest path passes through the root.",
+    "time": "O(n)",
+    "space": "O(h), h = tree height"
+  },
+  "547": {
+    "title": "Number of Provinces",
+    "patterns": [
+      "union-find",
+      "graph-traversal"
+    ],
+    "idea": "The matrix is an adjacency matrix of n cities, so the answer is the number of connected components, from union-find or DFS.",
+    "pitfall": "Flood-filling it like a grid of positions, when rows and columns are both cities.",
+    "time": "O(n^2 α(n))",
+    "space": "O(n)"
+  },
+  "560": {
+    "title": "Subarray Sum Equals K",
+    "patterns": [
+      "prefix-sum",
+      "arrays-hashing"
+    ],
+    "idea": "A subarray ending here sums to k exactly when an earlier prefix equals the current prefix minus k, so count prefixes in a hash map while scanning.",
+    "pitfall": "Not seeding the map with prefix 0 once, which misses subarrays starting at index 0.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "567": {
+    "title": "Permutation in String",
+    "patterns": [
+      "sliding-window"
+    ],
+    "idea": "Slide a window of |s1| over s2 and compare letter counts, tracking how many letters already match for O(1) updates.",
+    "pitfall": "Not returning false when s1 is longer than s2.",
+    "time": "O(n), n = |s2|",
+    "space": "O(1), 26 letters"
+  },
+  "581": {
+    "title": "Shortest Unsorted Continuous Subarray",
+    "patterns": [
+      "two-pointers"
+    ],
+    "idea": "Scanning left to right, the last index below the running max is the right end; scanning right to left, the last index above the running min is the left end.",
+    "pitfall": "Stopping at the first dip, which misses smaller values further right.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "621": {
+    "title": "Task Scheduler",
+    "patterns": [
+      "greedy",
+      "heap"
+    ],
+    "idea": "The most frequent task sets a frame of (maxCount - 1) blocks of size n + 1, plus one slot for each task tied at the max, and the answer is the larger of that and the task total.",
+    "pitfall": "Omitting the max with the task total, which underestimates when no idle slots are needed.",
+    "time": "O(T), T = number of tasks",
+    "space": "O(1), 26 task types"
+  },
+  "636": {
+    "title": "Exclusive Time of Functions",
+    "patterns": [
+      "stack"
+    ],
+    "idea": "A stack of running ids tracks who owns each time slice, and each log credits the time since the previous event to the current top.",
+    "pitfall": "Treating end timestamps as exclusive, when an end at t includes t and the next slice starts at t + 1.",
+    "time": "O(m), m = logs",
+    "space": "O(m)"
+  },
+  "647": {
+    "title": "Palindromic Substrings",
+    "patterns": [
+      "two-pointers",
+      "dp-string"
+    ],
+    "idea": "Expand around each of the 2n - 1 centers, counting one palindrome per successful step.",
+    "pitfall": "Ignoring gap centers, which misses even-length palindromes.",
+    "time": "O(n^2)",
+    "space": "O(1)"
+  },
+  "658": {
+    "title": "Find K Closest Elements",
+    "patterns": [
+      "binary-search"
+    ],
+    "idea": "Binary search the window's left edge: if x - arr[mid] > arr[mid + k] - x, the window must move right.",
+    "pitfall": "Using abs in that comparison, which fails when both ends lie on the same side of x.",
+    "time": "O(log(n - k) + k)",
+    "space": "O(1) besides the output"
+  },
+  "662": {
+    "title": "Maximum Width of Binary Tree",
+    "patterns": [
+      "tree-bfs"
+    ],
+    "idea": "Number nodes as in a heap (2i, 2i + 1), so a level's width is last index minus first index plus 1.",
+    "pitfall": "Letting indices grow on deep trees, which overflows; rebase them at each level.",
+    "time": "O(n)",
+    "space": "O(w), w = max level width"
+  },
+  "670": {
+    "title": "Maximum Swap",
+    "patterns": [
+      "greedy"
+    ],
+    "idea": "Record each digit's last position, then at the first position where a larger digit appears later, swap with the largest such digit's last occurrence.",
+    "pitfall": "Swapping with the first occurrence of the larger digit, which isn't maximal.",
+    "time": "O(d), d = digits",
+    "space": "O(d)"
+  },
+  "678": {
+    "title": "Valid Parenthesis String",
+    "patterns": [
+      "greedy"
+    ],
+    "idea": "Track the range [lo, hi] of possible open counts, where '(' raises both, ')' lowers both and '*' lowers lo and raises hi; fail if hi goes negative and accept if lo ends at 0.",
+    "pitfall": "Not clamping lo at 0, which lets a negative balance pass.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "679": {
+    "title": "24 Game",
+    "patterns": [
+      "backtracking"
+    ],
+    "idea": "Pick any two numbers, replace them with the result of each operation, and recurse on the shorter list until one value remains near 24.",
+    "pitfall": "Comparing doubles with ==, which rejects valid results such as those needing 8 / (3 - 8 / 3).",
+    "time": "O(1), always four cards",
+    "space": "O(1)"
+  },
+  "680": {
+    "title": "Valid Palindrome II",
+    "patterns": [
+      "two-pointers"
+    ],
+    "idea": "Compare from both ends, and at the first mismatch the deletion must be one of those two characters, so check that each remaining range is a palindrome.",
+    "pitfall": "Trying only one of the two deletions.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "684": {
+    "title": "Redundant Connection",
+    "patterns": [
+      "union-find"
+    ],
+    "idea": "With edges added in order, the first one whose endpoints already share a root closes the only cycle, so it is the last cycle edge in the input.",
+    "pitfall": "Sizing the parent array as n, although nodes are numbered from 1 to n.",
+    "time": "O(n α(n))",
+    "space": "O(n)"
+  },
+  "692": {
+    "title": "Top K Frequent Words",
+    "patterns": [
+      "heap",
+      "arrays-hashing"
+    ],
+    "idea": "Count words, then keep a size-k heap ordered by frequency and, on ties, by word.",
+    "pitfall": "Using the same tie order in a min-heap, when on equal counts the alphabetically larger word must be evicted first.",
+    "time": "O(n log k)",
+    "space": "O(n)"
+  },
+  "695": {
+    "title": "Max Area of Island",
+    "patterns": [
+      "grid"
+    ],
+    "idea": "Flood fill each unvisited land cell, count cells per component, and keep the largest.",
+    "pitfall": "Marking a cell after recursing rather than before, which counts it repeatedly.",
+    "time": "O(mn)",
+    "space": "O(mn)"
+  },
+  "703": {
+    "title": "Kth Largest Element in a Stream",
+    "patterns": [
+      "heap",
+      "design"
+    ],
+    "idea": "A min-heap capped at k values keeps the k largest, so its top is the kth largest.",
+    "pitfall": "Comparing a new value only against the top before the heap has reached k values.",
+    "time": "O(log k) per add",
+    "space": "O(k)"
+  },
+  "704": {
+    "title": "Binary Search",
+    "patterns": [
+      "binary-search"
+    ],
+    "idea": "Each comparison discards half of the range, with the invariant that the target, if present, stays inside [lo, hi].",
+    "pitfall": "Mixing bound styles, since with lo <= hi, setting hi = mid can loop forever.",
+    "time": "O(log n)",
+    "space": "O(1)"
+  },
+  "713": {
+    "title": "Subarray Product Less Than K",
+    "patterns": [
+      "sliding-window"
+    ],
+    "idea": "Positive values let you shrink left until the product drops below k, and each right end then adds right - left + 1 subarrays.",
+    "pitfall": "Not returning 0 for k <= 1, where left runs past right.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "715": {
+    "title": "Range Module",
+    "patterns": [
+      "design",
+      "intervals"
+    ],
+    "idea": "Keep disjoint intervals in a sorted map from start to end, so add and remove only cut or merge the entries that overlap the range.",
+    "pitfall": "On remove, not keeping both leftover pieces when the range falls inside a stored interval.",
+    "time": "O(log n) amortized per operation, n = stored intervals",
+    "space": "O(n)"
+  },
+  "721": {
+    "title": "Accounts Merge",
+    "patterns": [
+      "union-find",
+      "graph-traversal"
+    ],
+    "idea": "Emails in one account belong together, so union them, then group by root and sort each group.",
+    "pitfall": "Merging accounts by name, when different people can share a name.",
+    "time": "O(N log N), N = total emails",
+    "space": "O(N)"
+  },
+  "724": {
+    "title": "Find Pivot Index",
+    "patterns": [
+      "prefix-sum"
+    ],
+    "idea": "At index i the right sum is total - left - nums[i], so one pass with a running left sum is enough.",
+    "pitfall": "Adding nums[i] to the left sum before comparing.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "733": {
+    "title": "Flood Fill",
+    "patterns": [
+      "grid"
+    ],
+    "idea": "DFS or BFS from the start, recoloring only cells that still hold the original color.",
+    "pitfall": "Not returning early when the new color equals the old one, which recurses forever.",
+    "time": "O(mn)",
+    "space": "O(mn)"
+  },
+  "735": {
+    "title": "Asteroid Collision",
+    "patterns": [
+      "stack"
+    ],
+    "idea": "Only a left-mover hitting a right-mover on top of the stack collides, so pop smaller right-movers in a loop, then resolve a tie or the survivor.",
+    "pitfall": "Treating a negative top followed by a positive as a collision, when they move apart.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "739": {
+    "title": "Daily Temperatures",
+    "patterns": [
+      "monotonic-stack"
+    ],
+    "idea": "Keep indices of days still waiting on a stack with decreasing temperatures, and a warmer day resolves every cooler index it pops.",
+    "pitfall": "Storing temperatures on the stack, which leaves no way to compute the day gap.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "743": {
+    "title": "Network Delay Time",
+    "patterns": [
+      "shortest-path"
+    ],
+    "idea": "The signal reaches each node along its shortest path, so the answer is the largest Dijkstra distance from the source.",
+    "pitfall": "Returning the max without checking that every node was reached.",
+    "time": "O(E log V)",
+    "space": "O(V + E)"
+  },
+  "746": {
+    "title": "Min Cost Climbing Stairs",
+    "patterns": [
+      "dp-linear"
+    ],
+    "idea": "The cheapest way to stand on step i is cost[i] plus the cheaper of steps i - 1 and i - 2, and the top lies one past the end.",
+    "pitfall": "Returning the last step's cost, when the top can be reached from either of the last two.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "767": {
+    "title": "Reorganize String",
+    "patterns": [
+      "greedy",
+      "heap"
+    ],
+    "idea": "It's impossible if one letter exceeds (n + 1) / 2; otherwise place the most frequent letter on even slots first, then the rest, wrapping to odd slots.",
+    "pitfall": "Filling in alphabetical order without the top letter first, which can place equal letters side by side at the wrap.",
+    "time": "O(n)",
+    "space": "O(1) besides the output, 26 letters"
+  },
+  "777": {
+    "title": "Swap Adjacent in LR String",
+    "patterns": [
+      "two-pointers"
+    ],
+    "idea": "L moves only left and R only right and neither can cross the other, so the non-X sequences must match and each piece must shift in its legal direction.",
+    "pitfall": "Comparing only letter counts or the sequence, and ignoring positions.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "778": {
+    "title": "Swim in Rising Water",
+    "patterns": [
+      "shortest-path",
+      "grid"
+    ],
+    "idea": "The answer is the smallest possible maximum cell along a path, so run Dijkstra where a path's cost is its max; union-find adding cells by height also works.",
+    "pitfall": "Starting the cost at 0 instead of the start cell's height.",
+    "time": "O(n^2 log n)",
+    "space": "O(n^2)"
+  },
+  "787": {
+    "title": "Cheapest Flights Within K Stops",
+    "patterns": [
+      "shortest-path"
+    ],
+    "idea": "Run Bellman-Ford for k + 1 rounds, relaxing from a copy of the previous round so each round adds at most one flight.",
+    "pitfall": "Relaxing in place without the copy, which lets one round chain several flights.",
+    "time": "O(k E), E = flights",
+    "space": "O(V), V = cities"
+  },
+  "790": {
+    "title": "Domino and Tromino Tiling",
+    "patterns": [
+      "dp-state-machine",
+      "dp-linear"
+    ],
+    "idea": "Track the flat frontier and the frontier with one jutting cell, which condenses to f(n) = 2 f(n - 1) + f(n - 3).",
+    "pitfall": "Counting only flat frontiers, which misses tilings where two trominoes bracket horizontal dominoes.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "792": {
+    "title": "Number of Matching Subsequences",
+    "patterns": [
+      "arrays-hashing",
+      "binary-search"
+    ],
+    "idea": "Bucket words by the next letter they wait for, then scan s once and advance every word in the current letter's bucket.",
+    "pitfall": "Scanning s afresh for each word, which is O(|s|) per word.",
+    "time": "O(|s| + W), W = total letters in words",
+    "space": "O(w), w = number of words"
+  },
+  "799": {
+    "title": "Champagne Tower",
+    "patterns": [
+      "simulation",
+      "dp-grid"
+    ],
+    "idea": "Pour everything into the top glass and push overflow down row by row, with each glass passing (amount - 1) / 2 to each of the two below.",
+    "pitfall": "Returning the raw amount instead of capping the answer at 1.",
+    "time": "O(R^2), R = query row",
+    "space": "O(R)"
+  },
+  "802": {
+    "title": "Find Eventual Safe States",
+    "patterns": [
+      "topo-sort",
+      "graph-traversal"
+    ],
+    "idea": "Reverse the edges and run Kahn's from terminal nodes, as only nodes whose every path ends at a terminal get peeled; three-color DFS also works.",
+    "pitfall": "Peeling by indegree on the forward graph, when safety depends on outgoing paths.",
+    "time": "O(V + E)",
+    "space": "O(V + E)"
+  },
+  "808": {
+    "title": "Soup Servings",
+    "patterns": [
+      "dp-linear",
+      "math"
+    ],
+    "idea": "Divide amounts by 25 to shrink states, memoize the probability over four equally likely servings, and return 1 for n above about 4800, where the result is within tolerance.",
+    "pitfall": "Counting a simultaneous empty as a full win instead of half.",
+    "time": "O(S^2), S = min(n, 4800) / 25",
+    "space": "O(S^2)"
+  },
+  "815": {
+    "title": "Bus Routes",
+    "patterns": [
+      "graph-traversal"
+    ],
+    "idea": "BFS over routes rather than stops, since each level is one more bus, with a stop-to-routes map and each route expanded once.",
+    "pitfall": "Not returning 0 when source equals target.",
+    "time": "O(S), S = total stops over all routes",
+    "space": "O(S)"
+  },
+  "818": {
+    "title": "Race Car",
+    "patterns": [
+      "dp-linear"
+    ],
+    "idea": "dp[t] tries two shapes: overshoot with 2^k - 1, reverse and solve the rest, or stop short, reverse, back up a little, reverse and solve the rest.",
+    "pitfall": "Considering only the overshoot, which misses better paths that stop short.",
+    "time": "O(T log T), T = target",
+    "space": "O(T)"
+  },
+  "827": {
+    "title": "Making A Large Island",
+    "patterns": [
+      "grid",
+      "union-find"
+    ],
+    "idea": "Label each island with an id and size, then for each 0 add 1 to the sizes of its distinct neighboring islands.",
+    "pitfall": "Counting an island twice when it touches a 0 from two sides.",
+    "time": "O(n^2)",
+    "space": "O(n^2)"
+  },
+  "833": {
+    "title": "Find And Replace in String",
+    "patterns": [
+      "simulation"
+    ],
+    "idea": "Match every source against the original string first, record replacements by index, then rebuild left to right.",
+    "pitfall": "Applying replacements in place, which shifts the indices of later ones.",
+    "time": "O(n + R), R = total length of sources and targets",
+    "space": "O(n + R)"
+  },
+  "834": {
+    "title": "Sum of Distances in Tree",
+    "patterns": [
+      "dp-tree"
+    ],
+    "idea": "Rerooting: compute subtree sizes and the root's sum, then moving the root to child c changes the sum by n - 2 * size[c].",
+    "pitfall": "Running a BFS from every node, which is O(n^2).",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "841": {
+    "title": "Keys and Rooms",
+    "patterns": [
+      "graph-traversal"
+    ],
+    "idea": "Rooms are nodes and keys are directed edges, so DFS from room 0 and check whether all rooms were reached.",
+    "pitfall": "Not marking a room as visited before pushing, which revisits it through duplicate keys.",
+    "time": "O(n + K), K = total keys",
+    "space": "O(n)"
+  },
+  "843": {
+    "title": "Guess the Word",
+    "patterns": [
+      "greedy"
+    ],
+    "idea": "After a guess with m matches, the secret must share exactly m positions with it, so filter candidates and next pick the word whose largest match-count group is smallest.",
+    "pitfall": "Guessing from the full list rather than the filtered candidates, which wastes calls.",
+    "time": "O(G n^2), G = guesses, n = words",
+    "space": "O(n)"
+  },
+  "844": {
+    "title": "Backspace String Compare",
+    "patterns": [
+      "two-pointers"
+    ],
+    "idea": "Scan both strings from the end, skipping characters cancelled by a running backspace count, and compare the next survivors.",
+    "pitfall": "Stopping when one string ends, though the other may still reduce to nothing.",
+    "time": "O(m + n), m, n = string lengths",
+    "space": "O(1)"
+  },
+  "852": {
+    "title": "Peak Index in a Mountain Array",
+    "patterns": [
+      "binary-search"
+    ],
+    "idea": "Compare arr[mid] with arr[mid + 1], since a rising slope puts the peak right of mid and a falling slope puts it at mid or left.",
+    "pitfall": "Setting hi = mid - 1 on a falling slope, which can drop the peak.",
+    "time": "O(log n)",
+    "space": "O(1)"
+  },
+  "853": {
+    "title": "Car Fleet",
+    "patterns": [
+      "monotonic-stack",
+      "sorting"
+    ],
+    "idea": "Sort by position from closest to the target, and a car behind forms a new fleet only if its arrival time exceeds the fleet ahead's.",
+    "pitfall": "Computing arrival times with integer division.",
+    "time": "O(n log n)",
+    "space": "O(n)"
+  },
+  "863": {
+    "title": "All Nodes Distance K in Binary Tree",
+    "patterns": [
+      "tree-bfs",
+      "graph-traversal"
+    ],
+    "idea": "Record parent links so the tree acts as an undirected graph, then BFS exactly k steps from the target.",
+    "pitfall": "Omitting a visited set, which lets the search bounce back through the node it came from.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "875": {
+    "title": "Koko Eating Bananas",
+    "patterns": [
+      "binary-search-answer"
+    ],
+    "idea": "Total hours never increase as speed rises, so binary search the smallest speed whose sum of ceil(pile / speed) fits in h.",
+    "pitfall": "Using plain integer division instead of rounding up each pile's hours.",
+    "time": "O(n log W), W = max pile",
+    "space": "O(1)"
+  },
+  "876": {
+    "title": "Middle of the Linked List",
+    "patterns": [
+      "linked-list",
+      "two-pointers"
+    ],
+    "idea": "Move slow one step and fast two, so when fast runs out slow is at the middle.",
+    "pitfall": "Looping on fast->next && fast->next->next, which lands on the first middle; loop on fast && fast->next for the second.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "877": {
+    "title": "Stone Game",
+    "patterns": [
+      "dp-interval",
+      "math"
+    ],
+    "idea": "With an even pile count the first player can always take all even-indexed or all odd-indexed piles, so they claim the richer set and win; the interval DP on score lead shows the same.",
+    "pitfall": "Adding the opponent's best in the DP rather than subtracting it from the score lead.",
+    "time": "O(1)",
+    "space": "O(1)"
+  },
+  "901": {
+    "title": "Online Stock Span",
+    "patterns": [
+      "monotonic-stack",
+      "design"
+    ],
+    "idea": "Keep (price, span) pairs with strictly decreasing prices, and a new price absorbs the spans of all prices at or below it.",
+    "pitfall": "Popping with < instead of <=, which cuts the span at equal prices.",
+    "time": "O(1) amortized per call",
+    "space": "O(n)"
+  },
+  "904": {
+    "title": "Fruit Into Baskets",
+    "patterns": [
+      "sliding-window"
+    ],
+    "idea": "The answer is the longest window with at most two distinct values, so grow right and shrink left when a third appears.",
+    "pitfall": "Not erasing a key when its count hits 0, so the map's size stays above 2.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "907": {
+    "title": "Sum of Subarray Minimums",
+    "patterns": [
+      "monotonic-stack"
+    ],
+    "idea": "Count each element's contribution: it is the minimum of (i - prevSmaller) * (nextSmaller - i) subarrays, with both bounds from a stack.",
+    "pitfall": "Treating ties the same way on both sides, which double counts or drops subarrays with equal minimums.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "912": {
+    "title": "Sort an Array",
+    "patterns": [
+      "sorting",
+      "divide-and-conquer"
+    ],
+    "idea": "Merge sort gives a guaranteed O(n log n), and heap sort does so with O(1) extra space.",
+    "pitfall": "Using quicksort with a fixed pivot, which hits O(n^2) on sorted or all-equal input.",
+    "time": "O(n log n)",
+    "space": "O(n)"
+  },
+  "930": {
+    "title": "Binary Subarrays With Sum",
+    "patterns": [
+      "prefix-sum",
+      "sliding-window"
+    ],
+    "idea": "Count prefix sums in a hash map as in subarray sum equals k, or take at-most(goal) minus at-most(goal - 1) with a window.",
+    "pitfall": "Using one window for the exact sum, which undercounts because zeros extend matches on both sides.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "939": {
+    "title": "Minimum Area Rectangle",
+    "patterns": [
+      "arrays-hashing"
+    ],
+    "idea": "Treat each point pair with different x and y as a diagonal, and check the other two corners in a hash set.",
+    "pitfall": "Not excluding pairs that share an x or y, which gives zero-area rectangles.",
+    "time": "O(n^2)",
+    "space": "O(n)"
+  },
+  "962": {
+    "title": "Maximum Width Ramp",
+    "patterns": [
+      "monotonic-stack"
+    ],
+    "idea": "Only indices that set a new prefix minimum can be best left ends, so stack them and scan j from the right, popping while the top's value is <= nums[j].",
+    "pitfall": "Scanning j from the left, where popping discards left ends that a later j could use.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "963": {
+    "title": "Minimum Area Rectangle II",
+    "patterns": [
+      "arrays-hashing",
+      "math"
+    ],
+    "idea": "A rectangle's diagonals share a midpoint and a length, so group point pairs by that key, and any two pairs in a group form a rectangle.",
+    "pitfall": "Keying midpoints by doubles rather than the integer sums x1 + x2 and y1 + y2.",
+    "time": "O(n^2 + P), P = pairs of diagonals sharing a key",
+    "space": "O(n^2)"
+  },
+  "974": {
+    "title": "Subarray Sums Divisible by K",
+    "patterns": [
+      "prefix-sum",
+      "arrays-hashing"
+    ],
+    "idea": "Two prefixes with the same remainder mod k bound a divisible subarray, so count remainders in an array of size k.",
+    "pitfall": "Leaving remainders negative, since C++ % can return negatives; use ((p % k) + k) % k.",
+    "time": "O(n)",
+    "space": "O(k)"
+  },
+  "975": {
+    "title": "Odd Even Jump",
+    "patterns": [
+      "dp-linear",
+      "monotonic-stack"
+    ],
+    "idea": "Scanning from the right, an ordered map gives each index's next jump for both turns, then dp[i][turn] = dp[next][other turn].",
+    "pitfall": "Mixing up the jump rules: odd takes the smallest value >= arr[i], even the largest <= it, lowest index on ties.",
+    "time": "O(n log n)",
+    "space": "O(n)"
+  },
+  "977": {
+    "title": "Squares of a Sorted Array",
+    "patterns": [
+      "two-pointers"
+    ],
+    "idea": "The largest square is always at one of the two ends, so fill the result from the back.",
+    "pitfall": "Filling from the front, where the next smallest square isn't at either end.",
+    "time": "O(n)",
+    "space": "O(n) for the output"
+  },
+  "981": {
+    "title": "Time Based Key-Value Store",
+    "patterns": [
+      "binary-search",
+      "design"
+    ],
+    "idea": "Timestamps arrive increasing, so each key's entry list is already sorted and get is a search for the last entry at or before the timestamp.",
+    "pitfall": "Using lower_bound directly, when you need the entry just before upper_bound after checking it isn't begin.",
+    "time": "O(1) per set, O(log n) per get, n = entries for the key",
+    "space": "O(n)"
+  },
+  "987": {
+    "title": "Vertical Order Traversal of a Binary Tree",
+    "patterns": [
+      "tree-dfs",
+      "sorting"
+    ],
+    "idea": "Record (column, row, value) for every node, sort the triples, then group by column.",
+    "pitfall": "Not breaking ties by value for nodes at the same row and column.",
+    "time": "O(n log n)",
+    "space": "O(n)"
+  },
+  "992": {
+    "title": "Subarrays with K Different Integers",
+    "patterns": [
+      "sliding-window"
+    ],
+    "idea": "Exactly k equals at-most(k) minus at-most(k - 1), and each at-most count is a plain window.",
+    "pitfall": "Using one window for exactly k, which misses subarrays where left could move without changing the count.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "994": {
+    "title": "Rotting Oranges",
+    "patterns": [
+      "grid"
+    ],
+    "idea": "Start BFS from all rotten oranges at once, so each layer is one minute, and count fresh oranges to know if any stay unreached.",
+    "pitfall": "Counting a minute for the final layer that rots nothing, which is off by one.",
+    "time": "O(mn)",
+    "space": "O(mn)"
+  },
+  "1004": {
+    "title": "Max Consecutive Ones III",
+    "patterns": [
+      "sliding-window"
+    ],
+    "idea": "The answer is the longest window holding at most k zeros, so extend right and shrink left while the zero count is above k.",
+    "pitfall": "Decrementing the zero count on every left move rather than only when a 0 leaves.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "1011": {
+    "title": "Capacity To Ship Packages Within D Days",
+    "patterns": [
+      "binary-search-answer"
+    ],
+    "idea": "Search capacities between the heaviest package and the total weight, and a greedy day-by-day fill checks whether a capacity works.",
+    "pitfall": "Starting the low bound below the heaviest package, which the greedy check can never place.",
+    "time": "O(n log S), S = total weight",
+    "space": "O(1)"
+  },
+  "1044": {
+    "title": "Longest Duplicate Substring",
+    "patterns": [
+      "binary-search-answer",
+      "string-matching"
+    ],
+    "idea": "A repeated substring of length L implies one of every shorter length, so binary search L and detect repeats with a rolling hash.",
+    "pitfall": "Trusting a hash match without comparing the substrings, so a collision reports a false duplicate.",
+    "time": "O(n log n) expected",
+    "space": "O(n)"
+  },
+  "1047": {
+    "title": "Remove All Adjacent Duplicates In String",
+    "patterns": [
+      "stack"
+    ],
+    "idea": "Use the answer string as a stack, popping when the next character equals the top and pushing otherwise.",
+    "pitfall": "Rescanning from the start after each removal, which is quadratic.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "1048": {
+    "title": "Longest String Chain",
+    "patterns": [
+      "dp-linear",
+      "sorting"
+    ],
+    "idea": "Sort by length, and each word's best chain is 1 plus the best among its one-letter deletions, looked up in a hash map.",
+    "pitfall": "Processing words unsorted, so predecessors aren't computed yet.",
+    "time": "O(n log n + n L^2), L = max word length",
+    "space": "O(n L)"
+  },
+  "1071": {
+    "title": "Greatest Common Divisor of Strings",
+    "patterns": [
+      "math"
+    ],
+    "idea": "A common divisor exists only when s + t == t + s, and then its length is gcd(|s|, |t|).",
+    "pitfall": "Returning the gcd-length prefix without the concatenation check.",
+    "time": "O(m + n), m, n = string lengths",
+    "space": "O(m + n)"
+  },
+  "1081": {
+    "title": "Smallest Subsequence of Distinct Characters",
+    "patterns": [
+      "monotonic-stack",
+      "greedy"
+    ],
+    "idea": "Keep an increasing stack, popping a larger top if it occurs again later and skipping letters already on the stack.",
+    "pitfall": "Not skipping letters already on the stack, which puts a letter in twice.",
+    "time": "O(n)",
+    "space": "O(1), 26 letters"
+  },
+  "1091": {
+    "title": "Shortest Path in Binary Matrix",
+    "patterns": [
+      "grid",
+      "shortest-path"
+    ],
+    "idea": "All steps cost the same, so BFS over 8 neighbors finds the shortest path, counted in cells.",
+    "pitfall": "Not checking that the start and end cells are open.",
+    "time": "O(n^2)",
+    "space": "O(n^2)"
+  },
+  "1094": {
+    "title": "Car Pooling",
+    "patterns": [
+      "sweep-line",
+      "prefix-sum"
+    ],
+    "idea": "Add passengers at each pickup and subtract at each drop-off in a difference array, then sweep the stops and check the running load never exceeds capacity.",
+    "pitfall": "Subtracting at to + 1, when riders leave at to and free their seats there.",
+    "time": "O(n + L), n = trips, L = max stop",
+    "space": "O(L)"
+  },
+  "1110": {
+    "title": "Delete Nodes And Return Forest",
+    "patterns": [
+      "tree-dfs"
+    ],
+    "idea": "Work post-order, since a kept node becomes a new root when it has no kept parent, and a deleted node hands null back to its parent.",
+    "pitfall": "Not clearing the parent's link to a deleted child.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "1143": {
+    "title": "Longest Common Subsequence",
+    "patterns": [
+      "dp-string"
+    ],
+    "idea": "If the last characters match, extend the diagonal by one, otherwise take the better of dropping a last character from either string.",
+    "pitfall": "With a rolling row, overwriting the diagonal value before reading it; save it in a temporary.",
+    "time": "O(mn), m, n = string lengths",
+    "space": "O(min(m, n))"
+  },
+  "1146": {
+    "title": "Snapshot Array",
+    "patterns": [
+      "binary-search",
+      "design"
+    ],
+    "idea": "Each index keeps its own sorted list of (snap id, value) changes, so get binary searches for the last change at or before the snapshot.",
+    "pitfall": "Copying the whole array on snap, which costs O(n) per call and exhausts memory.",
+    "time": "O(1) per set and snap, O(log S) per get, S = changes at that index",
+    "space": "O(n + U), U = total sets"
+  },
+  "1218": {
+    "title": "Longest Arithmetic Subsequence of Given Difference",
+    "patterns": [
+      "dp-linear",
+      "arrays-hashing"
+    ],
+    "idea": "The best chain ending at v is 1 plus the best ending at v - difference, stored in a hash map.",
+    "pitfall": "Using the O(n^2) pairwise DP, which times out.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "1235": {
+    "title": "Maximum Profit in Job Scheduling",
+    "patterns": [
+      "dp-linear",
+      "binary-search"
+    ],
+    "idea": "Sort by start, and dp[i] is the best of skipping to job i + 1 or taking job i plus dp at the first job starting at or after its end, found by binary search.",
+    "pitfall": "Searching for a start strictly after the end, when a job may begin exactly as the last one ends.",
+    "time": "O(n log n)",
+    "space": "O(n)"
+  },
+  "1254": {
+    "title": "Number of Closed Islands",
+    "patterns": [
+      "grid"
+    ],
+    "idea": "First erase all land connected to the border, then each remaining component is closed.",
+    "pitfall": "Using short-circuit && across recursive calls, which stops before visiting the whole island.",
+    "time": "O(mn)",
+    "space": "O(mn)"
+  },
+  "1277": {
+    "title": "Count Square Submatrices with All Ones",
+    "patterns": [
+      "dp-grid"
+    ],
+    "idea": "The largest square ending at a cell equals the number of squares ending there, so sum all dp values.",
+    "pitfall": "Summing only the inner cells, which drops 1 x 1 squares in the first row and column.",
+    "time": "O(mn)",
+    "space": "O(mn)"
+  },
+  "1293": {
+    "title": "Shortest Path in a Grid with Obstacles Elimination",
+    "patterns": [
+      "grid",
+      "shortest-path"
+    ],
+    "idea": "BFS over states (row, col, removals left), since all steps cost 1, and at each cell keep only the largest removals-left seen, because arriving later with fewer can't help.",
+    "pitfall": "Tracking visited by cell alone, which rejects a later arrival that has more removals left.",
+    "time": "O(mnk), k = removals allowed",
+    "space": "O(mnk)"
+  },
+  "1353": {
+    "title": "Maximum Number of Events That Can Be Attended",
+    "patterns": [
+      "greedy",
+      "heap"
+    ],
+    "idea": "Walk days in order, add events starting today to a min-heap of end days, and attend the one ending soonest.",
+    "pitfall": "Not popping events whose end day has passed.",
+    "time": "O(n log n + D), D = last event day",
+    "space": "O(n)"
+  },
+  "1406": {
+    "title": "Stone Game III",
+    "patterns": [
+      "dp-linear"
+    ],
+    "idea": "dp[i] is the best lead for the player to move at i, found by taking 1 to 3 stones and subtracting dp at the new position.",
+    "pitfall": "Seeding the max with 0, when all-negative stones still force a take.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "1438": {
+    "title": "Longest Continuous Subarray With Absolute Diff Less Than or Equal to Limit",
+    "patterns": [
+      "monotonic-queue",
+      "sliding-window"
+    ],
+    "idea": "Two monotonic deques give the window's max and min in O(1), so shrink left while max - min exceeds the limit.",
+    "pitfall": "Not popping deque fronts when left moves past those indices.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "1482": {
+    "title": "Minimum Number of Days to Make m Bouquets",
+    "patterns": [
+      "binary-search-answer"
+    ],
+    "idea": "Feasibility only improves with more days, so binary search the day, counting runs of k bloomed flowers.",
+    "pitfall": "Not returning -1 when m * k > n, a product that can overflow int.",
+    "time": "O(n log D), D = max bloom day",
+    "space": "O(1)"
+  },
+  "1526": {
+    "title": "Minimum Number of Increments on Subarrays to Form a Target Array",
+    "patterns": [
+      "greedy"
+    ],
+    "idea": "Only rises need new operations, since a drop is covered by ranges already open, so the answer is target[0] plus all positive steps.",
+    "pitfall": "Simulating the range increments, which is quadratic.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "1539": {
+    "title": "Kth Missing Positive Number",
+    "patterns": [
+      "binary-search"
+    ],
+    "idea": "arr[i] - i - 1 counts positives missing before arr[i] and never decreases, so find the first index lo with at least k missing, and the answer is lo + k.",
+    "pitfall": "Building the answer from an array value, which fails when the kth missing number lies before arr[0].",
+    "time": "O(log n)",
+    "space": "O(1)"
+  },
+  "1631": {
+    "title": "Path With Minimum Effort",
+    "patterns": [
+      "shortest-path",
+      "grid"
+    ],
+    "idea": "Run Dijkstra where a path's cost is its largest step, not a sum, relaxing neighbors with max(current, step).",
+    "pitfall": "Adding the edge weight as in normal Dijkstra instead of taking the max.",
+    "time": "O(mn log(mn))",
+    "space": "O(mn)"
+  },
+  "1658": {
+    "title": "Minimum Operations to Reduce X to Zero",
+    "patterns": [
+      "sliding-window",
+      "prefix-sum"
+    ],
+    "idea": "Removing from the ends leaves a middle block, so find the longest subarray summing to total - x.",
+    "pitfall": "Not handling total - x = 0, where the whole array is removed.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "1769": {
+    "title": "Minimum Number of Operations to Move All Balls to Each Box",
+    "patterns": [
+      "prefix-sum"
+    ],
+    "idea": "Sweep left then right, since each box's cost from one side is the previous cost plus the balls seen so far.",
+    "pitfall": "Updating the ball count before the cost in a sweep, which charges a ball for reaching its own box.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "1825": {
+    "title": "Finding MK Average",
+    "patterns": [
+      "design",
+      "heap"
+    ],
+    "idea": "Keep the last m values in a queue plus three ordered multisets (k smallest, middle, k largest) and a running sum of the middle.",
+    "pitfall": "Not rebalancing the three sets after both the insertion and the removal.",
+    "time": "O(log m) per add, O(1) per calculate",
+    "space": "O(m)"
+  },
+  "1834": {
+    "title": "Single-Threaded CPU",
+    "patterns": [
+      "heap",
+      "simulation"
+    ],
+    "idea": "Sort tasks by enqueue time and keep available ones in a min-heap by (processing time, index), and when the heap is empty, jump the clock to the next enqueue time.",
+    "pitfall": "Stepping the clock by 1 through idle gaps, which is too slow.",
+    "time": "O(n log n)",
+    "space": "O(n)"
+  },
+  "1838": {
+    "title": "Frequency of the Most Frequent Element",
+    "patterns": [
+      "sliding-window",
+      "sorting"
+    ],
+    "idea": "After sorting, the best target is a window's right end, and the cost is value * size minus window sum, which must stay within k.",
+    "pitfall": "Computing the cost in int, which overflows.",
+    "time": "O(n log n)",
+    "space": "O(1) besides sorting"
+  },
+  "1922": {
+    "title": "Count Good Numbers",
+    "patterns": [
+      "math"
+    ],
+    "idea": "Even positions have 5 choices and odd positions 4, so the count is 5^ceil(n/2) * 4^floor(n/2) modulo 1e9 + 7, using fast exponentiation.",
+    "pitfall": "Looping over n, which can reach 1e15.",
+    "time": "O(log n)",
+    "space": "O(1)"
+  },
+  "1944": {
+    "title": "Number of Visible People in a Queue",
+    "patterns": [
+      "monotonic-stack"
+    ],
+    "idea": "Scan right to left with a stack of decreasing heights, since a person sees each shorter person they pop, plus one more if the stack is still non-empty.",
+    "pitfall": "Forgetting that extra +1 for the taller person left on the stack.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "2034": {
+    "title": "Stock Price Fluctuation ",
+    "patterns": [
+      "design",
+      "heap"
+    ],
+    "idea": "Keep a timestamp-to-price map for corrections and a multiset of live prices for max and min, removing the old price on an update.",
+    "pitfall": "Calling multiset::erase with a value, which deletes all equal prices; erase the iterator from find.",
+    "time": "O(log n) per operation",
+    "space": "O(n)"
+  },
+  "2035": {
+    "title": "Partition Array Into Two Arrays to Minimize Sum Difference",
+    "patterns": [
+      "binary-search",
+      "bit-manipulation"
+    ],
+    "idea": "Meet in the middle: list subset sums of each half by pick count, then for a picks on the left, binary search among n - a picks on the right for the sum closest to half the total.",
+    "pitfall": "Mixing pick counts, when a picks on the left must pair with exactly n - a on the right.",
+    "time": "O(n 2^n), n = half the array length",
+    "space": "O(2^n)"
+  },
+  "2096": {
+    "title": "Step-By-Step Directions From a Binary Tree Node to Another",
+    "patterns": [
+      "tree-dfs"
+    ],
+    "idea": "Find root-to-start and root-to-dest paths as letter strings, strip the common prefix, which reaches the LCA, then turn what remains of the start path into U moves.",
+    "pitfall": "Copying a path string into every recursive call, which uses O(n^2) memory on a skewed tree.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "2101": {
+    "title": "Detonate the Maximum Bombs",
+    "patterns": [
+      "graph-traversal"
+    ],
+    "idea": "Bomb i reaching bomb j is a directed edge since radii differ, so DFS from each bomb and take the largest reach.",
+    "pitfall": "Treating edges as undirected, for example with union-find.",
+    "time": "O(n^3)",
+    "space": "O(n^2)"
+  },
+  "2115": {
+    "title": "Find All Possible Recipes from Given Supplies",
+    "patterns": [
+      "topo-sort"
+    ],
+    "idea": "Point each ingredient at the recipes that need it and run Kahn's from the supplies, so a recipe becomes ready when its count of missing ingredients reaches zero, and then it acts as a supply.",
+    "pitfall": "Using a plain recursive check with no cycle guard, which loops on recipes that depend on each other.",
+    "time": "O(R + I + S), R = recipes, I = total ingredient entries, S = supplies",
+    "space": "O(R + I + S)"
+  },
+  "2149": {
+    "title": "Rearrange Array Elements by Sign",
+    "patterns": [
+      "two-pointers"
+    ],
+    "idea": "Write positives to even indices and negatives to odd indices of a new array, each with its own pointer, which keeps relative order.",
+    "pitfall": "Trying to swap in place, which breaks the relative order.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "2188": {
+    "title": "Minimum Time to Finish the Race",
+    "patterns": [
+      "dp-linear"
+    ],
+    "idea": "Precompute best[k], the fastest k straight laps on one tire, which stops paying off after about 18 laps, then dp[i] = min over k of dp[i - k] + best[k] + changeTime.",
+    "pitfall": "Not capping streak length, so lap times overflow.",
+    "time": "O((T + L) K), T = tires, L = laps, K = about 18",
+    "space": "O(L)"
+  },
+  "2203": {
+    "title": "Minimum Weighted Subgraph With the Required Paths",
+    "patterns": [
+      "shortest-path"
+    ],
+    "idea": "The two paths merge at some node and share the rest, so run Dijkstra from src1, from src2, and from dest on the reversed graph, then minimize the three distances' sum over all nodes.",
+    "pitfall": "Running the third Dijkstra on the forward graph, when distances to dest need reversed edges.",
+    "time": "O(E log V)",
+    "space": "O(V + E)"
+  },
+  "2226": {
+    "title": "Maximum Candies Allocated to K Children",
+    "patterns": [
+      "binary-search-answer"
+    ],
+    "idea": "If every child can get c candies, any smaller c also works, so binary search c while the sum of pile / c >= k.",
+    "pitfall": "Starting the search at c = 0, which divides by zero; search from 1 and treat 0 as the fallback answer.",
+    "time": "O(n log M), M = max pile",
+    "space": "O(1)"
+  },
+  "2332": {
+    "title": "The Latest Time to Catch a Bus",
+    "patterns": [
+      "two-pointers",
+      "sorting"
+    ],
+    "idea": "Sort both arrays and simulate boarding, then the candidate is the last bus's departure if a seat remains, else just before its last boarded passenger, stepping back past taken times.",
+    "pitfall": "Forgetting that the candidate can't equal another passenger's arrival time.",
+    "time": "O(n log n + m log m), n = buses, m = passengers",
+    "space": "O(1) besides sorting"
+  },
+  "2333": {
+    "title": "Minimum Sum of Squared Difference",
+    "patterns": [
+      "greedy",
+      "sorting"
+    ],
+    "idea": "Only |a - b| matters and the two budgets pool into k = k1 + k2, so always lower the largest differences, leveling them down together.",
+    "pitfall": "Spending one unit at a time on a heap, which is far too slow for a budget near 2e9.",
+    "time": "O(n log n)",
+    "space": "O(n)"
+  },
+  "2337": {
+    "title": "Move Pieces to Obtain a String",
+    "patterns": [
+      "two-pointers"
+    ],
+    "idea": "Pieces can't cross, so the L and R sequences without blanks must be equal, and then each L may only move left and each R only right.",
+    "pitfall": "Comparing only the piece sequences and ignoring the direction limits on positions.",
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "2349": {
+    "title": "Design a Number Container System",
+    "patterns": [
+      "design",
+      "heap"
+    ],
+    "idea": "Keep index-to-number plus, for each number, an ordered set of indices, erasing an index from its old number on change.",
+    "pitfall": "With lazy min-heaps, not checking that a popped index still holds that number.",
+    "time": "O(log n) per operation, n = change calls",
+    "space": "O(n)"
+  },
+  "2402": {
+    "title": "Meeting Rooms III",
+    "patterns": [
+      "heap",
+      "simulation"
+    ],
+    "idea": "Hold free rooms in a min-heap by number and busy rooms in one by (end time, number), and when no room is free, delay the meeting to the earliest end time, keeping its duration.",
+    "pitfall": "Using int for end times, which delays can push past 32 bits.",
+    "time": "O(m log m + m log n), m = meetings, n = rooms",
+    "space": "O(n)"
+  },
+  "2663": {
+    "title": "Lexicographically Smallest Beautiful String",
+    "patterns": [
+      "greedy"
+    ],
+    "idea": "Avoiding palindromes of length 2 and 3 avoids all longer ones, so bump the rightmost position that can rise validly, then fill the suffix with the smallest legal letters.",
+    "pitfall": "Not resetting the suffix to its smallest legal letters after the bump.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "2762": {
+    "title": "Continuous Subarrays",
+    "patterns": [
+      "monotonic-queue",
+      "sliding-window"
+    ],
+    "idea": "Two monotonic deques track the window's max and min, shrink left while their gap exceeds 2, and each right end adds right - left + 1 subarrays.",
+    "pitfall": "Counting in int, when the total can reach about n^2 / 2.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "2812": {
+    "title": "Find the Safest Path in a Grid",
+    "patterns": [
+      "grid",
+      "shortest-path"
+    ],
+    "idea": "Multi-source BFS from all thieves gives each cell's safeness, then a max-heap Dijkstra maximizes the path's minimum.",
+    "pitfall": "Running a BFS from each thief separately, which is too slow.",
+    "time": "O(n^2 log n)",
+    "space": "O(n^2)"
+  },
+  "3026": {
+    "title": "Maximum Good Subarray Sum",
+    "patterns": [
+      "prefix-sum",
+      "arrays-hashing"
+    ],
+    "idea": "For an end value v the start must be v - k or v + k, so store each value's minimum prefix sum before it and query both in O(1).",
+    "pitfall": "Keeping the earliest prefix for a value rather than the smallest.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "3169": {
+    "title": "Count Days Without Meetings",
+    "patterns": [
+      "intervals",
+      "sorting"
+    ],
+    "idea": "Sort and merge the meetings, then subtract merged lengths from the total days.",
+    "pitfall": "Off by one, since a meeting from s to e covers e - s + 1 days.",
+    "time": "O(n log n), n = meetings",
+    "space": "O(1) besides sorting"
+  },
+  "3355": {
+    "title": "Zero Array Transformation I",
+    "patterns": [
+      "prefix-sum"
+    ],
+    "idea": "Each query can lower any index it covers by at most 1, so a difference array gives each index's coverage, and the target is reachable when coverage >= nums[i] everywhere.",
+    "pitfall": "Placing the closing decrement at r instead of r + 1, which shortens every range by one.",
+    "time": "O(n + q), q = queries",
+    "space": "O(n)"
+  },
+  "3356": {
+    "title": "Zero Array Transformation II",
+    "patterns": [
+      "binary-search-answer",
+      "prefix-sum"
+    ],
+    "idea": "Using more queries never hurts, so binary search the prefix length k and test it with a difference array of total decrement per index.",
+    "pitfall": "Forgetting the k = 0 case, where the input is already all zero.",
+    "time": "O((n + q) log q), q = queries",
+    "space": "O(n)"
+  },
+  "3453": {
+    "title": "Separate Squares I",
+    "patterns": [
+      "binary-search-answer"
+    ],
+    "idea": "Area below a horizontal line grows with its height, so binary search y over reals for where the area below reaches half the total.",
+    "pitfall": "Stopping at any balanced y, when the area can stay flat across a gap and the lowest such y is required.",
+    "time": "O(n log(R / e)), R = y range, e = precision",
+    "space": "O(1)"
+  },
+  "3532": {
+    "title": "Path Existence Queries in a Graph I",
+    "patterns": [
+      "union-find"
+    ],
+    "idea": "In a sorted array any edge implies every adjacent gap between its ends is within maxDiff, so components are the maximal runs split at gaps above maxDiff.",
+    "pitfall": "Building the pair graph, which can have O(n^2) edges.",
+    "time": "O(n + q), q = queries",
+    "space": "O(n)"
+  },
+  "3592": {
+    "title": "Inverse Coin Change",
+    "patterns": [
+      "dp-knapsack"
+    ],
+    "idea": "Go through amounts in increasing order with a ways table from coins found so far, and if the table is one short at i, then i must be a coin, so add it with an unbounded knapsack update.",
+    "pitfall": "Accepting any mismatch, when a gap other than 0 or 1 means no coin set exists.",
+    "time": "O(n^2), n = largest amount",
+    "space": "O(n)"
+  },
+  "3623": {
+    "title": "Count Number of Trapezoids I",
+    "patterns": [
+      "math",
+      "arrays-hashing"
+    ],
+    "idea": "Group points by y, so a row with c points has C(c, 2) horizontal segments, and the answer sums products over all row pairs using a running total of earlier rows.",
+    "pitfall": "Looping over all row pairs, which is quadratic when one pass with a running sum suffices.",
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "3625": {
+    "title": "Count Number of Trapezoids II",
+    "patterns": [
+      "math",
+      "arrays-hashing"
+    ],
+    "idea": "Count pairs of parallel segments on different lines by grouping all point pairs by slope and line, then subtract parallelograms once, found as segment pairs with a shared midpoint and different slopes.",
+    "pitfall": "Forgetting that a parallelogram has two parallel pairs, so it gets counted twice.",
+    "time": "O(n^2)",
+    "space": "O(n^2)"
+  }
+}

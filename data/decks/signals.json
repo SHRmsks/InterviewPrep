@@ -1,0 +1,1110 @@
+{
+  "deck": "signals",
+  "title": "Pattern signals",
+  "cards": [
+    {
+      "id": "signals-001",
+      "type": "flash",
+      "q": "Licence plates count as possible duplicates when one's characters can be rearranged into the other's. Bucket `n` plates into duplicate groups.",
+      "a": "Hash map keyed by a canonical form. Signal: items are equal under reordering, so each has a normal form such as its sorted characters. Not pairwise comparison: that is O(n^2) comparisons, while one pass with canonical keys groups everything.",
+      "patterns": [
+        "arrays-hashing"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-002",
+      "type": "flash",
+      "q": "Badge numbers were issued in scattered batches. Find the longest run of consecutive numbers that all exist, in O(n) expected time.",
+      "a": "Hash set of values. Signal: consecutive values with no useful order, and the O(n) bound rules out ordering them first. Key step: only start counting at `x` when `x - 1` is absent, so each run is walked once.",
+      "patterns": [
+        "arrays-hashing"
+      ],
+      "skill": "idea",
+      "level": 2
+    },
+    {
+      "id": "signals-003",
+      "type": "flash",
+      "q": "An unordered ledger needs auditing. Return the row numbers of two entries whose amounts add up to exactly `T`.",
+      "a": "Hash map from amount to row. Signal: unordered data, a pair target, and the answer must be original row numbers. Not two pointers: they need ascending order, and sorting costs O(n log n) and loses the row numbers unless you carry them along.",
+      "patterns": [
+        "arrays-hashing",
+        "two-pointers"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-004",
+      "type": "flash",
+      "q": "Item prices are listed in ascending order and a gift card is worth exactly `T`. Find two items that use it up, with O(1) extra memory.",
+      "a": "Two pointers from both ends. Signal: ascending input, a pair target and an O(1) memory limit. Not a hash set: it also runs in O(n) but needs O(n) memory and ignores the given order.",
+      "patterns": [
+        "two-pointers",
+        "arrays-hashing"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-005",
+      "type": "flash",
+      "q": "An ascending array of sensor readings contains repeats. Overwrite it so the distinct readings sit at the front, with O(1) extra memory.",
+      "a": "Two pointers, read and write. Signal: in-place compaction, where one index scans and the other marks the end of the kept part. Not `erase` in a loop: each call shifts the tail, so the total can reach O(n^2).",
+      "patterns": [
+        "two-pointers"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-006",
+      "type": "flash",
+      "q": "Each minute of a video has a non-negative ad load. Find the longest stretch of consecutive minutes whose total load is at most `B`.",
+      "a": "Variable sliding window. Signal: a contiguous stretch, a cap, and non-negative values, so extending never lowers the total. Not prefix sums with a hashmap: those serve exact targets, and here a window gives O(n) time with O(1) memory.",
+      "patterns": [
+        "sliding-window",
+        "prefix-sum"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-007",
+      "type": "flash",
+      "q": "Daily profit can be positive or negative. Count the runs of consecutive days whose profit totals exactly `K`.",
+      "a": "Prefix sum plus hashmap. Signal: an exact target over contiguous ranges, with negatives allowed. Not sliding window: with negatives, extending can lower the total, so no rule says when to grow or shrink.",
+      "patterns": [
+        "prefix-sum",
+        "sliding-window"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-008",
+      "type": "flash",
+      "q": "A conveyor carries parts of many types and your bin accepts at most `K` distinct types. Find the longest consecutive section of the belt you can collect.",
+      "a": "Sliding window with a count map. Signal: longest contiguous section under an 'at most K' limit that stays valid when the section shrinks. Not checking all sections: that is O(n^2), while each part enters and leaves the window once.",
+      "patterns": [
+        "sliding-window"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-009",
+      "type": "flash",
+      "q": "A chat log is a sequence of speaker ids. Find the shortest consecutive stretch in which all `M` required people speak.",
+      "a": "Sliding window, shrink while valid. Signal: shortest contiguous stretch that covers a required set. Key step: extend right until everyone is covered, then pull left as far as coverage holds, recording the length each time.",
+      "patterns": [
+        "sliding-window"
+      ],
+      "skill": "idea",
+      "level": 2
+    },
+    {
+      "id": "signals-010",
+      "type": "flash",
+      "q": "A year of daily sales is final, and analysts fire a million queries for the total between two dates.",
+      "a": "Prefix sum. Signal: many range totals on data that never changes. Not summing per query: O(n) each is too slow, while running totals answer in O(1).",
+      "patterns": [
+        "prefix-sum"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-011",
+      "type": "flash",
+      "q": "A year of daily sales receives corrections to single days, mixed in with a million queries for the total between two dates.",
+      "a": "Fenwick tree or segment tree. Signal: point updates interleaved with range totals. Not prefix sums: one correction rewrites O(n) running totals, while here both operations are O(log n).",
+      "patterns": [
+        "range-query",
+        "prefix-sum"
+      ],
+      "skill": "recog",
+      "level": 2
+    },
+    {
+      "id": "signals-012",
+      "type": "flash",
+      "q": "Each of a million maintenance jobs adds load `c` to every kilometre from `l` to `r` of a highway. Only the final load of each kilometre matters.",
+      "a": "Difference array, a prefix sum in reverse. Signal: many range additions and a single read at the end. Not a segment tree: it works but adds a log factor, while `d[l] += c; d[r + 1] -= c` plus one running sum is O(n + q).",
+      "patterns": [
+        "prefix-sum"
+      ],
+      "skill": "recog",
+      "level": 2
+    },
+    {
+      "id": "signals-013",
+      "type": "flash",
+      "q": "A ring buffer stores distinct timestamps in ascending order, but the oldest entry sits at an unknown offset. Find it in O(log n).",
+      "a": "Binary search on a rotated array. Signal: ascending order with one break point, plus a log bound. Key step: compare `a[mid]` with `a[hi]` to learn which side holds the break.",
+      "patterns": [
+        "binary-search"
+      ],
+      "skill": "idea",
+      "level": 2
+    },
+    {
+      "id": "signals-014",
+      "type": "flash",
+      "q": "Once a build breaks, every later commit stays broken. Each test run takes ten minutes, so find the first broken commit in as few runs as possible.",
+      "a": "Binary search on a predicate. Signal: a yes/no property flips exactly once along an ordered sequence. Not a linear scan: it needs O(n) runs against O(log n).",
+      "patterns": [
+        "binary-search"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-015",
+      "type": "flash",
+      "q": "Split `n` chapters, in order, among `k` translators so the largest page load is as small as possible, with `n` up to 1e5.",
+      "a": "Binary search on the answer. Signal: minimise a maximum, and testing one candidate cap is a greedy O(n) scan. Not partition DP: O(k n^2) is far too slow at this size, while feasibility is monotone in the cap.",
+      "patterns": [
+        "binary-search-answer",
+        "dp-linear"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-016",
+      "type": "flash",
+      "q": "Split `n` chapters, in order, among `k` translators to minimise the sum of the squares of their page loads, with `n` up to 500.",
+      "a": "Partition DP: `dp[j][i]` is the best cost for the first `i` chapters using `j` translators. Signal: the objective adds a cost over all parts, and `n` is small. Not binary search on the answer: the cost is a total over all parts, so there is no simple greedy check for a candidate value.",
+      "patterns": [
+        "dp-linear",
+        "binary-search-answer"
+      ],
+      "skill": "recog",
+      "level": 2
+    },
+    {
+      "id": "signals-017",
+      "type": "flash",
+      "q": "Place `k` cell towers on given candidate positions along a road so that the closest pair of towers is as far apart as possible.",
+      "a": "Binary search on the answer. Signal: maximise a minimum, and a fixed gap `d` can be tested by placing towers greedily from the left. Not enumerating placements: the number of subsets explodes, while each check is O(n) on ordered positions.",
+      "patterns": [
+        "binary-search-answer"
+      ],
+      "skill": "recog",
+      "level": 2
+    },
+    {
+      "id": "signals-018",
+      "type": "flash",
+      "q": "A forklift clears `n` pallets of boxes within `H` hours, moving at most `r` boxes per hour and working on one pallet per hour. Find the smallest `r` that meets the deadline.",
+      "a": "Binary search on the answer. Signal: 'smallest rate that still works', and a faster rate never hurts. Not trying every rate upward: that is O(max * n), while checking `sum(ceil(boxes / r))` at each halving step costs O(n log max).",
+      "patterns": [
+        "binary-search-answer"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-019",
+      "type": "flash",
+      "q": "Daily balance changes can be negative. Find the shortest run of consecutive days with a total of at least `K`.",
+      "a": "Monotonic deque over prefix sums. Signal: shortest range with a lower bound on the total, and negatives allowed. Not sliding window: with negatives the total is not monotonic in length, so shrinking can skip the answer.",
+      "patterns": [
+        "monotonic-queue",
+        "prefix-sum",
+        "sliding-window"
+      ],
+      "skill": "recog",
+      "level": 3
+    },
+    {
+      "id": "signals-020",
+      "type": "flash",
+      "q": "You have numeric stickers like `9`, `34`, `3` and `30`. Paste them side by side to form the largest possible number.",
+      "a": "Custom comparator sort: put `a` before `b` when the text `a + b` beats `b + a`. Signal: the best order depends on how two items combine, not on their own values. Not numeric or plain text order: both put `30` before `3`, giving 303 where 330 is possible.",
+      "patterns": [
+        "sorting"
+      ],
+      "skill": "recog",
+      "level": 2
+    },
+    {
+      "id": "signals-021",
+      "type": "flash",
+      "q": "A fixed array of 1e7 measurements sits in memory and you need its median exactly once.",
+      "a": "Quickselect via `nth_element`. Signal: one selection on static data, with no need for full order. Not a heap: with `k` near `n/2` it costs O(n log n) time and O(n) extra memory, while quickselect averages O(n) in place.",
+      "patterns": [
+        "sorting",
+        "heap"
+      ],
+      "skill": "recog",
+      "level": 2
+    },
+    {
+      "id": "signals-022",
+      "type": "flash",
+      "q": "Calendar entries from several people overlap. Produce a compact list of busy blocks with no overlaps.",
+      "a": "Merge intervals. Signal: overlapping ranges must collapse into disjoint blocks. Not pairwise overlap checks: that is O(n^2), while ordering by start lets one scan extend the current block.",
+      "patterns": [
+        "intervals"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-023",
+      "type": "flash",
+      "q": "One stage, many acts with fixed start and end times. Book as many acts as possible with no overlap.",
+      "a": "Greedy by earliest end time. Signal: maximise the count of non-overlapping ranges. Not earliest start or shortest first: a long early act, or a short act straddling two others, breaks those rules.",
+      "patterns": [
+        "intervals",
+        "greedy"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-024",
+      "type": "flash",
+      "q": "One stage, many acts with fixed start and end times, and each act pays a different fee. Book a non-overlapping set with the highest total fee.",
+      "a": "DP over acts ordered by end time, using binary search for the last compatible act. Signal: the ranges carry weights, so the count no longer decides. Not greedy by end time: one long, well-paid act can beat several cheap short ones.",
+      "patterns": [
+        "dp-linear",
+        "greedy",
+        "intervals"
+      ],
+      "skill": "recog",
+      "level": 2
+    },
+    {
+      "id": "signals-025",
+      "type": "flash",
+      "q": "Workshops have fixed time ranges and each needs its own room throughout. What is the fewest rooms that fits them all?",
+      "a": "Sweep line over `+1` and `-1` events, or a min-heap of end times. Signal: the fewest rooms equals the peak number of simultaneous workshops. Not merging ranges: that yields busy blocks and loses how many overlap.",
+      "patterns": [
+        "sweep-line",
+        "intervals"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-026",
+      "type": "flash",
+      "q": "Radio stations each broadcast over a time range at a fixed power. Output the moments when the strongest power on air changes.",
+      "a": "Sweep line with an ordered multiset of active powers. Signal: a maximum over active ranges must be known at every start and end. Not merging ranges: it drops individual powers, so you need the active set during the sweep.",
+      "patterns": [
+        "sweep-line"
+      ],
+      "skill": "recog",
+      "level": 3
+    },
+    {
+      "id": "signals-027",
+      "type": "flash",
+      "q": "A document uses nested opening and closing tags. Check that every tag closes in the right order.",
+      "a": "Stack. Signal: nesting, where the most recently opened item must close first. Not counters: counts cannot catch wrong order such as `<a><b></a></b>`.",
+      "patterns": [
+        "stack"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-028",
+      "type": "flash",
+      "q": "A config format nests repeat blocks, so `2{a3{b}}` expands to `abbbabbb`. Expand a given config.",
+      "a": "Stack of partial results, or recursion. Signal: brackets nest, so an inner block must finish before its outer block. Not a flat scan: the outer repeat count and text must be saved until the inner block closes.",
+      "patterns": [
+        "stack"
+      ],
+      "skill": "recog",
+      "level": 2
+    },
+    {
+      "id": "signals-029",
+      "type": "flash",
+      "q": "A row of people faces right. For each person, find the first taller person in front of them.",
+      "a": "Monotonic stack. Signal: nearest taller element for every position, with no expiry rule. Not a monotonic deque: nothing leaves by age here, so one open end is enough for O(n).",
+      "patterns": [
+        "monotonic-stack",
+        "monotonic-queue"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-030",
+      "type": "flash",
+      "q": "A fixed-length block slides along a sensor stream. After each shift, report the largest reading inside the block.",
+      "a": "Monotonic deque. Signal: a moving-range maximum, where old readings expire from the far end. Not a monotonic stack: it removes from one end only, so readings that slid out stay inside.",
+      "patterns": [
+        "monotonic-queue",
+        "monotonic-stack"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-031",
+      "type": "flash",
+      "q": "Adjacent buildings of unit width have heights `h[i]`. Find the largest rectangular billboard that fits entirely inside their combined silhouette.",
+      "a": "Monotonic stack. Signal: each height's best rectangle spreads until the first shorter building on both sides. Key step: keep heights increasing, and when a height pops, its width spans from the new top to the current index.",
+      "patterns": [
+        "monotonic-stack"
+      ],
+      "skill": "idea",
+      "level": 2
+    },
+    {
+      "id": "signals-032",
+      "type": "flash",
+      "q": "Each record stores the address of the next record, and a corrupted link may loop back. Detect this with O(1) extra memory.",
+      "a": "Fast and slow pointers on a linked list. Signal: a `next` chain, a possible loop, and no memory for a visited set. Not a visited set: it works but takes O(n) memory, which breaks the limit.",
+      "patterns": [
+        "linked-list"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-033",
+      "type": "flash",
+      "q": "A one-way chain of tracks has unknown length. In one pass, remove the track that is `k` from the end.",
+      "a": "Two pointers with a fixed gap, plus a dummy head. Signal: a position measured from the end of a one-way chain. Not count then walk: that takes two passes, while a lead `k` nodes ahead leaves the trail just before the target.",
+      "patterns": [
+        "linked-list"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-034",
+      "type": "flash",
+      "q": "A network of routers has no cycles. Find the pair of routers with the most hops between them.",
+      "a": "Tree DFS returning height. Signal: connected with no cycles, so the longest path bends at one top node. Not a search from every router: that is O(n^2), while one DFS adding the two tallest child heights at each node is O(n).",
+      "patterns": [
+        "tree-dfs"
+      ],
+      "skill": "recog",
+      "level": 2
+    },
+    {
+      "id": "signals-035",
+      "type": "flash",
+      "q": "A company hierarchy stores only manager-to-report links. Find the most junior person who sits at or above both of two given employees.",
+      "a": "Tree DFS for the lowest common ancestor. Signal: a shared ancestor, with links that only go downward. Not walking up from each employee: there are no parent links, so one DFS reports upward what each branch found.",
+      "patterns": [
+        "tree-dfs"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-036",
+      "type": "flash",
+      "q": "You have the pre-order and in-order visit sequences of a hierarchy with unique labels. Rebuild the hierarchy.",
+      "a": "Divide and conquer on the root. Signal: the first pre-order label is the root, and it splits the in-order sequence into left and right parts. Not a linear scan for each root: that is O(n^2) on a chain, while a hashmap from label to in-order index gives O(n).",
+      "patterns": [
+        "divide-and-conquer",
+        "tree-dfs"
+      ],
+      "skill": "recog",
+      "level": 2
+    },
+    {
+      "id": "signals-037",
+      "type": "flash",
+      "q": "In a list of `n` = 1e5 exam scores, count the pairs where an earlier score is greater than a later one.",
+      "a": "Merge-based divide and conquer. Signal: counting out-of-order pairs, which split neatly into left, right and across. Not all pairs: O(n^2) at 1e5 is far too slow, while each merge counts the across pairs in linear time.",
+      "patterns": [
+        "divide-and-conquer"
+      ],
+      "skill": "recog",
+      "level": 2
+    },
+    {
+      "id": "signals-038",
+      "type": "flash",
+      "q": "A huge, very deep folder hierarchy must be searched for the match closest to the root.",
+      "a": "Level-order BFS. Signal: nearest by depth, so the first level with a match ends the search. Not DFS: its first match may be far deeper than the nearest one, so it cannot stop early.",
+      "patterns": [
+        "tree-bfs",
+        "tree-dfs"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-039",
+      "type": "flash",
+      "q": "Print a company hierarchy rank by rank, one line per rank, from the CEO down.",
+      "a": "Level-order BFS. Signal: output grouped by distance from the root. Not a plain BFS loop: you lose where each rank ends unless you read `q.size()` at the start of each round.",
+      "patterns": [
+        "tree-bfs"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-040",
+      "type": "flash",
+      "q": "A search index stores keys in nodes where everything to a node's left must be smaller and everything to its right larger. Confirm that a given structure obeys the rule.",
+      "a": "BST validation with inherited bounds, or an in-order walk that must be strictly increasing. Signal: the rule covers whole sides, not just direct children. Not comparing with children only: a deep node can violate a bound set by a distant ancestor.",
+      "patterns": [
+        "bst"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-041",
+      "type": "flash",
+      "q": "Seats become free during a show, and each request asks for the lowest free seat number at or above `x`. Frees and requests are mixed, 1e5 of each.",
+      "a": "Ordered set with `lower_bound`, a balanced BST. Signal: successor queries mixed with insertions. Not binary search on a vector: the search is O(log n), but each insertion shifts O(n) elements.",
+      "patterns": [
+        "bst",
+        "binary-search"
+      ],
+      "skill": "recog",
+      "level": 2
+    },
+    {
+      "id": "signals-042",
+      "type": "flash",
+      "q": "A search box must suggest stored product names as each letter is typed.",
+      "a": "Trie. Signal: queries about how a name begins, answered one character at a time. Not a hash set: it answers only whole-name lookups, so each keystroke would scan all names.",
+      "patterns": [
+        "trie",
+        "arrays-hashing"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-043",
+      "type": "flash",
+      "q": "Given a letter-tile board and a dictionary of 30000 words, find every word that can be traced through adjacent tiles.",
+      "a": "Trie plus backtracking. Signal: many words share their beginnings, so a single walk can track them all. Not one search per word: it repeats the same paths, while the trie abandons a path as soon as no word continues it.",
+      "patterns": [
+        "trie",
+        "backtracking"
+      ],
+      "skill": "recog",
+      "level": 3
+    },
+    {
+      "id": "signals-044",
+      "type": "flash",
+      "q": "Scores arrive in an endless stream, and at any moment you must report the current 100th-highest score.",
+      "a": "Min-heap of size 100. Signal: a live stream with repeated top-k reads. Not quickselect: it needs all the data in memory and a rerun per query, while each new score here costs O(log k).",
+      "patterns": [
+        "heap",
+        "sorting"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-045",
+      "type": "flash",
+      "q": "Forty log files are each in timestamp order. Produce one combined file in timestamp order, with `N` lines in total.",
+      "a": "K-way merge with a min-heap. Signal: many already ordered inputs and a repeated need for the smallest head. Not concatenating and re-sorting: that costs O(N log N), while a heap of `k` heads costs O(N log k).",
+      "patterns": [
+        "heap"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-046",
+      "type": "flash",
+      "q": "Patient wait times are logged one at a time, and a dashboard shows the middle value after every new entry.",
+      "a": "Two heaps. Signal: a running median over a growing stream. Key step: a max-heap holds the lower half and a min-heap the upper half, rebalanced so their sizes differ by at most one.",
+      "patterns": [
+        "heap"
+      ],
+      "skill": "idea",
+      "level": 2
+    },
+    {
+      "id": "signals-047",
+      "type": "flash",
+      "q": "Split a class into two teams so that no two students who dislike each other share a team, or report that it is impossible.",
+      "a": "Two-colouring by BFS or DFS. Signal: two groups with 'must differ' constraints on pairs. Key step: give each neighbour the opposite colour, and a neighbour that already has your colour proves it impossible.",
+      "patterns": [
+        "graph-traversal"
+      ],
+      "skill": "idea",
+      "level": 2
+    },
+    {
+      "id": "signals-048",
+      "type": "flash",
+      "q": "On a metro map, every ride between adjacent stations counts as one stop. Find the fewest stops between two stations.",
+      "a": "Plain BFS. Signal: every edge costs the same. Not Dijkstra: it gives the same answer, but its heap adds a log factor, because BFS already reaches nodes in distance order.",
+      "patterns": [
+        "graph-traversal",
+        "shortest-path"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-049",
+      "type": "flash",
+      "q": "On a metro map, each ride between adjacent stations has its own positive travel time. Find the quickest trip between two stations.",
+      "a": "Dijkstra with a priority queue. Signal: non-negative weights that differ between edges. Not plain BFS: it minimises the number of rides, and a route with more rides can be quicker.",
+      "patterns": [
+        "shortest-path",
+        "graph-traversal"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-050",
+      "type": "flash",
+      "q": "A maze has locked doors and matching keys on the floor, and every move costs one step. Find the fewest steps to the exit.",
+      "a": "BFS over `(cell, keys bitmask)`. Signal: moves all cost 1, but what you can do depends on what you hold. Not Dijkstra: equal weights make its heap pointless, and the real fix is widening the state.",
+      "patterns": [
+        "graph-traversal",
+        "shortest-path"
+      ],
+      "skill": "recog",
+      "level": 2
+    },
+    {
+      "id": "signals-051",
+      "type": "flash",
+      "q": "Flights have different prices and you may use at most `k` connections. Find the cheapest way from city A to city B.",
+      "a": "Bellman-Ford limited to `k + 1` rounds, or Dijkstra over `(city, flights used)`. Signal: weighted edges plus a cap on edge count. Not plain Dijkstra on cities: the cheapest way into a city may spend too many flights, so one distance per city loses valid routes.",
+      "patterns": [
+        "shortest-path"
+      ],
+      "skill": "recog",
+      "level": 2
+    },
+    {
+      "id": "signals-052",
+      "type": "flash",
+      "q": "Some road segments pay a rebate, so their cost is negative, though no loop makes money. Find the cheapest cost from the depot to every stop.",
+      "a": "Bellman-Ford, O(VE). Signal: negative edges with no negative cycle. Not Dijkstra: a settled node can still improve through a later negative edge, which breaks its greedy order.",
+      "patterns": [
+        "shortest-path"
+      ],
+      "skill": "recog",
+      "level": 2
+    },
+    {
+      "id": "signals-053",
+      "type": "flash",
+      "q": "Possible fibre routes between offices each have a cost. Connect all the offices at the lowest total cable cost.",
+      "a": "Minimum spanning tree, Kruskal or Prim. Signal: connect everything at least total cost, with no source node. Not Dijkstra: it minimises distance from one source, which can cost more total cable.",
+      "patterns": [
+        "mst",
+        "shortest-path"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-054",
+      "type": "flash",
+      "q": "Each village can dig its own well at a given cost or lay a pipe to another village at a given cost. Supply water to all villages as cheaply as possible.",
+      "a": "Minimum spanning tree with a virtual node. Signal: every item can connect to others or pay a standalone cost. Key step: add a source node linked to each village by its well cost, then run Kruskal.",
+      "patterns": [
+        "mst"
+      ],
+      "skill": "idea",
+      "level": 3
+    },
+    {
+      "id": "signals-055",
+      "type": "flash",
+      "q": "An installer must place packages so that each comes after those it needs. Output any valid install order.",
+      "a": "Topological sort with Kahn's algorithm. Signal: 'before' constraints between items, and any valid order is accepted. Not DFS pre-order: it can list a package before another of its dependencies has been placed.",
+      "patterns": [
+        "topo-sort"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-056",
+      "type": "flash",
+      "q": "Build targets list the targets they directly depend on. Decide whether any circular dependency exists.",
+      "a": "Topological sort, or DFS with three colours. Signal: directed dependency edges and a cycle check. Not union-find: it ignores direction, so the acyclic edges `a->b`, `a->c`, `b->c` look like a cycle.",
+      "patterns": [
+        "topo-sort",
+        "union-find"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-057",
+      "type": "flash",
+      "q": "Cables are added one by one between routers, and between additions you must say whether two given routers can reach each other.",
+      "a": "Union-find. Signal: edges only get added, mixed with connectivity queries. Not BFS per query: O(V + E) per query is too slow, while each union or find is nearly O(1) amortised.",
+      "patterns": [
+        "union-find",
+        "graph-traversal"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-058",
+      "type": "flash",
+      "q": "Undirected cables are laid one at a time between routers. Report the first cable that closes a loop.",
+      "a": "Union-find. Signal: a loop appears exactly when a new undirected edge joins two already connected nodes. Not topological sort: it applies to directed graphs, and these edges have no direction.",
+      "patterns": [
+        "union-find",
+        "topo-sort"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-059",
+      "type": "flash",
+      "q": "A satellite image marks each cell as forest or clear. Count the separate forests, where cells join only up, down, left and right.",
+      "a": "Flood fill by DFS or BFS. Signal: connected regions on cells with four neighbours. Not union-find: it works too, but one flood fill per unvisited cell is shorter and also O(rows * cols).",
+      "patterns": [
+        "grid",
+        "graph-traversal"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-060",
+      "type": "flash",
+      "q": "Some cells of a warehouse floor plan hold mould, and each minute it spreads to the four adjacent cells. When is every reachable cell infected?",
+      "a": "Multi-source BFS. Signal: many origins spreading at one step per tick. Not a BFS from each source: that costs O(sources * cells), while starting all sources at distance 0 costs O(cells).",
+      "patterns": [
+        "grid",
+        "graph-traversal"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-061",
+      "type": "flash",
+      "q": "Given coin types, list every distinct combination of coins that makes exactly `T`.",
+      "a": "Backtracking. Signal: the output is the full list of solutions. Not DP: merging states gives a count or a best value, but listing must still write out every solution.",
+      "patterns": [
+        "backtracking",
+        "dp-knapsack"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-062",
+      "type": "flash",
+      "q": "Given coin types, count the distinct combinations of coins that make exactly `T`, modulo 1e9+7.",
+      "a": "Unbounded knapsack DP. Signal: only a count is wanted, and subproblems `(coin index, remaining)` overlap. Not backtracking: it walks each combination, and the count can be astronomically large.",
+      "patterns": [
+        "dp-knapsack",
+        "backtracking"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-063",
+      "type": "flash",
+      "q": "A pizza shop offers 12 toppings. Enumerate every possible pizza, where topping order makes no difference.",
+      "a": "Subset enumeration: include or skip each item. Signal: order is irrelevant, so there are `2^n` results. Not permutations: they list the same pizza once per ordering of its toppings.",
+      "patterns": [
+        "backtracking"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-064",
+      "type": "flash",
+      "q": "A courier wants to try every possible visiting sequence of 9 shops, each visited once.",
+      "a": "Permutation enumeration with a `used` array. Signal: order matters and each item appears once, so there are `n!` results. Not subsets: include-or-skip fixes membership only and can never produce a different ordering.",
+      "patterns": [
+        "backtracking"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-065",
+      "type": "flash",
+      "q": "A courier must visit 18 shops once each with the least total driving time.",
+      "a": "Bitmask DP (Held-Karp). Signal: `n` near 20 and the state is the set visited plus the current shop. Not trying all orders: `18!` is hopeless, while `dp[mask][last]` costs O(2^n * n^2).",
+      "patterns": [
+        "dp-bitmask",
+        "backtracking"
+      ],
+      "skill": "recog",
+      "level": 2
+    },
+    {
+      "id": "signals-066",
+      "type": "flash",
+      "q": "Assign 16 workers to 16 jobs, one job each, minimising the total from a cost table.",
+      "a": "Bitmask DP. Signal: `n` around 15 to 20 with a one-to-one matching. Not trying all assignments: `16!` is hopeless, while `dp[mask]` over taken jobs costs O(2^n * n).",
+      "patterns": [
+        "dp-bitmask"
+      ],
+      "skill": "recog",
+      "level": 3
+    },
+    {
+      "id": "signals-067",
+      "type": "flash",
+      "q": "A busker can play any of `n` festival days, each with a known tip, but must rest the day after playing. Maximise total tips.",
+      "a": "Linear DP. Signal: choose or skip each item, where a choice blocks its neighbour. Not greedy by largest tip: with tips 2, 3, 2 the greedy pick earns 3, while skipping it earns 4.",
+      "patterns": [
+        "dp-linear",
+        "greedy"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-068",
+      "type": "flash",
+      "q": "From `n` = 1e5 daily record heights, keep as many days as possible, not necessarily adjacent, so the heights strictly rise.",
+      "a": "LIS with a `tails` array and `lower_bound`. Signal: longest increasing subsequence at a size where O(n^2) DP fails. Key step: `tails[k]` holds the smallest end value of any rising subsequence of length `k + 1`, giving O(n log n).",
+      "patterns": [
+        "dp-linear",
+        "binary-search"
+      ],
+      "skill": "idea",
+      "level": 2
+    },
+    {
+      "id": "signals-069",
+      "type": "flash",
+      "q": "A sequence of daily gains and losses is given. Find the best total over any consecutive period.",
+      "a": "Kadane's algorithm, a linear DP. Signal: best contiguous total with negatives allowed. Not sliding window: with negatives no rule says when to shrink, while `cur = max(x, cur + x)` restarts at the right moment.",
+      "patterns": [
+        "dp-linear",
+        "sliding-window"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-070",
+      "type": "flash",
+      "q": "A rover crosses a warehouse from top-left to bottom-right moving only right or down, collecting the value in each cell. Maximise the total.",
+      "a": "Grid DP. Signal: moves only right and down, so dependencies have no cycles. Not greedy by best next cell: a poor step now can open a much richer region.",
+      "patterns": [
+        "dp-grid"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-071",
+      "type": "flash",
+      "q": "Count the right-and-down routes from corner to corner of an `R` by `C` warehouse floor with some blocked cells, with `R` and `C` up to 1000.",
+      "a": "Grid DP. Signal: counting monotone routes, and blocked cells rule out a formula. Not DFS over routes: the count is exponential, while each cell just adds the two cells that feed it, for O(R * C).",
+      "patterns": [
+        "dp-grid"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-072",
+      "type": "flash",
+      "q": "Count the right-and-down routes across an open `R` by `C` floor with no obstacles, where `R` and `C` reach 1e6, modulo 1e9+7.",
+      "a": "Combinatorics: `C(R + C - 2, R - 1)`. Signal: no obstacles, so every route is just an arrangement of right and down moves. Not cell-by-cell DP: 1e12 cells is too many, while factorials and modular inverses need only O(R + C) setup.",
+      "patterns": [
+        "math",
+        "dp-grid"
+      ],
+      "skill": "recog",
+      "level": 2
+    },
+    {
+      "id": "signals-073",
+      "type": "flash",
+      "q": "Compute `a^b mod p` where `b` can reach 1e18.",
+      "a": "Fast exponentiation by squaring. Signal: a huge exponent under a modulus. Not repeated multiplication: `b` steps can never finish, while squaring and halving `b` takes O(log b).",
+      "patterns": [
+        "math"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-074",
+      "type": "flash",
+      "q": "A spell checker ranks dictionary words by the fewest single-letter inserts, deletes and replacements needed to reach them from the typed word.",
+      "a": "Edit distance DP. Signal: aligning two sequences under per-character operations. Not a fixed rule per mismatch: the best operation depends on later letters, so `dp[i][j]` tries insert, delete and replace.",
+      "patterns": [
+        "dp-string"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-075",
+      "type": "flash",
+      "q": "Two playlists share many tracks. Find the longest list of tracks that appears in both in the same relative order, gaps allowed.",
+      "a": "Longest common subsequence DP. Signal: two sequences, order kept, gaps allowed. Not a sliding window: it handles contiguous runs only, and gaps need `dp[i][j]` over both positions.",
+      "patterns": [
+        "dp-string",
+        "sliding-window"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-076",
+      "type": "flash",
+      "q": "A URL slug lost its hyphens. Decide whether it can be cut into valid dictionary words.",
+      "a": "DP over cut positions. Signal: `dp[i]` depends only on whether a dictionary word ends at `i` from a reachable cut. Not greedy longest match: with words `a`, `ab`, `bc`, the text `abc` fails if you take `ab` first.",
+      "patterns": [
+        "dp-string"
+      ],
+      "skill": "recog",
+      "level": 2
+    },
+    {
+      "id": "signals-077",
+      "type": "flash",
+      "q": "Split `n` parcels between two trucks so both carry exactly the same weight, with total weight at most 20000.",
+      "a": "0/1 knapsack on reachable sums (subset sum). Signal: a target of half the total, with small integer weights. Key step: loop sums downward in `dp[s] |= dp[s - w]`, so each parcel counts at most once.",
+      "patterns": [
+        "dp-knapsack"
+      ],
+      "skill": "idea",
+      "level": 2
+    },
+    {
+      "id": "signals-078",
+      "type": "flash",
+      "q": "A vending machine has coin values such as 1, 3 and 4. Give exact change for `T` with the fewest coins.",
+      "a": "Unbounded knapsack DP. Signal: arbitrary coin values and a minimum count. Not greedy by largest coin: for 6 it pays 4 + 1 + 1, while 3 + 3 uses two coins.",
+      "patterns": [
+        "dp-knapsack",
+        "greedy"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-079",
+      "type": "flash",
+      "q": "Neighbouring clusters on a line merge two at a time, each merge costing the combined size of the pair. Find the cheapest way to merge everything into one.",
+      "a": "Interval DP. Signal: only adjacent pieces combine, so the last merge splits the range in two. Not the Huffman greedy: it merges the two smallest anywhere, which adjacency forbids.",
+      "patterns": [
+        "dp-interval",
+        "greedy"
+      ],
+      "skill": "recog",
+      "level": 2
+    },
+    {
+      "id": "signals-080",
+      "type": "flash",
+      "q": "Clusters merge two at a time, any two you choose, each merge costing the combined size of the pair. Find the cheapest way to merge everything into one.",
+      "a": "Greedy with a min-heap (Huffman). Signal: any pair may merge, so the two smallest always go first. Not interval DP: there is no adjacency, so no ranges to split, and the heap gives O(n log n).",
+      "patterns": [
+        "greedy",
+        "heap",
+        "dp-interval"
+      ],
+      "skill": "recog",
+      "level": 2
+    },
+    {
+      "id": "signals-081",
+      "type": "flash",
+      "q": "A 100 cm bar must be cut at `m` marked points, and each cut costs the length of the piece being cut. Find the cheapest cutting order.",
+      "a": "Interval DP over cut positions. Signal: the order of operations matters and each one splits a range. Key step: `dp[i][j]` tries every cut `k` between marks `i` and `j` as the first, paying `pos[j] - pos[i]` plus both sides.",
+      "patterns": [
+        "dp-interval"
+      ],
+      "skill": "idea",
+      "level": 3
+    },
+    {
+      "id": "signals-082",
+      "type": "flash",
+      "q": "Employees form a hierarchy with a fun score each, and nobody attends the party along with their direct manager. Maximise the total fun.",
+      "a": "Tree DP with two states per node. Signal: a take-or-skip rule along parent-child links. Key step: `take = fun + sum(skip(child))` and `skip = sum(max(take(child), skip(child)))`.",
+      "patterns": [
+        "dp-tree"
+      ],
+      "skill": "idea",
+      "level": 2
+    },
+    {
+      "id": "signals-083",
+      "type": "flash",
+      "q": "In a network of `n` routers with no cycles, compute for every router the total hop count to all the others.",
+      "a": "Tree DP with rerooting. Signal: a whole-network answer is wanted at every node. Key step: solve one root, then moving to child `c` changes the total by `n - 2 * size[c]`, for O(n) overall.",
+      "patterns": [
+        "dp-tree"
+      ],
+      "skill": "idea",
+      "level": 3
+    },
+    {
+      "id": "signals-084",
+      "type": "flash",
+      "q": "A trader holds at most one unit of a commodity, and after each sale the rules ban buying for one day. Given daily prices, find the best total profit.",
+      "a": "State machine DP. Signal: today's allowed action depends on a small set of modes: holding, just sold, free. Not collecting every rise: the ban makes adjacent trades conflict, so each day must update all modes.",
+      "patterns": [
+        "dp-state-machine",
+        "greedy"
+      ],
+      "skill": "recog",
+      "level": 2
+    },
+    {
+      "id": "signals-085",
+      "type": "flash",
+      "q": "A trader can buy and sell a commodity on any days with no fees, holding at most one unit. Given daily prices, find the best total profit.",
+      "a": "Greedy sum of rises. Signal: no limit on trades, so every price rise can be collected. Not state machine DP: it also works, but `ans += max(0, p[i] - p[i - 1])` is all you need.",
+      "patterns": [
+        "greedy",
+        "dp-state-machine"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-086",
+      "type": "flash",
+      "q": "Count passcodes of length `n` over three symbols in which no symbol appears three times in a row.",
+      "a": "State machine DP. Signal: validity depends only on a short tail of the sequence. Not listing all codes: `3^n` grows too fast, while states `(last symbol, run length)` keep a fixed number of counts per position.",
+      "patterns": [
+        "dp-state-machine"
+      ],
+      "skill": "recog",
+      "level": 2
+    },
+    {
+      "id": "signals-087",
+      "type": "flash",
+      "q": "From each tile you may leap forward up to `r[i]` tiles. Can you get from the first tile to the last?",
+      "a": "Greedy farthest reach. Signal: a yes/no question where only the best reach so far matters. Not DP over predecessors: it costs O(n^2), when one running maximum decides it in O(n).",
+      "patterns": [
+        "greedy",
+        "dp-linear"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-088",
+      "type": "flash",
+      "q": "Every sensor id in a log appears exactly twice except one. Find that id with O(1) extra memory.",
+      "a": "XOR of all values. Signal: pairs cancel, and the memory limit rules out storing anything. Not a hash set: it needs O(n) memory.",
+      "patterns": [
+        "bit-manipulation"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-089",
+      "type": "flash",
+      "q": "Each of 1e6 users holds up to 32 fixed permissions, and each check asks whether a user has every permission in a required set.",
+      "a": "Bitmask. Signal: a small fixed universe of flags with set operations. Not per-user sets of names: each check costs far more than the O(1) test `(user & need) == need`.",
+      "patterns": [
+        "bit-manipulation"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-090",
+      "type": "flash",
+      "q": "Check whether a 1 MB text contains a given 10 KB signature, with a guaranteed linear worst case.",
+      "a": "KMP. Signal: one needle, one haystack and a linear worst-case bound. Not `string::find`: typical implementations are O(nm) in the worst case on repetitive input.",
+      "patterns": [
+        "string-matching"
+      ],
+      "skill": "recog",
+      "level": 2
+    },
+    {
+      "id": "signals-091",
+      "type": "flash",
+      "q": "Find any block of `L` characters that appears at least twice in a document of 1e6 characters.",
+      "a": "Rolling hash (Rabin-Karp). Signal: many overlapping fixed-length blocks to compare. Not `substr` into a hash set: each key costs O(L), so O(nL) overall, while a rolling hash shifts in O(1) and verifies on a hit.",
+      "patterns": [
+        "string-matching"
+      ],
+      "skill": "recog",
+      "level": 2
+    },
+    {
+      "id": "signals-092",
+      "type": "flash",
+      "q": "A live table of `n` teams receives score changes, and each query asks for the lowest score between two table positions.",
+      "a": "Segment tree. Signal: point updates mixed with range minimum. Not a Fenwick tree: min has no inverse, so you cannot subtract two prefix answers to isolate a range.",
+      "patterns": [
+        "range-query"
+      ],
+      "skill": "recog",
+      "level": 2
+    },
+    {
+      "id": "signals-093",
+      "type": "flash",
+      "q": "A cache holds `C` entries and evicts the one used longest ago. `get` and `put` must both be O(1).",
+      "a": "Hash map plus doubly linked list. Signal: O(1) lookup combined with O(1) move-to-front by recency. Not an ordered map on timestamps: it adds a log factor to every access.",
+      "patterns": [
+        "design",
+        "linked-list"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-094",
+      "type": "flash",
+      "q": "A raffle holds a changing set of names. Adding, removing and drawing a uniformly random name must all be O(1) on average.",
+      "a": "Vector plus hash map from name to index. Signal: a random draw needs positions, and removal needs lookup by name. Key step: to remove, swap the item with the last slot, fix its index, then `pop_back`.",
+      "patterns": [
+        "design",
+        "arrays-hashing"
+      ],
+      "skill": "idea",
+      "level": 2
+    },
+    {
+      "id": "signals-095",
+      "type": "flash",
+      "q": "A robot on a bounded board obeys 1000 commands: turn left, turn right, or step forward unless a wall blocks it. Report where it ends.",
+      "a": "Direct simulation. Signal: the rules are spelled out and the limits are small, so no clever idea is needed. Not hunting for a formula: the outcome depends on the whole command order, so run it with `dx`, `dy` and a direction index.",
+      "patterns": [
+        "simulation"
+      ],
+      "skill": "recog",
+      "level": 1
+    },
+    {
+      "id": "signals-096",
+      "type": "flash",
+      "q": "A board game state evolves by a fixed rule each tick, and you need the state after 1e12 ticks. Only a few thousand distinct states can occur.",
+      "a": "Simulation with cycle detection. Signal: deterministic steps, a small state space and a huge step count. Key step: record when each state first appears, then jump with `%` on the remaining ticks.",
+      "patterns": [
+        "simulation"
+      ],
+      "skill": "idea",
+      "level": 2
+    }
+  ]
+}
