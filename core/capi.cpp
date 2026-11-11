@@ -5,6 +5,8 @@
 
 #include "engine.hpp"
 
+using namespace std;
+
 namespace {
 
 interviewprep::Engine& engine() {
@@ -12,13 +14,13 @@ interviewprep::Engine& engine() {
   return instance;
 }
 
-std::string& lastResult() {
-  static std::string value;
+string& lastResult() {
+  static string value;
   return value;
 }
 
-std::string& lastError() {
-  static std::string value;
+string& lastError() {
+  static string value;
   return value;
 }
 
@@ -48,8 +50,8 @@ const char* interviewprep_call(const char* request) {
 
 const char* interviewprep_last_error(void) { return lastError().c_str(); }
 
-void* interviewprep_alloc(size_t size) { return std::malloc(size); }
+void* interviewprep_alloc(size_t size) { return malloc(size); }
 
-void interviewprep_free(void* pointer) { std::free(pointer); }
+void interviewprep_free(void* pointer) { free(pointer); }
 
 }  // extern "C"

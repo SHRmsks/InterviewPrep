@@ -610,7 +610,11 @@ only asks the core what to show and tells it what you clicked.
           </select>
         </label>
         <label class="field">Target company<select id="set-company">${companyOptions}</select></label>
+        <label class="field">Interview date<input type="date" id="set-interviewDate" value="${esc(s.interviewDate || "")}"></label>
       </div>
+      <p class="muted" style="margin:0;font-size:13.5px">${s.exploreToday != null
+        ? `New ground today: ${Math.round(s.exploreToday * 100)}% of new problems, easing to ${Math.round(s.exploreEnd * 100)}% by your interview.`
+        : "With no interview date, every pattern gets a first try, then one new problem in four goes to a topic you haven't done."}</p>
       <label class="check"><input type="checkbox" id="set-premium" ${s.premium ? "checked" : ""}> Recommend LeetCode Premium problems</label>
       <div class="dlg-actions"><button type="submit" class="primary">Save settings</button></div>
       <hr style="border:0;border-top:1px solid var(--line);width:100%;margin:0">
@@ -632,6 +636,7 @@ only asks the core what to show and tells it what you clicked.
       codeCap: Number(value("codeCap")), codeNew: Number(value("codeNew")), codeReviews: Number(value("codeReviews")),
       cardCap: Number(value("cardCap")), cardNew: Number(value("cardNew")),
       clock: value("clock"), company: value("company"), premium: $("#set-premium").checked,
+      interviewDate: value("interviewDate"),
     } });
     $("#settings").close();
     refresh();

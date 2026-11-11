@@ -20,7 +20,7 @@ scripts/         Resources builder, packaging, notarizing.
 
 ```bash
 make test      # the rule tests under memory and undefined-behavior checks, then the MCP server
-make sim       # simulates a learner, to see what the recommender weights do
+make sim       # runs made-up learners through the queue, to see what a rule change does
 make cli       # build/interviewprep
 make resources # data/resources.json, from the labels and decks
 make web       # dist/interviewprep.html, one self-contained file
@@ -132,53 +132,146 @@ Each new coding problem is one of these:
 
 | Badge       | What it picks | Why |
 |-------------|---------------|-----|
-| New pattern | A pattern you have never tried, the most asked first, while any is left | Nothing is known about an untried pattern, so nothing else can rank it |
-| New topic   | One new problem in four: a finer topic you have never done | New ground never stops |
-| Practice    | The rest, by each pattern's pull | See below |
+| New pattern | While any pattern is new, 3 new problems in 5: one of those, the most asked first | Nothing is known about a pattern you have never been tested on |
+| New topic   | Once none is, one new problem in four: a finer topic you have never done | New ground never stops |
+| Practice    | The rest, by each pattern's pull, among the patterns you have tried | See below |
 
-A pattern's pull is how much it gets asked, times how far you are from it (one
-minus your thinking score on it), halved for each new problem of it in the last 7
-study days. A pattern you just did hands most of its pull to the others, and gets
-it back a week later. Within a pattern, a problem is drawn by how much it gets
-asked and how well it suits your level, and a pattern's first problem aims easier.
+A pattern is new until it has been the main pattern of a problem you tried.
+Meeting it on the side of another problem doesn't count, here or in the pull:
+that never tested whether you can spot it.
+
+A pattern's pull is how much it gets asked, times how weak you are on it, halved
+for each new problem of it you solved in the last 7 study days. *Weak* doubles
+for every 120 points the pattern's working-code rating (below) sits under your
+overall one, and halves for every 120 above, kept between a half and four times.
+So a pattern where your code keeps failing comes up more, and one you just
+solved steps back for a week. A miss doesn't step it back: that would send you
+away from what you need.
+
+A new problem still waiting in your queue holds its pattern's place, and
+nothing is assumed about how it will go: being picked isn't a result, only a
+grade is. Until you grade or hide it, that pattern isn't picked again, so asking
+for more brings other patterns and never the same one twice. How hard the
+problem is, and which one, comes next.
+
+### How hard, and which problem
+
+Problem ratings come from LeetCode contests: a problem rated 1800 is solved by
+about half the contestants rated 1800. The app gives you two ratings on the same
+scale, from your first tries only (a re-solve says more about memory):
+
+- **For the idea.** The result is the thinking: the coach's thinking credit, or
+  your grade until the coach has judged the try. It sets how hard your next
+  problem is.
+- **For working code.** The result is whether your code worked: your grade, or
+  the coach's grade of your code when that is stricter. It sets which pattern
+  comes next, in the pull above.
+
+Each pattern gets your overall rating plus a nudge from the tries where it was
+the main pattern, so a pattern you have barely touched starts from your overall
+rating. A try moves a rating by how far its result was from what the rating
+expected, so solving a problem rated above you moves it a lot and missing that
+problem only a little. Insights shows both ratings.
+
+A new problem aims 150 above your idea rating on its pattern, where you would
+find the approach yourself on about 3 first tries in 10. If Hards beat you, your
+rating drops and the aim follows. It is chosen in three steps:
+
+1. **Level.** Easy, Medium or Hard, each placed at the middle rating of the
+   pattern's problems a pick can reach there (the ones in a finer topic, when
+   the level has any). The one nearest the aim is the most likely. How many
+   problems a level has doesn't matter.
+2. **Subpattern.** One of the pattern's finer topics with a problem left at that
+   level, drawn by pull: how much it gets asked, one minus its working-code
+   score, and halved for each new problem of it you solved lately. Problems with no finer
+   topic (most of the bank, and the less asked part of it) come up only when no
+   subpattern has one left at that level.
+3. **Problem.** Within that, by how much it gets asked and how close its rating is
+   to the aim.
+
+Two exceptions. A pattern where you showed zero clue (a blank, or "recognised:
+no" with the key step not found on your own) starts over: Easy problems until you
+find a key step yourself, then one Medium, then back to the aim. And on a pattern
+where you go over the time box, that share of its new problems aims 250 lower.
+
+In a mock interview, the weak slot aims the same way. The wildcard
+doesn't tailor itself, like a real interview. The numbers are under DIFFICULTY in
+`core/config.hpp`.
+
+That table is the rule with no interview date. Set one in Settings and new ground
+eases off smoothly instead: from 60% of new problems on your first practice day
+to 10% by the interview, on a cosine (35% halfway). New ground means a pattern you
+have never tried, then a finer topic you have never done; the rest come from the
+pull, among patterns you have met. The exploring picks are spaced evenly, with no
+coin flip, so at 35% you get 7 in every 20. Settings shows today's share under the
+date. The numbers are `EXPLORE_START` and `EXPLORE_END` in `core/config.hpp`.
 
 Cards, and the problems in a mock interview, come from three other kinds:
 
 | Slot     | What it picks | Why |
 |----------|---------------|-----|
-| Sibling  | Unseen, same pattern as something due or recently missed | Proves the pattern and not the memorized answer |
-| Weak     | Unseen, from a pattern chosen by Thompson sampling | Weak patterns come up often, strong ones fade |
-| Wildcard | Unseen, from a pattern nothing today points to | No priming, like a real interview |
+| Sibling  | Cards only. Unseen, on a pattern of a problem you missed lately | Ties a concept to what you just got wrong |
+| Weak     | Unseen. A mock problem comes from a pattern chosen by Thompson sampling; a card is the one on your weakest pattern | Weak patterns come up often, strong ones fade |
+| Wildcard | Unseen, from a pattern or deck nothing today points to | No priming, like a real interview |
 
-Every other new card follows your flaws instead (below).
+Cards are for concepts: complexity, C++ internals, operating systems,
+concurrency, networking, databases and system design. The five decks that drill
+coding itself (pattern signals, code templates, C++ without autocomplete, spot
+the bug, edge cases) start switched off, because a slip is practised on a
+problem. Switch one on in Settings and it joins the daily queue like any other.
 
 New faces show no labels until you have attempted them. Mixing patterns in the
 queue is deliberate, because telling patterns apart is the skill being trained.
 
 ### The personal profile
 
-Topics and flaws are kept apart. Each graded attempt counts toward its patterns
-for the **thinking** only: did you see which pattern it was, and did you find the
-key step. Once the coach has judged an attempt, its thinking labels are the
-credit; until then your own grade stands in. A coding slip never counts against a
-pattern, since the same off-by-one on two topics says nothing about either.
+Each graded attempt says two things about its patterns, and they are kept apart.
+The **thinking**: did you see which pattern it was, and did you find the key
+step. Once the coach has judged an attempt, its thinking labels are the credit;
+until then your own grade stands in. A coding slip never counts against the
+thinking, since the same off-by-one on two topics says nothing about either.
+And **working code**: did what you wrote work on the first try, by your grade or
+the coach's when it is stricter. That is where a slip counts, and it brings the
+pattern up more often (see above).
 
-The slips go to your **flaws** instead, each drilled by a deck:
+The thinking labels:
 
-| Flaw | Drilled by |
-|------|------------|
-| Off by one, or wrong bounds | Spot-the-bug cards |
-| Wrong update of pointers, window, visited or state | Spot-the-bug cards |
-| Wrong start value or base case | Spot-the-bug cards |
-| Missed an edge input: empty, one item, duplicates | Edge-case cards |
-| Overflow, or the wrong integer type | Edge-case cards |
-| C++ library misuse: containers, iterators, comparators | C++ without autocomplete cards |
-| An approach too slow for the limits | Complexity cards |
-| Right, but slow to write | Typed template drills, and easier new problems |
+| Label | Value | Credit | Means |
+|-------|-------|--------|-------|
+| recognised | yes | 1 | The right pattern, or any other approach that's correct and fast enough |
+| | partial | 0.5 | The right family, the wrong variant |
+| | wrong | 0 | A pattern whose precondition fails here, such as a window over negatives. The coach names the pattern you went for |
+| | no | 0 | No approach, or a brute force nowhere near it |
+| key step | own, hint, missed | 1, 0.5, 0 | For DP, the state and the recurrence. Always missed with wrong or no |
 
-Missing the pattern or the key step is drilled by the pattern signal cards. Until
-the coach has judged code, a missed card from one of those decks counts as a small
-sign of what it drills.
+Missing the pattern or the key step shows in your profile as a need, on the
+patterns where it happened. A pattern where you showed zero clue starts over:
+Easy problems until you find a key step yourself (see above).
+
+The slips are named as **flaws**, in the order you solve a problem. They don't
+choose cards. The coach grades the code that slipped, that grade lowers your
+working-code rating on the pattern, and the pattern comes up more. The reason
+shown after you attempt its next problem names the slip that shows most there,
+so you know what to watch for.
+
+| Flaw |
+|------|
+| Solved a different problem: the code answers another question |
+| Didn't handle a case the problem allows: empty, one item, all equal, negatives, nothing reachable |
+| Left out a step the approach needs: sort first, a visited set, skipping duplicates |
+| Off by one, or wrong bounds |
+| Wrong start value or base case |
+| Updated the wrong thing, or at the wrong time |
+| Wrong test or control flow: an inverted condition, `if` for `else if`, a stray `break` |
+| Overflow, or the wrong integer type |
+| C++ slip, library or language: containers, comparators, precedence, `a > b > c` |
+| Right idea, too slow for the limits |
+| Over the time box for its difficulty: it also eases that pattern's new problems |
+
+The coach names a slip by its cause, not its symptom. The last one is never the
+coach's: the app sets it from your time, with no slack, against 15, 25 or 40
+minutes for Easy, Medium or Hard. Until the coach has judged code, a missed card
+from a deck that drills a flaw counts as a small sign of it.
 
 Evidence is kept in four separate lines per pattern: first attempts, reviews,
 typed drills and flip cards. Comparing them finds what one score hides:
@@ -241,13 +334,17 @@ It records what it saw, from closed lists, so the same thing keeps the same name
 from one session to the next. It never writes a probability:
 
 - **Topics**: the 116 finer topics, or a whole pattern when none fits.
-- **Thinking**: recognised the pattern (yes, partial, no), and found the key step
-  (own, after a hint, missed).
-- **Flaws**: the eight above. Anything more specific, such as a base case set too
-  late, goes in the judgement's note.
+- **Thinking**: recognised the pattern (yes, partial, wrong with the pattern you
+  went for, no), and found the key step (own, after a hint, missed).
+- **Flaws**: the ones above, except the clock's. Anything more specific, such as
+  a base case set too late, goes in the judgement's note.
 
-The app decides everything else from those: which pattern comes next, which drill
-cards you get, and whether a problem is really done.
+Paste every attempt. From 2026-11-09 an attempt with no code counts as a blank,
+the same as no approach: you had none, or you asked for help. Before that day no
+code only means nothing was saved, so the coach leaves those out.
+
+The app decides everything else from those: how hard your next problem is,
+which pattern comes next, and whether a problem is really done.
 
 Before 2026-11-09 the model wrote two tables of probabilities
 (`profile/labels.json`) and judgements in an older shape
@@ -268,17 +365,19 @@ save over a limit is refused, which makes the model compact as it goes:
 
 What this is and isn't:
 
-- **Nothing here is trained.** The labels are a model's judgement, not
+- **No model is trained on you.** The labels are a model's judgement, not
   measurements, and every rule that turns them into picks is a hand-set number
-  in `core/config.hpp`.
+  in `core/config.hpp`. The only numbers fitted to your results are your two
+  ratings.
 - **It can be wrong.** You ran the code and it only read it. In live tests, models
   called buggy code correct and explained away a true Red. So a grade kinder than
   yours is refused unless it comes with an input worked through the code by hand,
   and a first try counts as a pass only when both grades are Blue.
-- **It can't change your progress, only add a check.** Your click decides when
-  cards expire. The model's grade sits beside yours in the log, it has no way to
-  touch `state.json`, and the most its grade can do is keep a problem's checks
-  going.
+- **It can't change your progress, only add to it.** Your click decides when
+  cards expire. The model's grade sits beside yours in the log, and it has no way
+  to touch `state.json`. The most its grade can do is keep a problem's checks
+  going and, when it is stricter than yours, count that first try as code that
+  didn't work, which brings the pattern up more often.
 
 ## Your data
 

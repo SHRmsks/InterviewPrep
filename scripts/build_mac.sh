@@ -35,7 +35,7 @@ cp data/resources.json "$APP/Contents/Resources/resources.json"
 # can't sit beside the app's own binary: Macs ignore case in file names by
 # default, so interviewprep and InterviewPrep would be one file.
 mkdir -p "$APP/Contents/Helpers"
-clang++ -std=c++17 -O2 -arch arm64 -arch x86_64 -mmacosx-version-min=14.0 \
+clang++ -std=c++17 -O2 -Wno-unqualified-std-cast-call -arch arm64 -arch x86_64 -mmacosx-version-min=14.0 \
     $(ls core/*.cpp | grep -v capi.cpp) cli/main.cpp cli/mcp.cpp -o "$APP/Contents/Helpers/interviewprep"
 strip -x "$APP/Contents/Helpers/interviewprep" 2>/dev/null || true
 

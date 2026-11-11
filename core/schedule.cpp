@@ -5,6 +5,8 @@
 #include <cstdlib>
 #include <iterator>
 
+using namespace std;
+
 namespace interviewprep {
 
 /*
@@ -22,7 +24,7 @@ int dateFromCivil(int y, int m, int d) {
   return era * 146097 + static_cast<int>(doe) - 719468;
 }
 
-std::string formatDate(int date) {
+string formatDate(int date) {
   int z = date + 719468;
   const int era = (z >= 0 ? z : z - 146096) / 146097;
   const unsigned doe = static_cast<unsigned>(z - era * 146097);
@@ -34,11 +36,11 @@ std::string formatDate(int date) {
   const unsigned m = mp + (mp < 10 ? 3 : -9);
   y += m <= 2;
   char buf[16];
-  std::snprintf(buf, sizeof buf, "%04d-%02u-%02u", y, m, d);
+  snprintf(buf, sizeof buf, "%04d-%02u-%02u", y, m, d);
   return buf;
 }
 
-static bool digits(const std::string& s, size_t from, size_t count, int* out) {
+static bool digits(const string& s, size_t from, size_t count, int* out) {
   if (from + count > s.size()) return false;
   int v = 0;
   for (size_t i = from; i < from + count; ++i) {
@@ -49,7 +51,7 @@ static bool digits(const std::string& s, size_t from, size_t count, int* out) {
   return true;
 }
 
-int parseDate(const std::string& s) {
+int parseDate(const string& s) {
   int y = 0, m = 0, d = 0;
   if (s.size() < 10 || s[4] != '-' || s[7] != '-') return -1;
   if (!digits(s, 0, 4, &y) || !digits(s, 5, 2, &m) || !digits(s, 8, 2, &d)) return -1;
@@ -57,7 +59,7 @@ int parseDate(const std::string& s) {
   return dateFromCivil(y, m, d);
 }
 
-int dateFromNow(const std::string& now) {
+int dateFromNow(const string& now) {
   int date = parseDate(now);
   if (date < 0) return -1;
   int hour = 0;
@@ -72,16 +74,16 @@ int dateFromNow(const std::string& now) {
 const Schedule PROBLEM_SCHEDULE = {
     PROBLEM_RULES,
     {nullptr, PROBLEM_RED_CHECKS, PROBLEM_YELLOW_CHECKS, PROBLEM_BLUE_CHECKS, nullptr},
-    {0, static_cast<int>(std::size(PROBLEM_RED_CHECKS)), static_cast<int>(std::size(PROBLEM_YELLOW_CHECKS)),
-     static_cast<int>(std::size(PROBLEM_BLUE_CHECKS)), 0},
+    {0, static_cast<int>(size(PROBLEM_RED_CHECKS)), static_cast<int>(size(PROBLEM_YELLOW_CHECKS)),
+     static_cast<int>(size(PROBLEM_BLUE_CHECKS)), 0},
     false,
 };
 
 const Schedule CARD_SCHEDULE = {
     CARD_RULES,
     {nullptr, CARD_RED_CHECKS, CARD_YELLOW_CHECKS, CARD_BLUE_CHECKS, nullptr},
-    {0, static_cast<int>(std::size(CARD_RED_CHECKS)), static_cast<int>(std::size(CARD_YELLOW_CHECKS)),
-     static_cast<int>(std::size(CARD_BLUE_CHECKS)), 0},
+    {0, static_cast<int>(size(CARD_RED_CHECKS)), static_cast<int>(size(CARD_YELLOW_CHECKS)),
+     static_cast<int>(size(CARD_BLUE_CHECKS)), 0},
     true,
 };
 
@@ -94,7 +96,7 @@ Gap checkGap(const Schedule& schedule, Track track, int step) {
 }
 
 // FNV-1a, which gives the same number natively and in WebAssembly.
-uint64_t seedOf(const std::string& id) {
+uint64_t seedOf(const string& id) {
   uint64_t hash = 0xCBF29CE484222325ull;
   for (unsigned char c : id) {
     hash ^= c;
@@ -182,7 +184,7 @@ const char* clickName(Click click) {
   return "r";
 }
 
-bool parseClick(const std::string& text, Click* out) {
+bool parseClick(const string& text, Click* out) {
   if (text == "b" || text == "B" || text == "blue") { *out = Click::Blue; return true; }
   if (text == "y" || text == "Y" || text == "yellow") { *out = Click::Yellow; return true; }
   if (text == "r" || text == "R" || text == "red") { *out = Click::Red; return true; }
@@ -204,7 +206,7 @@ const char* moveName(Move move) {
 // ── The clock ─────────────────────────────────────────────────────────────
 
 void Clock::markActive(int date) {
-  auto it = std::lower_bound(active_.begin(), active_.end(), date);
+  auto it = lower_bound(active_.begin(), active_.end(), date);
   if (it == active_.end() || *it != date) active_.insert(it, date);
 }
 
@@ -215,7 +217,7 @@ int Clock::day(int date) const {
   never takes a number, so a skipped day simply does not exist. Today gets
   the next free number whether or not it has clicks yet.
   */
-  auto it = std::lower_bound(active_.begin(), active_.end(), date);
+  auto it = lower_bound(active_.begin(), active_.end(), date);
   return static_cast<int>(it - active_.begin()) + 1;
 }
 
@@ -230,7 +232,7 @@ int queuePriority(const CardState& s, int today) {
   int base = PRIORITY_BLUE;
   if (s.track == Track::Red) base = PRIORITY_RED;
   else if (s.track == Track::Yellow) base = PRIORITY_YELLOW;
-  return base + AGING_PER_DAY * std::max(0, today - s.due);
+  return base + AGING_PER_DAY * max(0, today - s.due);
 }
 
 bool servedBefore(const CardState& a, const CardState& b, int today) {

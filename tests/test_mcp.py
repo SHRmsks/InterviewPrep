@@ -20,10 +20,9 @@ import tempfile
 BINARY = "build/interviewprep"
 RESOURCES = "data/resources.json"
 NOW = "2026-11-20T21:30"
-MODERN = "2026-07-28"
-LEGACY = "2025-11-25"
+PROTOCOL_VERSION = "2026-07-28"
 META = {
-    "io.modelcontextprotocol/protocolVersion": MODERN,
+    "io.modelcontextprotocol/protocolVersion": PROTOCOL_VERSION,
     "io.modelcontextprotocol/clientCapabilities": {},
     "io.modelcontextprotocol/clientInfo": {"name": "test", "version": "1"},
 }
@@ -60,18 +59,18 @@ class Client:
             raise TimeoutError("the server did not answer")
         return json.loads(self.process.stdout.readline())
 
-    def request(self, method, params=None, modern=True):
+    def request(self, method, params=None, with_meta=True):
         self.next_id += 1
         params = dict(params or {})
-        if modern:
+        if with_meta:
             params["_meta"] = META
         self.write(json.dumps({"jsonrpc": "2.0", "id": self.next_id, "method": method, "params": params}))
         reply = self.read()
         check(f"{method} echoes the id", reply.get("id") == self.next_id, reply)
         return reply
 
-    def tool(self, name, modern=True, **arguments):
-        reply = self.request("tools/call", {"name": name, "arguments": arguments}, modern)
+    def tool(self, name, **arguments):
+        reply = self.request("tools/call", {"name": name, "arguments": arguments})
         result = reply["result"]
         return result.get("isError", False), [block["text"] for block in result["content"]]
 
@@ -117,12 +116,12 @@ def read_lines(path):
         return [json.loads(line) for line in file]
 
 
-def test_modern_protocol(folder):
+def test_protocol(folder):
     client = Client(folder)
 
     discover = client.request("server/discover")["result"]
-    check("discover lists this revision", MODERN in discover["supportedVersions"])
-    check("discover lists a legacy revision", LEGACY in discover["supportedVersions"])
+    check("discover lists only this version", discover["supportedVersions"] == [PROTOCOL_VERSION],
+          discover["supportedVersions"])
     check("discover has a result type", discover["resultType"] == "complete")
     check("discover has caching hints", discover["ttlMs"] > 0 and discover["cacheScope"] == "public")
     check("discover declares tools", "tools" in discover["capabilities"])
@@ -150,16 +149,18 @@ def test_modern_protocol(folder):
     client.write(json.dumps({"jsonrpc": "2.0", "id": 90, "method": "tools/list",
                              "params": {"_meta": {**META, "io.modelcontextprotocol/protocolVersion": "1900-01-01"}}}))
     reply = client.read()
-    check("an unknown version gets the modern error", reply["error"]["code"] == -32022, reply)
-    check("that error lists what works", MODERN in reply["error"]["data"]["supported"])
+    check("an unknown version gets the version error", reply["error"]["code"] == -32022, reply)
+    check("that error lists what works", reply["error"]["data"]["supported"] == [PROTOCOL_VERSION])
     check("that error says what was asked", reply["error"]["data"]["requested"] == "1900-01-01")
 
     client.write(json.dumps({"jsonrpc": "2.0", "id": 91, "method": "tools/list", "params": {
-        "_meta": {"io.modelcontextprotocol/protocolVersion": MODERN}}}))
+        "_meta": {"io.modelcontextprotocol/protocolVersion": PROTOCOL_VERSION}}}))
     check("missing capabilities are refused", client.read()["error"]["code"] == -32602)
 
     client.write(json.dumps({"jsonrpc": "2.0", "id": 92, "method": "tools/list"}))
-    check("no version and no handshake is refused", client.read()["error"]["code"] == -32602)
+    reply = client.read()
+    check("a request with no version is refused", reply["error"]["code"] == -32602, reply)
+    check("that refusal names the version to use", PROTOCOL_VERSION in reply["error"]["message"], reply)
 
     check("an unknown method is refused", client.request("nope")["error"]["code"] == -32601)
     check("ping is gone in this revision", client.request("ping")["error"]["code"] == -32601)
@@ -190,37 +191,20 @@ def _string_id(client):
     return client.read()["id"]
 
 
-def test_legacy_protocol(folder):
+def test_old_clients_are_refused(folder):
+    """A client from before 2026-07-28 opens with initialize and puts no version in _meta."""
     client = Client(folder)
-    opened = client.request("initialize", {"protocolVersion": LEGACY, "capabilities": {},
-                                           "clientInfo": {"name": "old", "version": "1"}}, modern=False)["result"]
-    check("initialize echoes a known version", opened["protocolVersion"] == LEGACY)
-    check("initialize names the server", opened["serverInfo"]["name"] == "interviewprep")
-    check("initialize declares tools", "tools" in opened["capabilities"])
-    check("initialize gives the instructions", "profile_read" in opened["instructions"])
-    check("legacy results stay legacy", "resultType" not in opened)
+    old = client.request("initialize", {"protocolVersion": "2025-11-25", "capabilities": {},
+                                        "clientInfo": {"name": "old", "version": "1"}}, with_meta=False)
+    check("initialize from an old client is refused", old["error"]["code"] == -32602, old)
+    check("the refusal names the version to use", PROTOCOL_VERSION in old["error"]["message"], old)
 
     client.write('{"jsonrpc":"2.0","method":"notifications/initialized"}')
-    check("ping works after a handshake", client.request("ping", modern=False)["result"] == {})
-    listed = client.request("tools/list", modern=False)["result"]
-    check("tools list without _meta", [t["name"] for t in listed["tools"]] == TOOLS)
-    is_error, text = client.tool("batch_pending", modern=False)
-    check("tools run without _meta", not is_error and "items" in json.loads(text[0]))
-    check("discover is modern only here", client.request("server/discover", modern=False)["error"]["code"] == -32601)
-
-    # The spec lets one process serve both eras at once.
-    check("the same process serves modern requests", "supportedVersions" in client.request("server/discover")["result"])
-    client.close()
-
-    client = Client(folder)
-    newer = client.request("initialize", {"protocolVersion": "2031-01-01", "capabilities": {}}, modern=False)["result"]
-    check("an unknown version gets the newest handshake", newer["protocolVersion"] == LEGACY)
-    client.close()
-
-    client = Client(folder)
-    older = client.request("initialize", {"protocolVersion": "2024-11-05", "capabilities": {}}, modern=False)["result"]
-    check("an old version is kept", older["protocolVersion"] == "2024-11-05")
-    client.close()
+    check("a handshake opens nothing", client.request("tools/list", with_meta=False)["error"]["code"] == -32602)
+    check("ping without a version is refused", client.request("ping", with_meta=False)["error"]["code"] == -32602)
+    check("the same process still answers a request with a version",
+          "supportedVersions" in client.request("server/discover")["result"])
+    check("closing stdin ends the server cleanly", client.close() == 0)
 
 
 def test_a_whole_review(folder):
@@ -255,6 +239,8 @@ def test_a_whole_review(folder):
     check("code arrives byte for byte, under its paste line", first["attempts"][0]["code"] == "// ── Paste 1 at 21:30 ──\n" + code, first["attempts"])
     check("code names its day's file", first["attempts"][0]["file"] == "lc207/2026-11-02.cpp")
     check("no code means an empty list", second["attempts"] == [])
+    check("no code before 2026-11-09 means nothing was saved", second["no_code"].startswith("nothing saved then"), second)
+    check("an attempt with code has no such note", "no_code" not in first)
     check("finer topics come along when a problem has them", third["resources_topics"] == ["arrays-hashing/set-lookup"])
 
     # The closed lists.
@@ -262,9 +248,12 @@ def test_a_whole_review(folder):
     graphs = next(p for p in lists["patterns"] if p["slug"] == "graph-traversal")
     check("topics come under their pattern", "graph-traversal/multi-source-bfs" in [t["slug"] for t in graphs["topics"]])
     check("each topic says what points to it", all(t["signal"] for t in graphs["topics"]))
-    check("flaws are listed", [f["slug"] for f in lists["flaws"]][:2] == ["off-by-one", "wrong-state-update"])
-    check("each flaw names its deck", all(f["drilled_by"] for f in lists["flaws"]))
-    check("the thinking labels are listed", lists["thinking"]["key_step"] == ["own", "hint", "missed"])
+    slugs = [f["slug"] for f in lists["flaws"]]
+    check("flaws are listed in the order you solve", slugs[:3] == ["misread-problem", "missed-edge-input", "missing-piece"], slugs)
+    check("a flaw names no deck: slips are practised on problems", all("drilled_by" not in f for f in lists["flaws"]))
+    check("the clock's flaw isn't the coach's to name", "slow-to-write" not in slugs)
+    check("the thinking labels are listed", lists["thinking"]["recognised"] == ["yes", "partial", "wrong", "no"]
+          and lists["thinking"]["key_step"] == ["own", "hint", "missed"])
 
     # Judging.
     log = f"{folder}/profile/judged-attempts.jsonl"
@@ -330,6 +319,48 @@ def test_a_whole_review(folder):
     client.close()
 
     check("no tool ever touched state.json", digest(f"{folder}/state.json") == state)
+
+
+def test_thinking_and_blanks(folder):
+    graded(folder, "lc2", "b", "2026-11-03T21:30")                          # before pasting began: nothing saved
+    graded(folder, "lc128", "r", "2026-11-09T21:30", "int a;\n")
+    graded(folder, "lc1", "r", "2026-11-10T21:30")                          # after: no paste means a blank
+    client = Client(folder)
+    log = f"{folder}/profile/judged-attempts.jsonl"
+    items = {i["problem"]: i for i in client.tool_json("batch_pending")["items"]}
+    check("a blank is marked as one", items["lc1"]["no_code"].startswith("blank"), items["lc1"])
+    check("an old empty save is marked to drop", items["lc2"]["no_code"].startswith("nothing saved then"), items["lc2"])
+
+    # Wrong names the pattern they went for, and only a pattern this problem doesn't use.
+    base = {"problem": "lc128", "date": "2026-11-09", "model_grade": "r", "key_step": "missed",
+            "topics": ["arrays-hashing/set-lookup"], "note": "Slid a window over unsorted values."}
+    client.refused("judgement_write", "reached_for", recognised="wrong", **base)
+    client.refused("judgement_write", "is not a pattern", recognised="wrong", reached_for="window-ish", **base)
+    client.refused("judgement_write", "can't be one this problem uses", recognised="wrong", reached_for="arrays-hashing", **base)
+    client.refused("judgement_write", "only with recognised wrong", recognised="no", reached_for="sliding-window", **base)
+    client.refused("judgement_write", "no key step to find", **{**base, "recognised": "no", "key_step": "own"})
+    client.refused("judgement_write", "set by the app", recognised="no", flaws=["slow-to-write"], **base)
+    client.refused("judgement_write", "partial, wrong or no", recognised="maybe", **base)
+    check("refusals write nothing", not os.path.exists(log))
+    client.tool_json("judgement_write", recognised="wrong", reached_for="sliding-window", flaws=["misread-problem"], **base)
+    line = read_lines(log)[0]
+    check("wrong keeps the pattern they went for", line["recognised"] == "wrong" and line["reached_for"] == "sliding-window", line)
+    check("a flaw that only shows in the rates is still named", line["flaws"] == ["misread-problem"])
+
+    # A blank can only be judged as one, and is filled in that way.
+    client.refused("judgement_drop", "is a blank", problem="lc1", date="2026-11-10", reason="No code.")
+    client.refused("judgement_write", "is a blank", problem="lc1", date="2026-11-10", recognised="yes", key_step="own")
+    client.refused("judgement_write", "read from code", problem="lc1", date="2026-11-10", flaws=["off-by-one"])
+    client.tool_json("judgement_write", problem="lc1", date="2026-11-10", topics=["arrays-hashing"], by="test")
+    blank = read_lines(log)[1]
+    check("a blank is saved as no approach", (blank["model_grade"], blank["recognised"], blank["key_step"]) == ("r", "no", "missed")
+          and blank["blank"] is True and blank["had_code"] is False, blank)
+
+    # An empty save from before still drops.
+    check("an old empty save drops", client.tool_json("judgement_drop", problem="lc2", date="2026-11-03", reason="Nothing saved.")["dropped"])
+    check("nothing is left", client.tool_json("batch_pending")["total"] == 0)
+    client.close()
+
 
 
 def test_judgements_from_before_stay_as_they_were(folder):
@@ -454,7 +485,9 @@ def test_the_coach_can_only_add_checks(folder):
     state = digest(f"{folder}/state.json")
     check("first the problem is gone", run(folder, NOW, "show", "lc1").splitlines()[1].startswith("Retired"))
     first = run(folder, NOW, "recommend", "code", "4")
-    check("new problems come from patterns not tried yet", first.count("New pattern:") == 4, first)
+    # One problem graded, so these are new problems 1 to 4: three go to a new pattern, one comes from the pull.
+    check("three new problems in four go to a pattern not tried yet", first.count("New pattern:") == 3, first)
+    check("the fourth comes from the pull", first.count("of today's pull") == 1, first)
 
     # The coach finds a bug on that last check: the app reads its log and keeps the problem going.
     client = Client(folder)
@@ -503,7 +536,7 @@ def test_a_damaged_file_is_left_alone(folder):
 
 
 def main():
-    for test in (test_modern_protocol, test_legacy_protocol, test_a_whole_review,
+    for test in (test_protocol, test_old_clients_are_refused, test_a_whole_review, test_thinking_and_blanks,
                  test_judgements_from_before_stay_as_they_were, test_big_and_broken_files,
                  test_the_coach_can_only_add_checks, test_a_failed_save_keeps_the_old_file,
                  test_a_damaged_file_is_left_alone):

@@ -128,6 +128,28 @@ struct SettingsView: View {
                         set: { update(["premium": $0]) }
                     ))
                 }
+                Section("Interview") {
+                    Toggle("I have an interview date", isOn: Binding(
+                        get: { !settings.interviewDate.isEmpty },
+                        set: { on in
+                            let inTwoMonths = Calendar.current.date(byAdding: .day, value: 60, to: Date()) ?? Date()
+                            update(["interviewDate": on ? Self.dayString(inTwoMonths) : ""])
+                        }
+                    ))
+                    if let day = Self.day(settings.interviewDate) {
+                        DatePicker("Interview date", selection: Binding(
+                            get: { day },
+                            set: { update(["interviewDate": Self.dayString($0)]) }
+                        ), displayedComponents: .date)
+                        if let share = settings.exploreToday, let end = settings.exploreEnd {
+                            Text("New ground today: \(percent(share)) of new problems, easing to \(percent(end)) by then.")
+                                .font(.callout).foregroundStyle(.secondary)
+                        }
+                    } else {
+                        Text("Without a date, every pattern gets a first try, then one new problem in four goes to a topic you haven't done.")
+                            .font(.callout).foregroundStyle(.secondary)
+                    }
+                }
                 Section("Schedule") {
                     Picker("Days that count", selection: Binding(
                         get: { settings.clock },
@@ -148,9 +170,24 @@ struct SettingsView: View {
         .formStyle(.grouped)
         // Tall enough for every section. Without a height the window opened at
         // about 450 points and hid export and import below the fold.
-        .frame(width: 440, height: 560)
+        .frame(width: 440, height: 790)
         .onAppear { settings = model.settings() }
     }
+
+    /// The engine keeps dates as "2026-12-15", in your own time zone.
+    private static let dayFormat: DateFormatter = {
+        let format = DateFormatter()
+        format.locale = Locale(identifier: "en_US_POSIX")
+        format.calendar = Calendar(identifier: .gregorian)
+        format.dateFormat = "yyyy-MM-dd"
+        return format
+    }()
+
+    private static func day(_ text: String) -> Date? { text.isEmpty ? nil : dayFormat.date(from: text) }
+
+    private static func dayString(_ date: Date) -> String { dayFormat.string(from: date) }
+
+    private func percent(_ share: Double) -> String { "\(Int((share * 100).rounded()))%" }
 
     private func number(_ title: String, _ value: Int, _ range: ClosedRange<Int>, key: String) -> some View {
         Stepper(value: Binding(get: { value }, set: { update([key: $0]) }), in: range) {

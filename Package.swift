@@ -10,7 +10,10 @@ let package = Package(
         .target(
             name: "CCore",
             path: "core",
-            publicHeadersPath: "."
+            publicHeadersPath: ".",
+            // The core says `using namespace std;` and calls move() without std::,
+            // which clang warns about on every call. This turns just that warning off.
+            cxxSettings: [.unsafeFlags(["-Wno-unqualified-std-cast-call"])]
         ),
         .executableTarget(
             name: "InterviewPrep",

@@ -170,6 +170,11 @@ struct AppSettings: Decodable {
     var clock, company: String
     var premium: Bool
     var decksOff: [String]
+    /// "2026-12-15", or empty for none.
+    var interviewDate: String
+    /// With a date: today's share of new problems that explore, and where it ends.
+    var exploreToday: Double?
+    var exploreEnd: Double?
 }
 
 struct SettingsReply: Decodable { let settings: AppSettings }

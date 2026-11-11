@@ -4,6 +4,8 @@
 #include <cstdlib>
 #include <cstring>
 
+using namespace std;
+
 namespace interviewprep {
 
 const Json& Json::operator[](const char* key) const {
@@ -23,15 +25,15 @@ bool Json::has(const char* key) const {
   return false;
 }
 
-Json& Json::set(const std::string& key, Json v) {
+Json& Json::set(const string& key, Json v) {
   type_ = Type::Object;
   for (auto& m : obj_) {
     if (m.first == key) {
-      m.second = std::move(v);
+      m.second = move(v);
       return *this;
     }
   }
-  obj_.emplace_back(key, std::move(v));
+  obj_.emplace_back(key, move(v));
   return *this;
 }
 
@@ -39,14 +41,14 @@ Json& Json::set(const std::string& key, Json v) {
 
 class JsonParser {
  public:
-  explicit JsonParser(std::string_view s) : s_(s) {}
+  explicit JsonParser(string_view s) : s_(s) {}
 
-  Json run(std::string* error) {
+  Json run(string* error) {
     Json v = value(0);
     space();
     if (ok_ && i_ != s_.size()) fail("unexpected text after the JSON value");
     if (!ok_) {
-      if (error) *error = err_ + " at byte " + std::to_string(i_);
+      if (error) *error = err_ + " at byte " + to_string(i_);
       return Json();
     }
     return v;
@@ -55,10 +57,10 @@ class JsonParser {
  private:
   static constexpr int kMaxDepth = 64;
 
-  std::string_view s_;
+  string_view s_;
   size_t i_ = 0;
   bool ok_ = true;
-  std::string err_;
+  string err_;
 
   void fail(const char* msg) {
     if (ok_) { ok_ = false; err_ = msg; }
@@ -78,7 +80,7 @@ class JsonParser {
   }
 
   bool word(const char* w) {
-    size_t n = std::strlen(w);
+    size_t n = strlen(w);
     if (s_.substr(i_, n) == w) { i_ += n; return true; }
     return false;
   }
@@ -90,7 +92,7 @@ class JsonParser {
     switch (s_[i_]) {
       case '{': return object(depth);
       case '[': return array(depth);
-      case '"': { Json j; j.type_ = Json::Type::String; j.str_ = string(); return j; }
+      case '"': { Json j; j.type_ = Json::Type::String; j.str_ = quotedString(); return j; }
       case 't': if (word("true")) return Json(true); break;
       case 'f': if (word("false")) return Json(false); break;
       case 'n': if (word("null")) return Json(); break;
@@ -108,11 +110,11 @@ class JsonParser {
     while (ok_) {
       space();
       if (i_ >= s_.size() || s_[i_] != '"') { fail("expected a string key"); break; }
-      std::string key = string();
+      string key = quotedString();
       space();
       if (!eat(':')) { fail("expected ':'"); break; }
       Json v = value(depth + 1);
-      j.obj_.emplace_back(std::move(key), std::move(v));
+      j.obj_.emplace_back(move(key), move(v));
       space();
       if (eat('}')) break;
       if (!eat(',')) { fail("expected ',' or '}'"); break; }
@@ -134,7 +136,7 @@ class JsonParser {
     return j;
   }
 
-  static void appendUtf8(std::string& out, unsigned cp) {
+  static void appendUtf8(string& out, unsigned cp) {
     if (cp < 0x80) {
       out += static_cast<char>(cp);
     } else if (cp < 0x800) {
@@ -167,8 +169,8 @@ class JsonParser {
     return true;
   }
 
-  std::string string() {
-    std::string out;
+  string quotedString() {
+    string out;
     ++i_;  // opening quote
     while (i_ < s_.size()) {
       char c = s_[i_++];
@@ -212,21 +214,21 @@ class JsonParser {
       else break;
     }
     if (i_ == start) { fail("invalid value"); return Json(); }
-    std::string token(s_.substr(start, i_ - start));
+    string token(s_.substr(start, i_ - start));
     char* end = nullptr;
-    double d = std::strtod(token.c_str(), &end);
+    double d = strtod(token.c_str(), &end);
     if (end != token.c_str() + token.size()) { fail("invalid number"); return Json(); }
     return Json(d);
   }
 };
 
-Json Json::parse(std::string_view text, std::string* error) {
+Json Json::parse(string_view text, string* error) {
   return JsonParser(text).run(error);
 }
 
 // ── Writer ────────────────────────────────────────────────────────────────
 
-static void writeString(std::string& out, const std::string& s) {
+static void writeString(string& out, const string& s) {
   out += '"';
   for (unsigned char c : s) {
     switch (c) {
@@ -238,7 +240,7 @@ static void writeString(std::string& out, const std::string& s) {
       default:
         if (c < 0x20) {
           char buf[8];
-          std::snprintf(buf, sizeof buf, "\\u%04x", c);
+          snprintf(buf, sizeof buf, "\\u%04x", c);
           out += buf;
         } else {
           out += static_cast<char>(c);
@@ -248,17 +250,17 @@ static void writeString(std::string& out, const std::string& s) {
   out += '"';
 }
 
-void Json::dumpTo(std::string& out) const {
+void Json::dumpTo(string& out) const {
   switch (type_) {
     case Type::Null: out += "null"; break;
     case Type::Bool: out += bool_ ? "true" : "false"; break;
     case Type::Number: {
-      if (!std::isfinite(num_)) { out += "null"; break; }
+      if (!isfinite(num_)) { out += "null"; break; }
       char buf[32];
-      if (num_ == std::floor(num_) && std::fabs(num_) < 1e15) {
-        std::snprintf(buf, sizeof buf, "%.0f", num_);
+      if (num_ == floor(num_) && fabs(num_) < 1e15) {
+        snprintf(buf, sizeof buf, "%.0f", num_);
       } else {
-        std::snprintf(buf, sizeof buf, "%.6g", num_);
+        snprintf(buf, sizeof buf, "%.6g", num_);
       }
       out += buf;
       break;
@@ -291,8 +293,8 @@ void Json::dumpTo(std::string& out) const {
   }
 }
 
-std::string Json::dump() const {
-  std::string out;
+string Json::dump() const {
+  string out;
   dumpTo(out);
   return out;
 }

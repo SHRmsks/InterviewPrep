@@ -2,7 +2,7 @@
 #
 #   make cli        command-line tool, build/interviewprep
 #   make test       rule tests under memory and undefined-behavior checks, then the MCP server
-#   make sim        simulate a learner to see what the recommender weights do
+#   make sim        run made-up learners through the queue, to see what a rule change does
 #   make resources  data/resources.json from the labels and decks
 #   make wasm       the C++ core for the website, web/core.wasm
 #   make web        the website, one self-contained file, dist/interviewprep.html
@@ -11,7 +11,10 @@
 #   make all        everything above
 
 CXX      ?= clang++
-CXXFLAGS ?= -std=c++17 -O2 -Wall -Wextra
+# The code says `using namespace std;` and calls move() without std::, which
+# clang warns about on every call. NO_MOVE_WARNING turns just that warning off.
+NO_MOVE_WARNING := -Wno-unqualified-std-cast-call
+CXXFLAGS ?= -std=c++17 -O2 -Wall -Wextra $(NO_MOVE_WARNING)
 WASI_SDK ?= .tools/wasi-sdk
 
 CORE_SRC := core/json.cpp core/schedule.cpp core/resources.cpp core/profile.cpp \
@@ -32,7 +35,7 @@ build/interviewprep: $(CORE_SRC) $(CLI_SRC) $(CORE_HDR) $(CLI_HDR)
 
 build/test_engine: $(CORE_SRC) tests/test_engine.cpp $(CORE_HDR)
 	@mkdir -p build
-	$(CXX) -std=c++17 -g -O1 -Wall -Wextra -fsanitize=address,undefined \
+	$(CXX) -std=c++17 -g -O1 -Wall -Wextra $(NO_MOVE_WARNING) -fsanitize=address,undefined \
 	    $(CORE_SRC) tests/test_engine.cpp -o $@
 
 test: build/test_engine build/interviewprep
@@ -59,7 +62,7 @@ wasm: web/core.wasm
 web/core.wasm: $(CORE_SRC) core/capi.cpp $(CORE_HDR)
 	@test -x $(WASI_SDK)/bin/clang++ || { echo "The WebAssembly compiler is missing. Run scripts/get_toolchain.sh once, then try again."; exit 1; }
 	$(WASI_SDK)/bin/clang++ --target=wasm32-wasip1 --sysroot=$(WASI_SDK)/share/wasi-sysroot \
-	    -std=c++17 -O2 -fno-exceptions -fno-rtti -flto -mexec-model=reactor \
+	    -std=c++17 -O2 $(NO_MOVE_WARNING) -fno-exceptions -fno-rtti -flto -mexec-model=reactor \
 	    -Wl,--strip-all -Wl,--gc-sections -Wl,-z,stack-size=1048576 -Wl,--max-memory=268435456 \
 	    $(CORE_SRC) core/capi.cpp -o $@
 

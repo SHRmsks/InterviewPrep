@@ -12,6 +12,8 @@ day numbers, which is why tests/test_engine.cpp can check every rule directly.
 
 #include "config.hpp"
 
+using namespace std;
+
 namespace interviewprep {
 
 /*
@@ -20,13 +22,13 @@ Calendar dates are stored as days since 1970-01-01.
 */
 
 int dateFromCivil(int year, int month, int day);
-std::string formatDate(int date);                     // "2026-11-06"
-int parseDate(const std::string& text);               // -1 if malformed
+string formatDate(int date);                     // "2026-11-06"
+int parseDate(const string& text);               // -1 if malformed
 /*
 Accepts "YYYY-MM-DD" or "YYYY-MM-DDTHH:MM". With a time, hours before
 DAY_ROLLOVER_HOUR belong to the previous date.
 */
-int dateFromNow(const std::string& now);
+int dateFromNow(const string& now);
 
 // ── One card ──────────────────────────────────────────────────────────────
 
@@ -58,7 +60,7 @@ int checkCount(const Schedule& schedule, Track track);           // how many che
 Gap checkGap(const Schedule& schedule, Track track, int step);   // the gap before check `step`
 
 // A fixed number from a question's id, so its extra days never change.
-uint64_t seedOf(const std::string& id);
+uint64_t seedOf(const string& id);
 
 /*
 The whole policy: the state after clicking `click` on day number `day`. The
@@ -69,7 +71,7 @@ CardState applyClick(CardState state, Click click, int day, const Schedule& sche
 
 const char* trackName(Track track);     // "new", "red", "yellow", "blue", "retired"
 const char* clickName(Click click);     // "b", "y", "r"
-bool parseClick(const std::string& text, Click* out);
+bool parseClick(const string& text, Click* out);
 const char* moveName(Move move);
 
 /*
@@ -88,7 +90,7 @@ class Clock {
 
  private:
   ClockMode mode_;
-  std::vector<int> active_;         // sorted, distinct
+  vector<int> active_;         // sorted, distinct
 };
 
 // ── Queue order ───────────────────────────────────────────────────────────

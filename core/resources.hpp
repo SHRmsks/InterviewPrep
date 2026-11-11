@@ -15,6 +15,8 @@ answers "what is similar to what", using only the labels.
 
 #include "config.hpp"
 
+using namespace std;
+
 namespace interviewprep {
 
 enum class Kind { Problem, Flash, Drill };
@@ -28,38 +30,39 @@ for the resources' sake; no pick leans on it now.
 enum Demand { DemandRecog, DemandIdea, DemandImpl, DemandEdge, DEMAND_COUNT };
 
 struct Question {
-  std::string id;           // "lc128", "signals-001"
+  string id;           // "lc128", "signals-001"
   Kind kind = Kind::Flash;
-  std::string deck;         // "leetcode" or a deck slug
-  std::string title;        // problem title, or card front
+  string deck;         // "leetcode" or a deck slug
+  string title;        // problem title, or card front
   int level = 2;            // problems: 1 Easy, 2 Medium, 3 Hard. Cards: 1 to 3
-  std::vector<int> patterns;   // into Resources::patterns, most specific first
-  std::vector<int> topics;     // into Resources::topics, primary first; often empty
-  std::vector<int> tags;       // into Resources::tags, sorted
+  vector<int> patterns;   // into Resources::patterns, most specific first
+  vector<int> topics;     // into Resources::topics, primary first; often empty
+  vector<int> tags;       // into Resources::tags, sorted
 
   // Problems
   int number = 0;
-  std::string slug;
+  string slug;
   int rating = 0;           // estimated contest rating
   double freq = 0;          // 0 to 100, how often it gets asked overall
-  std::vector<std::pair<int, float>> companies;  // company index, frequency
-  std::array<float, DEMAND_COUNT> demand{};
+  vector<pair<int, float>> companies;  // company index, frequency
+  array<float, DEMAND_COUNT> demand{};
   bool premium = false;
   int tier = 0;             // 1 to 3 on the hand-picked list, 0 otherwise
-  std::string idea, pitfall, time, space;
+  string idea, pitfall, time, space;
 
   // Cards
-  std::string qcode, answer, code, bug;
+  string qcode, answer, code, bug;
+  string skill;             // what a miss says: "recog" seeing the pattern, "idea" the key step, ...
 };
 
 struct Pattern {
-  std::string slug;
-  std::string name;
+  string slug;
+  string name;
   bool algorithm = true;    // false for topics such as "os"
   double importance = 0.3;  // 0.3 to 1, from how often its problems get asked
-  std::vector<int> problems;  // questions whose first pattern is this one
-  std::vector<int> anyProblems;  // questions with this pattern anywhere in their labels
-  std::vector<int> cards;     // cards labeled with this pattern
+  vector<int> problems;  // questions whose first pattern is this one
+  vector<int> anyProblems;  // questions with this pattern anywhere in their labels
+  vector<int> cards;     // cards labeled with this pattern
   bool hasTopics = false;     // whether finer topics divide it
 };
 
@@ -69,41 +72,41 @@ labeled the most asked problems with these once, so `problems` covers those
 and no others.
 */
 struct Topic {
-  std::string slug;
-  std::string name;
-  std::string signal;       // what in a problem points to it
+  string slug;
+  string name;
+  string signal;       // what in a problem points to it
   int pattern = -1;
-  std::vector<int> problems;
+  vector<int> problems;
 };
 
 struct Deck {
-  std::string slug;
-  std::string title;
-  std::vector<int> cards;
+  string slug;
+  string title;
+  vector<int> cards;
 };
 
 struct Company {
-  std::string slug;
-  std::string name;
+  string slug;
+  string name;
 };
 
 class Resources {
  public:
   // Returns the number of questions, or -1 with `error` filled.
-  int load(std::string_view json, std::string* error);
+  int load(string_view json, string* error);
 
-  const std::vector<Question>& questions() const { return questions_; }
-  const std::vector<Pattern>& patterns() const { return patterns_; }
-  const std::vector<Topic>& topics() const { return topics_; }
-  const std::vector<Deck>& decks() const { return decks_; }
-  const std::vector<std::string>& tags() const { return tags_; }
-  const std::vector<Company>& companies() const { return companies_; }
+  const vector<Question>& questions() const { return questions_; }
+  const vector<Pattern>& patterns() const { return patterns_; }
+  const vector<Topic>& topics() const { return topics_; }
+  const vector<Deck>& decks() const { return decks_; }
+  const vector<string>& tags() const { return tags_; }
+  const vector<Company>& companies() const { return companies_; }
 
-  int indexOf(const std::string& id) const;       // -1 if unknown
-  int patternIndex(const std::string& slug) const;
-  int topicIndex(const std::string& slug) const;
-  int deckIndex(const std::string& slug) const;
-  int companyIndex(const std::string& slug) const;
+  int indexOf(const string& id) const;       // -1 if unknown
+  int patternIndex(const string& slug) const;
+  int topicIndex(const string& slug) const;
+  int deckIndex(const string& slug) const;
+  int companyIndex(const string& slug) const;
 
   /*
   Cosine similarity over labels, weighted so rare labels count more: sharing
@@ -117,15 +120,15 @@ class Resources {
  private:
   struct Feature { int id; float weight; };
 
-  std::vector<Question> questions_;
-  std::vector<Pattern> patterns_;
-  std::vector<Topic> topics_;
-  std::vector<Deck> decks_;
-  std::vector<std::string> tags_;
-  std::vector<Company> companies_;
-  std::unordered_map<std::string, int> byId_;
-  std::vector<std::vector<Feature>> features_;   // sorted by id, per question
-  std::vector<float> norms_;
+  vector<Question> questions_;
+  vector<Pattern> patterns_;
+  vector<Topic> topics_;
+  vector<Deck> decks_;
+  vector<string> tags_;
+  vector<Company> companies_;
+  unordered_map<string, int> byId_;
+  vector<vector<Feature>> features_;   // sorted by id, per question
+  vector<float> norms_;
 
   void buildFeatures();
 };
