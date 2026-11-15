@@ -823,6 +823,13 @@ Json Engine::cmdMock(const Json& r, int date) {
   return Json::object().set("ok", true).set("minutes", MOCK_MINUTES).set("items", items);
 }
 
+// Your two ratings on the problems' contest scale, as "insights" and "standing" send them.
+static Json ratingView(const Profile& p) {
+  return Json::object().set("you", static_cast<int>(lround(p.rating))).set("spread", static_cast<int>(lround(p.ratingSpread)))
+      .set("code", static_cast<int>(lround(p.codeRating)))
+      .set("tries", p.ratedTries).set("aimAbove", static_cast<int>(lround(STRETCH)));
+}
+
 Json Engine::cmdInsights(int date) {
   const int today = clock_.day(date);
   const Profile p = profile(today);
@@ -930,10 +937,83 @@ Json Engine::cmdInsights(int date) {
     }
   }
   return Json::object().set("ok", true).set("patterns", rows).set("needs", needs).set("notes", notes)
-      .set("graded", static_cast<int>(events_.size()))
-      .set("rating", Json::object().set("you", static_cast<int>(lround(p.rating))).set("spread", static_cast<int>(lround(p.ratingSpread)))
-                         .set("code", static_cast<int>(lround(p.codeRating)))
-                         .set("tries", p.ratedTries).set("aimAbove", static_cast<int>(lround(STRETCH))));
+      .set("graded", static_cast<int>(events_.size())).set("rating", ratingView(p));
+}
+
+/*
+Where you stand, for the top of Today: your two ratings, and how the next new
+problems are shared among the patterns. Like "recommend" it is a dry run and
+changes nothing. The shares come from the picker itself (patternOdds), so
+what is shown can't drift from what is picked.
+*/
+Json Engine::cmdStanding(int date) {
+  const Profile p = profile(clock_.day(date));
+  vector<char> taken = takenSet();
+  const RecommendContext context = contextFor(Lane::Code, date, p, taken);
+  const auto& patterns = resources_.patterns();
+
+  vector<PatternOdds> odds = patternOdds(context);
+  stable_sort(odds.begin(), odds.end(), [](const PatternOdds& a, const PatternOdds& b) { return a.share > b.share; });
+
+  // Tried patterns by their share of the pull, and the ones still new by how much each gets asked.
+  Json pull = Json::array(), untried = Json::array();
+  int left = 0;
+  for (const PatternOdds& o : odds) {
+    const PatternStats& s = p.patterns[o.pattern];
+    Json row = Json::object().set("slug", patterns[o.pattern].slug).set("name", patterns[o.pattern].name)
+                   .set("share", round(o.share * 1000) / 1000);
+    if (o.isNew) {
+      untried.push(move(row));
+      ++left;
+      continue;
+    }
+    row.set("idea", static_cast<int>(lround(s.rating))).set("code", static_cast<int>(lround(s.codeRating)))
+        .set("weak", round(o.weak * 10) / 10).set("recent", round(o.recent * 100) / 100).set("why", o.why);
+    pull.push(move(row));
+  }
+
+  // The share of new problems that leave the pull for new ground, as section 7 of config.hpp splits them.
+  auto percent = [](double share) { return to_string(lround(share * 100)) + "%"; };
+  double share = 0;
+  string goesTo, rule;
+  const string newPattern = "a new pattern, one that has never been the main pattern of a problem you tried";
+  if (context.explore >= 0) {
+    share = context.explore;
+    goesTo = "new ground today";
+    rule = percent(share) + " of today's new problems go to new ground: " + newPattern +
+           ", then a finer topic you haven't done. That share falls to " + percent(EXPLORE_END) + " by your interview.";
+  } else if (left > 0) {
+    share = NEW_PATTERN_SHARE;
+    goesTo = "a new pattern";
+    rule = percent(share) + " of new problems go to " + newPattern + ", until none is left.";
+  } else {
+    share = 1.0 / NEW_GROUND_EVERY;
+    goesTo = "a finer topic you haven't done";
+    rule = "One new problem in " + to_string(NEW_GROUND_EVERY) + " goes to a finer topic you haven't done.";
+  }
+
+  // The pull in words, with the numbers it runs on, so no front end repeats a rule.
+  auto plain = [](double value) {
+    const long tenths = lround(value * 10);
+    return to_string(tenths / 10) + (tenths % 10 ? "." + to_string(tenths % 10) : "");
+  };
+  const string pullRule =
+      "Pull is how much a pattern gets asked × weak × recent. Weak doubles for every " + plain(WEAK_DOUBLES_EVERY) +
+      " points its working-code rating sits below your overall one and halves for every " + plain(WEAK_DOUBLES_EVERY) +
+      " above, between " + plain(WEAK_PULL_LEAST) + "× and " + plain(WEAK_PULL_MOST) + "×. Recent is " +
+      plain(PULL_KEPT_PER_RECENT_PROBLEM) + "× for each new problem of it you solved in the last " +
+      to_string(RECENT_DAYS) + " study days. These shares are the standing ones: a pattern with a new problem "
+      "waiting in your queue sits out until you grade or hide that one.";
+
+  /*
+  New problems you haven't graded take the day's new slots first (fillLane),
+  so while as many wait as you get in a day, nothing fresh is picked.
+  */
+  return Json::object().set("ok", true).set("rating", ratingView(p))
+      .set("newGround", Json::object().set("share", round(share * 100) / 100).set("goesTo", goesTo).set("left", left)
+                            .set("rule", rule).set("patterns", untried))
+      .set("pull", pull).set("pullRule", pullRule)
+      .set("waiting", static_cast<int>(context.waiting.size())).set("newADay", settings_.codeNew);
 }
 
 Json Engine::cmdSimilar(const Json& r, int date) {
@@ -1362,6 +1442,7 @@ string Engine::call(string_view request) {
   else if (cmd == "session") response = needsDateAnd(&Engine::cmdSession);
   else if (cmd == "mock") response = needsDateAnd(&Engine::cmdMock);
   else if (cmd == "insights") response = needsDate(&Engine::cmdInsights);
+  else if (cmd == "standing") response = needsDate(&Engine::cmdStanding);
   else if (cmd == "similar") response = needsDateAnd(&Engine::cmdSimilar);
   else if (cmd == "explain") response = cmdExplain(r);
   else if (cmd == "simulate") response = cmdSimulate(r);

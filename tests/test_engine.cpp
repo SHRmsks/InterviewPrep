@@ -1648,8 +1648,13 @@ static void testSolvedProblemsStepBackAndMissesDoNot() {
   CHECK(missedMore > solved * 5);
 }
 
-static void testThePullFollowsWorkingCode() {
-  // Heap: easy problems, all missed. Trie: hard ones, all solved. Greedy: one in the middle, to be picked from.
+/*
+Two patterns asked alike. Heap: easy problems, lc1 to lc5 all missed. Trie:
+hard ones, lc11 to lc15 all solved. Three of each are left to pick from.
+Returns the date eight study days on, when nothing recent is stepping either
+pattern back.
+*/
+static int missHeapAndSolveTrie(Engine& engine) {
   string problems;
   for (int n = 1; n <= 8; ++n) {
     problems += "{\"n\":" + to_string(n) + ",\"t\":\"Heap\",\"d\":1,\"r\":1100,\"f\":50,\"p\":[0]},";
@@ -1659,9 +1664,7 @@ static void testThePullFollowsWorkingCode() {
                       "\"tags\":[],\"companies\":[],\"decks\":[{\"slug\":\"os\",\"title\":\"Operating systems\"}],"
                       "\"cards\":[{\"id\":\"os-1\",\"type\":\"flash\",\"deck\":\"os\",\"q\":\"Q\",\"a\":\"A\",\"patterns\":[],\"level\":1}],"
                       "\"problems\":[" + problems.substr(0, problems.size() - 1) + "]}";
-  Engine engine;
   engine.loadResources(json);
-  string log;
   for (int n = 1; n <= 5; ++n) {
     call(engine, gradeRequest("lc" + to_string(n), "r", "2026-11-02T09:00"));
     call(engine, gradeRequest("lc" + to_string(10 + n), "b", "2026-11-02T09:00"));
@@ -1669,9 +1672,14 @@ static void testThePullFollowsWorkingCode() {
   // The coach names the slip on the first heap miss.
   loadJudgements(engine, "{\"problem\":\"lc1\",\"date\":\"2026-11-02\",\"model_grade\":\"r\",\"recognised\":\"yes\","
                          "\"key_step\":\"own\",\"flaws\":[\"off-by-one\"],\"had_code\":true}\n");
-  // Eight study days on, nothing recent is stepping either pattern back.
   int date = parseDate("2026-11-03");
   for (int d = 0; d < 8; ++d, ++date) call(engine, gradeRequest("os-1", "b", nowOn(date).c_str()));
+  return date;
+}
+
+static void testThePullFollowsWorkingCode() {
+  Engine engine;
+  const int date = missHeapAndSolveTrie(engine);
 
   int heap = 0;
   string heapWhy, trieWhy;
@@ -1692,6 +1700,88 @@ static void testThePullFollowsWorkingCode() {
   // The slip is named where it showed, so you know what to watch for.
   CHECK(heapWhy.find("The slip that shows most here: Off by one, or wrong bounds.") != string::npos);
   CHECK(trieWhy.find("The slip that shows most here") == string::npos);
+}
+
+static void testStandingShowsWhatThePickerRunsOn() {
+  auto standing = [](Engine& engine, const string& now) {
+    return call(engine, "{\"cmd\":\"standing\",\"now\":\"" + now + "\"}");
+  };
+
+  // Nothing graded: no ratings, nothing to pull from, and every pattern new, the most asked first.
+  Engine fresh;
+  fresh.loadResources(tinyResources());
+  Json s = standing(fresh, "2026-11-02T09:00");
+  CHECK_EQ(s["rating"]["tries"].asInt(), 0);
+  CHECK(s["pull"].items().empty());
+  CHECK_EQ(s["newGround"]["left"].asInt(), 4);
+  CHECK_EQ(s["newGround"]["goesTo"].asStr(), string("a new pattern"));
+  CHECK_EQ(s["newGround"]["share"].asNum(), NEW_PATTERN_SHARE);
+  CHECK_EQ(s["newGround"]["patterns"].items()[0]["slug"].asStr(), string("two-pointers"));   // lc4, lc8 ... lc40
+  double total = 0, last = 1;
+  for (const Json& p : s["newGround"]["patterns"].items()) {
+    CHECK(p["share"].asNum() <= last);
+    last = p["share"].asNum();
+    total += last;
+  }
+  CHECK(abs(total - 1) < 0.01);
+  CHECK(!s["dirty"].asBool());
+
+  // The shares are the picker's: heap missed and trie solved is WEAK_PULL_MOST against WEAK_PULL_LEAST.
+  Engine engine;
+  const string now = nowOn(missHeapAndSolveTrie(engine));
+  const string before = engine.saveState();
+  s = standing(engine, now);
+  const vector<Json>& pull = s["pull"].items();
+  CHECK_EQ(static_cast<int>(pull.size()), 2);
+  CHECK_EQ(pull[0]["slug"].asStr(), string("heap"));   // the largest share first
+  CHECK(abs(pull[0]["share"].asNum() - WEAK_PULL_MOST / (WEAK_PULL_MOST + WEAK_PULL_LEAST)) < 0.001);
+  CHECK(abs(pull[0]["share"].asNum() + pull[1]["share"].asNum() - 1) < 0.002);
+  CHECK_EQ(pull[0]["weak"].asNum(), WEAK_PULL_MOST);
+  CHECK_EQ(pull[1]["weak"].asNum(), WEAK_PULL_LEAST);
+  CHECK_EQ(pull[0]["recent"].asNum(), 1.0);
+  // Each row carries the sentence the picker gives a pick from that pattern.
+  CHECK(pull[0]["why"].asStr().rfind("Your working-code rating here is ", 0) == 0);
+  CHECK(pull[0]["why"].asStr().find("so it comes up 4.0 times as often.") != string::npos);
+  CHECK(pull[0]["why"].asStr().find("The slip that shows most here: Off by one, or wrong bounds.") != string::npos);
+  // Both ratings, the same ones Insights reports, and each pattern's own on either side of the overall one.
+  const Json insights = call(engine, "{\"cmd\":\"insights\",\"now\":\"" + now + "\"}");
+  CHECK_EQ(s["rating"].dump(), insights["rating"].dump());
+  CHECK_EQ(s["rating"]["tries"].asInt(), 10);
+  CHECK(pull[0]["code"].asInt() < s["rating"]["code"].asInt());
+  CHECK(pull[1]["code"].asInt() > s["rating"]["code"].asInt());
+  // No pattern is new any more, so new ground is a finer topic, one new problem in NEW_GROUND_EVERY.
+  CHECK_EQ(s["newGround"]["left"].asInt(), 0);
+  CHECK_EQ(s["newGround"]["share"].asNum(), 1.0 / NEW_GROUND_EVERY);
+  CHECK(s["pullRule"].asStr().find("every 120 points") != string::npos);
+  // A dry run: nothing to save, and nothing changed.
+  CHECK(!s["dirty"].asBool());
+  CHECK_EQ(engine.saveState(), before);
+
+  // With an interview date the share is the day's place on the curve, the one Settings shows.
+  const Json settings = call(engine, "{\"cmd\":\"settings\",\"set\":{\"interviewDate\":\"2026-12-02\"},\"now\":\"" + now + "\"}")["settings"];
+  s = standing(engine, now);
+  CHECK_EQ(s["newGround"]["goesTo"].asStr(), string("new ground today"));
+  CHECK_EQ(s["newGround"]["share"].asNum(), settings["exploreToday"].asNum());
+
+  /*
+  A new problem waiting in the queue holds its pattern for the picker (it is
+  never picked twice), yet the shares shown stay put: they say how often a
+  pattern comes up, so they can't give away which patterns are in the queue.
+  */
+  auto withHeapWaiting = [&](bool waiting) {
+    Engine held;
+    held.loadResources(tinyResources());
+    const string plan = waiting ? R"(,"plan":{"date":"2026-11-03","pulls":0,"code":[{"id":"lc5","slot":"practice","why":"x"}],"cards":[]})" : "";
+    CHECK(held.loadState(R"({"v":2,"settings":{},"events":[{"id":"lc1","g":"r","d":"2026-11-02"},{"id":"lc2","g":"r","d":"2026-11-02"},
+      {"id":"lc3","g":"r","d":"2026-11-02"},{"id":"lc4","g":"r","d":"2026-11-02"}])" + plan + "}"));
+    return standing(held, "2026-11-03T10:00");
+  };
+  const Json open = withHeapWaiting(false), held = withHeapWaiting(true);
+  CHECK_EQ(static_cast<int>(open["pull"].items().size()), 4);
+  CHECK_EQ(open["pull"].dump(), held["pull"].dump());
+  CHECK_EQ(open["waiting"].asInt(), 0);
+  CHECK_EQ(held["waiting"].asInt(), 1);
+  CHECK_EQ(held["newADay"].asInt(), CODE_NEW);
 }
 
 static void testTargetCompanyNarrowsThePicks() {
@@ -2343,6 +2433,7 @@ int main() {
   testNewTopicsKeepComing();
   testSolvedProblemsStepBackAndMissesDoNot();
   testThePullFollowsWorkingCode();
+  testStandingShowsWhatThePickerRunsOn();
   testTargetCompanyNarrowsThePicks();
   testSlipsNeverCountAgainstThePattern();
   testSlipsDoNotChooseCards();

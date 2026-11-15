@@ -48,6 +48,14 @@ final class StudySession {
     }
 }
 
+/// Everything that can change what the core would answer. Each one goes through
+/// `AppModel.note`, and one reload follows. No button or view reloads by itself.
+enum Change {
+    case progress   // a command changed your progress, and the core's reply said so
+    case disk       // a file in the data folder may have changed: the coach, or the command-line tool
+    case day        // the calendar day rolled over, so today's queue is a new one
+}
+
 @Observable
 final class AppModel {
     var section: AppSection = .today
@@ -56,7 +64,7 @@ final class AppModel {
     var rules: Rules?
     var session: StudySession?
     var errorText: String?
-    var dataVersion = 0        // bumped when progress changes, so views reload
+    var dataVersion = 0        // bumped by every reload, so views that ask the core themselves ask again
 
     var reviewWaiting = 0      // graded problems with no judgement yet
     var reviewBatch = 10
@@ -70,18 +78,60 @@ final class AppModel {
     /// Swapped by the debug driver, so a test run opens nothing in the Claude app.
     @ObservationIgnored var openLink: (URL) -> Bool = { NSWorkspace.shared.open($0) }
     @ObservationIgnored private var lastSaved = ""
-    @ObservationIgnored private var lastJudgements: String?
+    @ObservationIgnored private var judgements: (log: String, old: String)?   // as the core last got them
     @ObservationIgnored private var saveBlocked = false
     @ObservationIgnored private let decoder = JSONDecoder()
+    @ObservationIgnored private var pending: Set<Change> = []
+    @ObservationIgnored private var reloadQueued = false
+    @ObservationIgnored private var reloading = false
+    @ObservationIgnored private var watcher: FolderWatcher?
 
     init() {
         load()
-        NotificationCenter.default.addObserver(
-            forName: NSApplication.didBecomeActiveNotification, object: nil, queue: .main
-        ) { [weak self] _ in
-            self?.reloadIfChangedOnDisk()
-            self?.refreshReview()   // a session elsewhere may have reviewed
+        // The coach and the command-line tool write to the same folder, and the
+        // watcher sees it as it happens. Coming back to the app looks once more,
+        // in case the system dropped an event.
+        watcher = FolderWatcher(folder: Storage.directory) { [weak self] in self?.note(.disk) }
+        let center = NotificationCenter.default
+        center.addObserver(forName: NSApplication.didBecomeActiveNotification, object: nil, queue: .main) { [weak self] _ in
+            self?.note(.disk)
         }
+        center.addObserver(forName: .NSCalendarDayChanged, object: nil, queue: .main) { [weak self] _ in
+            self?.note(.day)
+        }
+    }
+
+    // MARK: Changes
+
+    /// The one way in for anything that can change what the views show. However
+    /// many arrive in one turn of the run loop, one reload follows them.
+    func note(_ change: Change) {
+        guard !reloading else { return }   // a reload's own commands are not news
+        pending.insert(change)
+        guard !reloadQueued else { return }
+        reloadQueued = true
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            reloadQueued = false
+            let changes = pending
+            pending = []
+            reload(changes)
+        }
+    }
+
+    /// Brings everything the views show back in step with the core: the queue,
+    /// the filters, what waits for the coach, and the version the Today panel,
+    /// Insights and the Library ask again on.
+    private func reload(_ changes: Set<Change>) {
+        reloading = true
+        defer { reloading = false }
+        let news = takeInFromDisk()
+        // The app's own saves reach the watcher too, and those change nothing here.
+        guard news || changes != [.disk] else { return }
+        today = send(["cmd": "today"], as: Today.self)
+        facets = send(["cmd": "facets"], as: Facets.self)
+        countWaitingForCoach()
+        dataVersion += 1
     }
 
     // MARK: Loading and saving
@@ -104,8 +154,7 @@ final class AppModel {
             }
         }
         rules = send(["cmd": "rules"], as: Rules.self)
-        facets = send(["cmd": "facets"], as: Facets.self)
-        refresh()
+        reload([.progress])   // at once, not queued, so the first frame has its data
     }
 
     /// A file the app can't read may still be the only copy of your history, so it
@@ -129,16 +178,24 @@ final class AppModel {
         }
     }
 
-    /// The command-line tool may have changed progress while the app was away.
-    private func reloadIfChangedOnDisk() {
-        guard let text = Storage.read(), text != lastSaved, Core.loadState(text) else { return }
-        lastSaved = text
-        refresh()
+    /// Takes in what others left in the data folder: progress the command-line
+    /// tool changed, and the coach's labels. True when either was news.
+    private func takeInFromDisk() -> Bool {
+        var news = false
+        // A progress file that blocked saving can't be read, so it isn't tried again.
+        if !saveBlocked, let text = Storage.read(), text != lastSaved, Core.loadState(text) {
+            lastSaved = text
+            news = true
+        }
+        if loadJudgements() { news = true }
+        return news
     }
 
     private func persist() {
-        guard !saveBlocked else { return }
+        // Asking for the state also tells the core its change was taken, so each
+        // change is reported once, even while nothing can be written.
         let text = Core.saveState()
+        guard !saveBlocked else { return }
         do {
             try Storage.write(text)
             lastSaved = text
@@ -158,7 +215,10 @@ final class AppModel {
             errorText = "The core sent back something unreadable."
             return nil
         }
-        if envelope.dirty == true { persist() }
+        if envelope.dirty == true {
+            persist()
+            note(.progress)
+        }
         guard envelope.ok else {
             errorText = envelope.error ?? "That didn't work."
             return nil
@@ -171,37 +231,27 @@ final class AppModel {
         }
     }
 
-    func refresh() {
-        loadJudgements()
-        today = send(["cmd": "today"], as: Today.self)
-        facets = send(["cmd": "facets"], as: Facets.self)
-        dataVersion += 1
-        refreshReview()
-    }
-
     // MARK: Coach
 
     /// The coach's labels count toward your patterns and flaws, and its stricter
     /// grade can keep a check going, so the core needs them before it builds a
     /// queue. A review can add to them at any time. The log from before
-    /// 2026-11-09 is only ever read.
-    private func loadJudgements() {
-        guard let rules else { return }
-        let text = Storage.text(at: rules.judgementsFile) ?? ""
+    /// 2026-11-09 is only ever read. True when the core got new ones.
+    private func loadJudgements() -> Bool {
+        guard let rules else { return false }
+        let log = Storage.text(at: rules.judgementsFile) ?? ""
         let old = Storage.text(at: rules.oldJudgementsFile) ?? ""
-        let key = text + "\u{0}" + old
-        guard key != lastJudgements else { return }
-        lastJudgements = key
-        send(["cmd": "judgements", "text": text, "old": old], as: Envelope.self)
+        if let judgements, judgements.log == log, judgements.old == old { return false }
+        judgements = (log, old)
+        send(["cmd": "judgements", "text": log, "old": old], as: Envelope.self)
+        return true
     }
 
     /// Counts what is waiting. This asks the core, not a model, so it costs nothing.
-    func refreshReview() {
-        guard let rules else { return }
-        loadJudgements()
-        let log = Storage.text(at: rules.judgementsFile) ?? ""
-        let old = Storage.text(at: rules.oldJudgementsFile) ?? ""
-        guard let overview = send(["cmd": "overview", "log": log, "old_log": old], as: OverviewReply.self) else { return }
+    private func countWaitingForCoach() {
+        guard let rules, let judgements else { return }
+        let request: [String: Any] = ["cmd": "overview", "log": judgements.log, "old_log": judgements.old]
+        guard let overview = send(request, as: OverviewReply.self) else { return }
         if overview.pending != reviewWaiting { reviewInClaude = false }
         reviewWaiting = overview.pending
         reviewBatch = overview.batchSize
@@ -215,7 +265,7 @@ final class AppModel {
         Task { @MainActor in
             do {
                 let text = try await Reviewer.run()
-                if let rules { try? Storage.save(text, at: rules.lastReviewFile) }
+                if let rules, (try? Storage.save(text, at: rules.lastReviewFile)) != nil { hasLastReview = true }
                 reviewText = text
             } catch is Reviewer.SignInNeeded {
                 reviewInClaude = Reviewer.chatLink.map(openLink) ?? false
@@ -227,7 +277,7 @@ final class AppModel {
                 errorText = "\(error.localizedDescription) Your problems are still waiting."
             }
             reviewRunning = false
-            refreshReview()
+            note(.disk)   // whatever it judged is in the folder by now
         }
     }
 
@@ -248,8 +298,7 @@ final class AppModel {
     }
 
     func pullMore(lane: String) {
-        today = send(["cmd": "more", "lane": lane], as: Today.self)
-        dataVersion += 1
+        send(["cmd": "more", "lane": lane], as: Envelope.self)
     }
 
     func startMock() {
@@ -285,7 +334,6 @@ final class AppModel {
 
     func exitSession() {
         session = nil
-        refresh()
     }
 
     // MARK: Study flow
@@ -385,12 +433,10 @@ final class AppModel {
 
     func quickGrade(id: String, grade: String) {
         send(["cmd": "grade", "id": id, "grade": grade], as: Envelope.self)
-        refresh()
     }
 
     func quickUndo(id: String) {
         send(["cmd": "undo", "id": id], as: Envelope.self)
-        refresh()
     }
 
     func settings() -> AppSettings? {
@@ -399,7 +445,6 @@ final class AppModel {
 
     func apply(settings changes: [String: Any]) {
         send(["cmd": "settings", "set": changes], as: SettingsReply.self)
-        refresh()
     }
 
     func exportState() -> String { Core.saveState() }
@@ -410,7 +455,7 @@ final class AppModel {
             return false
         }
         persist()
-        refresh()
+        note(.progress)   // loaded straight into the core, so no reply reported it
         return true
     }
 }

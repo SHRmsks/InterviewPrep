@@ -164,6 +164,35 @@ class Picker {
     hold(questions_[pick.question]);
   }
 
+  // Each pattern a new problem can come from, and its share of its group: see PatternOdds.
+  vector<PatternOdds> odds() const {
+    const auto& patterns = resources_.patterns();
+    vector<PatternOdds> out;
+    double pullTotal = 0, newTotal = 0;
+    for (int p = 0; p < static_cast<int>(patterns.size()); ++p) {
+      if (!patterns[p].algorithm || !hasEligibleProblem(p)) continue;
+      PatternOdds o;
+      o.pattern = p;
+      o.isNew = c_.profile->patterns[p].coldAttempts == 0;
+      if (o.isNew) {
+        o.share = asked_[p] + 1e-9;   // as newPattern() draws them
+        newTotal += o.share;
+      } else {
+        o.weak = weak(p);
+        o.recent = recent(p);
+        o.share = pullOf(p);
+        o.why = whyPulled(p).substr(1);   // without the space that joins it to a sentence before
+        pullTotal += o.share;
+      }
+      out.push_back(move(o));
+    }
+    for (PatternOdds& o : out) {
+      const double total = o.isNew ? newTotal : pullTotal;
+      o.share = total > 0 ? o.share / total : 0;
+    }
+    return out;
+  }
+
  private:
   RecommendContext& c_;
   Rng& rng_;
@@ -247,6 +276,12 @@ class Picker {
     const double below = c_.profile->codeRating - c_.profile->patterns[pattern].codeRating;
     return min(WEAK_PULL_MOST, max(WEAK_PULL_LEAST, pow(2.0, below / WEAK_DOUBLES_EVERY)));
   }
+
+  // How much the new problems of a pattern you solved lately step its pull back: 1/2 for each.
+  double recent(int pattern) const { return pow(PULL_KEPT_PER_RECENT_PROBLEM, recentSolved(pattern)); }
+
+  // A pattern's pull: how much it gets asked × weak × recent. The picker draws by it, and odds() shows it.
+  double pullOf(int pattern) const { return asked_[pattern] * weak(pattern) * recent(pattern); }
 
   // The flaw that shows most on this pattern, or -1. The clock's flaw isn't a slip in the code.
   int mostSeenSlip(int pattern) const {
@@ -574,7 +609,7 @@ class Picker {
       if (!patterns[p].algorithm || !hasEligibleProblem(p)) continue;
       if (triedOnly && c_.profile->patterns[p].coldAttempts == 0) continue;
       if (!evenIfHeld && waiting_[p] > 0) continue;
-      pull[p] = asked_[p] * weak(p) * pow(PULL_KEPT_PER_RECENT_PROBLEM, recentSolved(p));
+      pull[p] = pullOf(p);
       fewest = fewest < 0 ? waiting_[p] : min(fewest, waiting_[p]);
     }
     double total = 0;
@@ -779,6 +814,12 @@ vector<Pick> recommend(Lane lane, int count, RecommendContext& context, Rng& rng
     picks.push_back(move(pick));
   }
   return picks;
+}
+
+vector<PatternOdds> patternOdds(RecommendContext context) {
+  context.waiting.clear();   // standing odds, with nothing held: see PatternOdds
+  Rng unused(0);             // nothing is drawn
+  return Picker(context, unused).odds();
 }
 
 }  // namespace interviewprep

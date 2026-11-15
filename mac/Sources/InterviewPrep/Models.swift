@@ -165,6 +165,47 @@ struct Insights: Decodable {
     let graded: Int
 }
 
+/// Your two ratings, on the contest scale the problems are rated on.
+struct Rating: Decodable {
+    let you, spread, code, tries, aimAbove: Int
+}
+
+/// A pattern you have tried: its share of the pull, and what sets it.
+struct PullRow: Decodable, Identifiable {
+    let slug, name, why: String
+    let share, weak, recent: Double
+    let idea, code: Int
+    var id: String { slug }
+}
+
+/// A pattern that has never been the main one of a problem you tried.
+struct NewPatternRow: Decodable, Identifiable {
+    let slug, name: String
+    let share: Double
+    var id: String { slug }
+}
+
+/// The share of new problems that leave the pull for new ground, where they go
+/// ("a new pattern"), how many new patterns are left, and the rule in full.
+struct NewGround: Decodable {
+    let share: Double
+    let goesTo: String
+    let left: Int
+    let rule: String
+    let patterns: [NewPatternRow]
+}
+
+/// Where you stand, for the top of Today: the core's "standing" command.
+struct Standing: Decodable {
+    let rating: Rating
+    let newGround: NewGround
+    let pull: [PullRow]
+    /// What sets a pattern's pull, in words, with the numbers the picker runs on.
+    let pullRule: String
+    /// New problems in today's queue you haven't graded, and how many new ones a day brings.
+    let waiting, newADay: Int
+}
+
 struct AppSettings: Decodable {
     var codeCap, codeNew, codeReviews, cardCap, cardNew: Int
     var clock, company: String

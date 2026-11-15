@@ -24,12 +24,22 @@ make sim       # runs made-up learners through the queue, to see what a rule cha
 make cli       # build/interviewprep
 make resources # data/resources.json, from the labels and decks
 make web       # dist/interviewprep.html, one self-contained file
-make mac       # dist/InterviewPrep.app
+make mac       # dist/InterviewPrep.app, after checking this Mac has what it needs
+make mac-check # only that check
 make dmg       # dist/InterviewPrep.dmg
 ```
 
 `make web` needs the WebAssembly compiler once: `scripts/get_toolchain.sh`.
 `make resources` needs the LeetCode labels once: `scripts/get_data.sh`.
+
+`make mac` needs Xcode, and nothing else has to be downloaded. The Command Line
+Tools alone are not enough: the app is built for both Apple Silicon and Intel,
+and `swift build` hands that to Xcode's own build system. `Package.swift` asks for
+Swift 5.9 and the macOS 14 SDK, which is Xcode 15 or newer. The Swift package has
+no outside dependencies, and `data/resources.json` comes with the repository; only
+when it is older than the files it is built from does `make mac` rebuild it, and
+that takes the LeetCode labels above. `make mac` checks all of this first and says
+how to get whatever is missing.
 
 ## Changing a rule
 
@@ -222,6 +232,14 @@ problem. Switch one on in Settings and it joins the daily queue like any other.
 
 New faces show no labels until you have attempted them. Mixing patterns in the
 queue is deliberate, because telling patterns apart is the skill being trained.
+
+The Mac app's Today page shows where you stand, under the progress bars: your
+two ratings, the share of new problems that goes to new ground, and the patterns
+with the most pull. Details lists every pattern you have tried with its share of
+the pull, both ratings and the two factors behind that share; rest the pointer
+on a name for the picker's own sentence. The shares are standing ones, worked
+out with nothing held, so they never give away which patterns are waiting in
+your queue. `./build/interviewprep standing` prints the same.
 
 ### The personal profile
 

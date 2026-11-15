@@ -43,3 +43,4 @@ strip -x "$APP/Contents/Helpers/interviewprep" 2>/dev/null || true
 codesign --force --sign - "$APP/Contents/Helpers/interviewprep"
 codesign --force --sign - "$APP"
 echo "$APP, $(du -sh "$APP" | cut -f1), $(lipo -archs "$APP/Contents/MacOS/InterviewPrep")"
+ 

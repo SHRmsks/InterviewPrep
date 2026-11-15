@@ -114,6 +114,7 @@ class Engine {
   Json cmdSession(const Json& request, int date);
   Json cmdMock(const Json& request, int date);
   Json cmdInsights(int date);
+  Json cmdStanding(int date);
   Json cmdSimilar(const Json& request, int date);
   Json cmdExplain(const Json& request);
   Json cmdSimulate(const Json& request);

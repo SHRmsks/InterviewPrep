@@ -86,6 +86,28 @@ struct RecommendContext {
 vector<Pick> recommend(Lane lane, int count, RecommendContext& context, Rng& rng);
 
 /*
+How new problems are shared among the patterns, for showing and never for
+picking. A pattern you have tried gets its share of the pull, and one you
+haven't gets its share of the new-pattern picks, so each of the two groups
+adds up to 1.
+
+The hold of a problem waiting in today's queue is left out on purpose. This
+says how often a pattern comes up, so it gives away nothing about which
+patterns are sitting in your queue, where a pattern stays hidden until you
+have tried the problem.
+*/
+struct PatternOdds {
+  int pattern = -1;
+  bool isNew = false;    // never the main pattern of a problem you tried
+  double share = 0;      // of its group: the pull, or the new-pattern picks
+  double weak = 1;       // the pull's factor for working code
+  double recent = 1;     // the pull's factor for new problems of it you solved lately
+  string why;            // what sets the pull, in the picker's own words. Empty for a new pattern.
+};
+
+vector<PatternOdds> patternOdds(RecommendContext context);
+
+/*
 The share of new problems that explore, on the cosine from your first practice
 day to the interview (section 7 of config.hpp). Calendar dates.
 */

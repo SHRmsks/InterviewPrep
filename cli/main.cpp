@@ -42,6 +42,7 @@ Look things up
   similar <id> [n]              nearest questions by label
   recommend [code|cards] [n]    what would be picked next (changes nothing)
   profile                       your patterns, and the slips your coach sees most
+  standing                      your two ratings, and how often each pattern comes up next
 
 Coach
   mcp                           serve your attempts to a model over MCP
@@ -312,6 +313,34 @@ int main(int argc, char** argv) {
     if (r["needs"].size() == 0) puts("  Nothing yet: the coach fills this in after it reviews code you saved.");
     for (const Json& a : r["needs"].items()) {
       printf("  %-56s %4d%%\n", a["label"].asStr().c_str(), static_cast<int>(a["share"].asNum() * 100 + 0.5));
+    }
+  } else if (command == "standing") {
+    const Json r = run(cmd("standing"));
+    const Json& rating = r["rating"];
+    if (rating["tries"].asInt() == 0) {
+      puts("No ratings yet: grade a new problem first.");
+    } else {
+      printf("Idea %d, give or take %d. Working code %d. From %d first tries.\n", rating["you"].asInt(),
+             rating["spread"].asInt(), rating["code"].asInt(), rating["tries"].asInt());
+    }
+    const Json& ground = r["newGround"];
+    printf("%s\n", ground["rule"].asStr().c_str());
+    if (ground["left"].asInt() > 0) {
+      // A dot between names, because some, such as "DP, linear", have a comma of their own.
+      string names;
+      for (const Json& p : ground["patterns"].items()) names += (names.empty() ? "" : " · ") + p["name"].asStr();
+      printf("%d new patterns left, most asked first: %s\n", ground["left"].asInt(), names.c_str());
+    }
+    // The rest come from the pull, among the patterns you have tried.
+    printf("\n%-34s %5s %6s %6s %5s %6s\n", "Pattern", "share", "idea", "code", "weak", "recent");
+    for (const Json& p : r["pull"].items()) {
+      printf("%-34s %4d%% %6d %6d %5.1f %6.2f\n", p["name"].asStr().c_str(), static_cast<int>(p["share"].asNum() * 100 + 0.5),
+             p["idea"].asInt(), p["code"].asInt(), p["weak"].asNum(), p["recent"].asNum());
+    }
+    if (r["pull"].size() > 0) printf("\n%s\n", r["pullRule"].asStr().c_str());
+    if (r["waiting"].asInt() >= r["newADay"].asInt() && r["waiting"].asInt() > 0) {
+      printf("\n%d new problems are waiting in your queue. Fresh ones come once fewer than %d wait, or when you pull more.\n",
+             r["waiting"].asInt(), r["newADay"].asInt());
     }
   } else if (command == "rules") {
     Json r = run(cmd("rules"));

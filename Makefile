@@ -6,7 +6,8 @@
 #   make resources  data/resources.json from the labels and decks
 #   make wasm       the C++ core for the website, web/core.wasm
 #   make web        the website, one self-contained file, dist/interviewprep.html
-#   make mac        the Mac app, dist/InterviewPrep.app
+#   make mac        the Mac app, dist/InterviewPrep.app. Checks this Mac first.
+#   make mac-check  only that check: what this Mac is missing for `make mac`
 #   make dmg        a disk image to hand to other people, dist/InterviewPrep.dmg
 #   make all        everything above
 
@@ -23,7 +24,7 @@ CORE_HDR := $(wildcard core/*.hpp) core/capi.h
 CLI_SRC  := cli/main.cpp cli/mcp.cpp
 CLI_HDR  := $(wildcard cli/*.hpp)
 
-.PHONY: all cli test sim resources wasm web mac dmg clean
+.PHONY: all cli test sim resources wasm web mac mac-check dmg clean
 
 all: test cli resources web mac
 
@@ -72,7 +73,15 @@ dist/interviewprep.html: web/index.html web/style.css web/app.js web/core.wasm d
 	@mkdir -p dist
 	python3 -I scripts/build_web.py
 
-mac: resources
+# What this Mac is missing for `make mac`, and how to get it. Builds nothing.
+mac-check:
+	./scripts/check_mac_build.sh
+
+# The check goes first, so a missing tool is named before anything is built or
+# rebuilt. These are steps and not prerequisites, so they always run in this order.
+mac:
+	./scripts/check_mac_build.sh
+	@$(MAKE) -s resources
 	./scripts/build_mac.sh
 
 dmg: mac

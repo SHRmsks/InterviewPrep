@@ -20,7 +20,45 @@ enum DebugDriver {
                 log.append(name)
             }
 
+            // A taller window than the screen is fine here: the picture is drawn from the view, not the display.
+            if let height = environment["INTERVIEWPREP_SNAPSHOT_HEIGHT"].flatMap(Double.init),
+               let window = NSApp.windows.first(where: { $0.isVisible }) {
+                window.setContentSize(NSSize(width: window.contentLayoutRect.width, height: height))
+            }
+            // Changes made outside the app: Today is saved, then again after each reload
+            // that follows one, with nothing clicked. The test writes to the data folder
+            // between pictures, as the coach and the command-line tool do.
+            if let count = environment["INTERVIEWPREP_SNAPSHOT_WATCH"].flatMap(Int.init) {
+                await shot("w0-before")
+                for step in 1...max(1, count) {
+                    let seen = model.dataVersion
+                    var tenths = 0
+                    while model.dataVersion == seen && tenths < 300 {
+                        try? await Task.sleep(for: .milliseconds(100))
+                        tenths += 1
+                    }
+                    log.append("w\(step): " + (model.dataVersion == seen ? "no reload in 30 seconds" : "reloaded"))
+                    await shot("w\(step)-after")
+                }
+                try? log.joined(separator: "\n").write(
+                    toFile: directory + "/done.txt", atomically: true, encoding: .utf8)
+                NSApp.terminate(nil)
+                return
+            }
             await shot("01-today")
+            // The panel under the progress bars, opened to every pattern, then back as it was.
+            let defaults = UserDefaults.standard
+            let showedEveryPattern = defaults.bool(forKey: TodayView.showsEveryPatternKey)
+            defaults.set(!showedEveryPattern, forKey: TodayView.showsEveryPatternKey)
+            await shot(showedEveryPattern ? "01b-today-patterns-hidden" : "01b-today-every-pattern")
+            defaults.set(showedEveryPattern, forKey: TodayView.showsEveryPatternKey)
+            // A quick look at Today alone: nothing is clicked or graded, and the app never comes to the front.
+            if environment["INTERVIEWPREP_SNAPSHOT_TODAY_ONLY"] != nil {
+                try? log.joined(separator: "\n").write(
+                    toFile: directory + "/done.txt", atomically: true, encoding: .utf8)
+                NSApp.terminate(nil)
+                return
+            }
             let (settings, outcome) = await clickSettingsButton()
             log.append("settings button: \(outcome)")
             if let settings {

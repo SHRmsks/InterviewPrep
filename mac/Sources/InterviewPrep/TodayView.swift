@@ -2,6 +2,10 @@ import SwiftUI
 
 struct TodayView: View {
     @Environment(AppModel.self) private var model
+    @State private var standing: Standing?
+
+    /// Whether the panel under the progress bars lists every pattern. Remembered between launches.
+    static let showsEveryPatternKey = "todayShowsEveryPattern"
 
     var body: some View {
         ScrollView {
@@ -15,6 +19,8 @@ struct TodayView: View {
                     .background(Theme.sheet)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                     .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(Theme.line))
+
+                    if let standing { StandingPanel(standing: standing) }
 
                     if model.reviewWaiting > 0 || model.reviewRunning || model.hasLastReview {
                         ReviewBar()
@@ -40,6 +46,7 @@ struct TodayView: View {
             }
         }
         .navigationTitle("Today")
+        .task(id: model.dataVersion) { standing = model.send(["cmd": "standing"], as: Standing.self) }
         // Here rather than on the root view: a review that finishes while you're
         // working on a problem waits until you're back, instead of interrupting.
         .sheet(isPresented: Binding(
@@ -95,6 +102,166 @@ private struct Progress: View {
         .frame(height: 12)
         .background(Theme.line2)
         .clipShape(Capsule())
+    }
+}
+
+/// Your two ratings, and where new problems come from next. Every number and
+/// sentence is the core's ("standing"): the shares are the picker's own, with
+/// nothing held, so they say how often a pattern comes up and not which
+/// patterns are waiting in the queue below.
+private struct StandingPanel: View {
+    let standing: Standing
+    @AppStorage(TodayView.showsEveryPatternKey) private var showsAll = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            HStack(alignment: .top, spacing: 0) {
+                ratings
+                Divider()
+                comesNext
+            }
+            if showsAll && !standing.pull.isEmpty {
+                Divider()
+                table
+            }
+        }
+        .background(Theme.sheet)
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(Theme.line))
+    }
+
+    private var ratings: some View {
+        let rating = standing.rating
+        return VStack(alignment: .leading, spacing: 10) {
+            heading(rating.tries == 0 ? "Your ratings" : "Your ratings, from \(rating.tries) first tries")
+            if rating.tries == 0 {
+                Text("Grade a new problem and your ratings show up here.").foregroundStyle(Theme.ink3)
+            } else {
+                HStack(alignment: .top, spacing: 30) {
+                    figure("\(rating.you)", "±\(rating.spread)", "For the idea")
+                    figure("\(rating.code)", nil, "For working code")
+                }
+                Text("New problems aim \(rating.aimAbove) above your idea rating on their pattern. "
+                    + "A pattern whose working code sits below \(rating.code) comes up more.")
+                    .font(.system(size: 12.5))
+                    .foregroundStyle(Theme.ink2)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(16)
+        .frame(width: 330, alignment: .leading)
+    }
+
+    /// The short version: two lines, each a share of the new problems and where it goes.
+    private var comesNext: some View {
+        let ground = standing.newGround
+        let tried = !standing.pull.isEmpty
+        return VStack(alignment: .leading, spacing: 8) {
+            HStack(alignment: .firstTextBaseline) {
+                heading("Where new problems come from")
+                Spacer()
+                if tried {
+                    Button(showsAll ? "Hide details" : "Details") { showsAll.toggle() }
+                        .buttonStyle(.link)
+                        .font(.system(size: 12.5))
+                }
+            }
+            // Until a pattern has been tried there is nothing to pull from, so every new problem is new ground.
+            line(tried ? "\(percent(ground.share)) go to \(ground.goesTo)." : "Every new problem goes to a new pattern for now.",
+                 ground.left > 0 ? "\(ground.left) left, most asked first: " + firstFew(ground.patterns.map(\.name)) : nil)
+            if tried {
+                line("\(percent(1 - ground.share)) come by pull from the patterns you have tried.",
+                     "Highest now: " + firstFew(standing.pull.map { "\($0.name) \(percent($0.share))" }))
+            }
+            if standing.waiting > 0 && standing.waiting >= standing.newADay {
+                Text("\(standing.waiting) new problems are waiting in your queue. Fresh ones come once fewer than "
+                    + "\(standing.newADay) wait, or when you pull more.")
+                    .foregroundStyle(Theme.ink3)
+            }
+        }
+        .font(.system(size: 13))
+        .fixedSize(horizontal: false, vertical: true)
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    /// Every pattern you have tried, and the two rules in full.
+    private var table: some View {
+        let most = max(standing.pull.map(\.share).max() ?? 0, 0.0001)
+        return VStack(alignment: .leading, spacing: 12) {
+            Grid(alignment: .leading, horizontalSpacing: 18, verticalSpacing: 7) {
+                GridRow {
+                    ForEach(["Pattern", "Share of the pull", "Idea", "Code", "Weak", "Recent"], id: \.self) { title in
+                        Text(title.uppercased()).font(Theme.label).foregroundStyle(Theme.ink3)
+                    }
+                }
+                ForEach(standing.pull) { row in
+                    Divider().overlay(Theme.line2)
+                    GridRow {
+                        // The picker's own sentence for this pattern shows when the pointer rests on its name.
+                        Text(row.name).fontWeight(.medium).lineLimit(1).help(row.why)
+                        HStack(spacing: 7) {
+                            Meter(value: row.share / most).frame(width: 110)
+                            /*
+                            Kept at its own width: the grid measures a row before it settles
+                            the columns, and "13%" squeezed there wraps to three lines and
+                            leaves the row that tall.
+                            */
+                            Text(percent(row.share)).font(Theme.mono).foregroundStyle(Theme.ink2).fixedSize()
+                        }
+                        // String(...) because a number put straight into Text gets a thousands comma.
+                        Text(String(row.idea)).font(Theme.mono).foregroundStyle(Theme.ink2)
+                        Text(String(row.code)).font(Theme.mono).foregroundStyle(Theme.ink2)
+                        Text(times(row.weak)).font(Theme.mono)
+                            .foregroundStyle(row.weak > 1 ? Theme.redText : Theme.ink3)
+                        Text(row.recent < 1 ? times(row.recent) : "–").font(Theme.mono).foregroundStyle(Theme.ink3)
+                    }
+                }
+            }
+            VStack(alignment: .leading, spacing: 5) {
+                Text(standing.newGround.rule)
+                Text(standing.pullRule)
+            }
+            .font(.system(size: 12.5))
+            .foregroundStyle(Theme.ink3)
+            .fixedSize(horizontal: false, vertical: true)
+        }
+        .font(.system(size: 14))
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    /// A sentence, then what it leads to in a quieter color.
+    private func line(_ lead: String, _ rest: String?) -> Text {
+        guard let rest else { return Text(lead) }
+        return Text(lead + " ") + Text(rest).foregroundStyle(Theme.ink2)
+    }
+
+    private func heading(_ text: String) -> some View {
+        Text(text.uppercased()).font(Theme.label).foregroundStyle(Theme.ink3)
+    }
+
+    /// A rating in large digits, what it may be off by, and what it is for.
+    private func figure(_ value: String, _ margin: String?, _ caption: String) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            HStack(alignment: .firstTextBaseline, spacing: 5) {
+                Text(value).font(.system(size: 26, weight: .bold)).monospacedDigit()
+                if let margin { Text(margin).font(Theme.mono).foregroundStyle(Theme.ink3) }
+            }
+            Text(caption).font(.system(size: 12.5)).foregroundStyle(Theme.ink2)
+        }
+    }
+
+    /// The first three of a list. A dot between them, because names such as "DP, linear" have commas of their own.
+    private func firstFew(_ all: [String]) -> String { all.prefix(3).joined(separator: " · ") }
+
+    private func percent(_ share: Double) -> String {
+        share > 0 && share < 0.005 ? "<1%" : "\(Int((share * 100).rounded()))%"
+    }
+
+    /// "2.2×", or "0.25×" when one decimal would round a small factor away.
+    private func times(_ factor: Double) -> String {
+        String(format: factor < 0.45 ? "%.2f×" : "%.1f×", factor)
     }
 }
 
