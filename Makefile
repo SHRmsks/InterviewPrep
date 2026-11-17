@@ -12,8 +12,6 @@
 #   make all        everything above
 
 CXX      ?= clang++
-# The code says `using namespace std;` and calls move() without std::, which
-# clang warns about on every call. NO_MOVE_WARNING turns just that warning off.
 NO_MOVE_WARNING := -Wno-unqualified-std-cast-call
 CXXFLAGS ?= -std=c++17 -O2 -Wall -Wextra $(NO_MOVE_WARNING)
 WASI_SDK ?= .tools/wasi-sdk

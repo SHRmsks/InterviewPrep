@@ -2,4 +2,8 @@
 .tools/
 build/
 dist/
+*.dmg
+.vscode
+.DS_Store
+
 data/raw/

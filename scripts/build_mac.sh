@@ -6,6 +6,31 @@ cd "$(dirname "$0")/.."
 
 APP=dist/InterviewPrep.app
 
+# Everything below comes with Apple's Command Line Tools; the full Xcode app isn't
+# needed. Check for them up front rather than failing halfway through.
+if ! xcode-select -p >/dev/null 2>&1; then
+  echo "The Command Line Tools are missing. A window will offer to install them;"
+  echo "run make mac again once that finishes."
+  xcode-select --install 2>/dev/null || true
+  exit 1
+fi
+missing=""
+for tool in swift clang++ sips iconutil codesign lipo strip; do
+  command -v "$tool" >/dev/null || missing="$missing $tool"
+done
+if [ -n "$missing" ]; then
+  echo "Missing:$missing. Reinstall the Command Line Tools, then try again:"
+  echo "  sudo rm -rf \"$(xcode-select -p)\" && xcode-select --install"
+  exit 1
+fi
+# A half-updated install has a swift that can't read Package.swift.
+if ! swift package dump-package >/dev/null 2>&1; then
+  echo "Swift can't read Package.swift, which usually means the Command Line Tools"
+  echo "are half-updated. Reinstall them, then try again:"
+  echo "  sudo rm -rf \"$(xcode-select -p)\" && xcode-select --install"
+  exit 1
+fi
+
 # The icon only needs drawing once.
 if [ ! -f mac/InterviewPrep.icns ]; then
   work=$(mktemp -d)
@@ -19,9 +44,21 @@ if [ ! -f mac/InterviewPrep.icns ]; then
   rm -rf "$work"
 fi
 
-swift build -c release --arch arm64 --arch x86_64 2>&1 | grep -E 'error:|Build complete|Compiling InterviewPrep' | grep -v 'SwiftCompile normal' || true
-BIN="$(swift build -c release --arch arm64 --arch x86_64 --show-bin-path)/InterviewPrep"
-test -f "$BIN"
+# One architecture at a time, then glued together: asking swift for both at once
+# hands the build to Xcode's build system, which the Command Line Tools don't have.
+slices=""
+for arch in arm64 x86_64; do
+  if ! log=$(swift build -c release --arch $arch 2>&1); then
+    echo "$log" | grep -E 'error:' || echo "$log"
+    exit 1
+  fi
+  echo "$arch: $(echo "$log" | grep 'Build complete' || echo built)"
+  slice="$(swift build -c release --arch $arch --show-bin-path)/InterviewPrep"
+  test -f "$slice"
+  slices="$slices $slice"
+done
+BIN=$(mktemp -d)/InterviewPrep
+lipo -create $slices -output "$BIN"
 
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
